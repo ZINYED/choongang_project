@@ -1,35 +1,31 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/views/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-<!-- BOOTSTRAP START -->
-<link rel="stylesheet" href="/bootstrap-5.3.2-examples/assets/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="/bootstrap-5.3.2-examples/css/bootstrap.css"><!-- 화면색모드_버튼색상 -->
-<script type="text/javascript" src="/bootstrap-5.3.2-examples/assets/js/color-modes.js"></script><!-- 화면색모드 -->
-<link rel="stylesheet" href="/bootstrap-5.3.2-examples/css/offcanvas-navbar.css"><!-- 타이틀 -->
-<link rel="stylesheet" href="/bootstrap-5.3.2-examples/css/dropdowns.css"><!-- 달력 -->
-<script type="text/javascript" src="/bootstrap-5.3.2-examples/assets/dist/js/bootstrap.bundle.min.js"></script>
-<!-- BOOTSTRAP END -->
-
-<!-- COMMON START -->
-<link rel="stylesheet" type="text/css" href="/common/css/common.css">
-<script type="text/javascript" src="/common/js/common.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-<!-- COMMON END -->
-
 <!--CSS START -->
+<style type="text/css">
+	div #calendar {
+		width: 80%;
+		margin-top: 30px;
+	}
+
+</style>
 <!-- CSS END -->
 
 <!-- JS START -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
 <!-- JS END -->
 
 <script type="text/javascript">
 	$(function() {
 		
 		$.ajax({
-			url			: '/header.html',
+			url			: '/main_header',
 			dataType 	: 'text',
 			success		: function(data) {
 				$('#header').html(data);
@@ -37,28 +33,44 @@
 		});
 		
 		$.ajax({
-			url			: '/menubar.html',
+			url			: '/main_menu',
 			dataType 	: 'text',
 			success		: function(data) {
 				$('#menubar').html(data);
 			}
 		});
-		
-		$.ajax({
-			url			: '/center.html',
-			dataType 	: 'text',
-			success		: function(data) {
-				$('#center').html(data);
-			}
-		});
 	
 		$.ajax({
-			url			: '/footer.html',
+			url			: '/main_footer',
 			dataType 	: 'text',
 			success		: function(data) {
 				$('#footer').html(data);
 			}
 		});
+	});
+
+	
+	// fullcalendar
+	document.addEventListener('DOMContentLoaded', function() {
+		var calendarEl = document.getElementById('calendar');
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView: 'dayGridMonth',
+			selectable: true,
+			
+			dateClick: function (info) {
+				console.log("clicked date : " + info.dateStr);
+			},
+			
+			events: [
+			    { // this object will be "parsed" into an Event Object
+					title: '${prj.project_name}',	// 이벤트 명
+					start: '${prjStart}',			// 프로젝트 시작일자
+					end: '${prjEnd}',				// 프로젝트 종료일자
+					color: '#6799FF'
+			    }
+			]
+		});
+		calendar.render();
 	});
 </script>
 </head>
@@ -78,6 +90,8 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
+			<div id='calendar'></div>
+			
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
 		</main>		
 		

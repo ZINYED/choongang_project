@@ -6,9 +6,14 @@
 	 mapper 여러개 쓰셔도 됩니다. -->
 	 
 	 
-<mapper namespace="com.oracle.s202350101.">
+<mapper namespace="com.oracle.s202350101.PrjInfoMapper">
 	 
-
+	 <select id="ljhPrjInfoSelOne" parameterType="int" resultType="PrjInfo">
+	 	SELECT	project_name, project_startdate, project_enddate
+	 	FROM	prj_info
+	 	WHERE	project_id = #{project_id}
+	 </select>
+	
 	
 
 </mapper>
