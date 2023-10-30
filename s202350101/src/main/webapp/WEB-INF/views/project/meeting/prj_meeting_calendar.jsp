@@ -58,7 +58,19 @@
 			
 			dateClick: function (info) {
 				console.log("clicked date : " + info.dateStr);
-			}		
+			},
+			
+			headerToolbar: {
+                left: 'addEventButton', // headerToolbar에 버튼을 추가
+                center: 'title'
+            },
+
+			customButtons: {
+				addEventButton: {
+					text: '회의일정 등록',
+				}
+			}
+            
 		});
 		calendar.render();
 	});

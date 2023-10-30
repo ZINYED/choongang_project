@@ -8,6 +8,25 @@
 <title>Insert title here</title>
 
 <!--CSS START -->
+<style type="text/css">
+	#meetingList {
+		padding: 20px;
+	}
+	#meeting {
+		width: 80%;
+		padding: 20px;
+		text-align: center;
+	}
+	table tr {
+		height: 50px;
+		border-bottom: solid gray 1px;
+	}
+	#title {
+		width: 80%;
+		text-align: center;
+		font-size: 25pt;
+	}
+</style>
 <!-- CSS END -->
 
 <!-- JS START -->
@@ -40,6 +59,7 @@
 			}
 		});
 	});
+
 </script>
 </head>
 <body>
@@ -58,6 +78,21 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
+			<div id="meetingList">
+				<label id="title">회의록</label>
+				<table id="meeting">
+					<tr><th>회의 일정</th><th>회의 제목</th></tr>
+					<c:forEach var="meetingList" items="${meetingList }">
+						<tr>
+							<td>${meetingList.meeting_date }</td>
+							<td><a href="prj_meeting_report_read?meeting_id=${meetingList.meeting_id }&project_id=${project_id}">${meetingList.meeting_title }</a></td>
+						</tr>
+					</c:forEach>
+				</table>
+			</div>
+			<div>
+				<span id="meetingContent"></span>
+			</div>
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
 		</main>		
 		

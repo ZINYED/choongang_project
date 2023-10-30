@@ -1,3 +1,4 @@
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/header.jsp" %>
@@ -61,17 +62,27 @@
 				console.log("clicked date : " + info.dateStr);
 			},
 			
-			events: [
-			    { // this object will be "parsed" into an Event Object
-					title: '${prj.project_name}',	// 이벤트 명
-					start: '${prjStart}',			// 프로젝트 시작일자
-					end: '${prjEnd}',				// 프로젝트 종료일자
+ 			events: [
+ 				<c:forEach var="meeitng" items="${meetingDateList}">
+					{
+						title: '${meeting.meeting_title}',
+						start: '${meeting.meeting_date}',
+						end: '${meeting.meeting_date}'
+					},
+				</c:forEach>
+ 				
+				{ 	// 프로젝트 일정 추가
+					title: '${prj.project_name}',		// 이벤트 명
+					start: '${prj.project_startdate}',	// 프로젝트 시작일자
+					end: '${prj.project_enddate}',		// 프로젝트 종료일자
 					color: '#6799FF'
 			    }
 			]
 		});
 		calendar.render();
 	});
+	
+	
 </script>
 </head>
 <body>

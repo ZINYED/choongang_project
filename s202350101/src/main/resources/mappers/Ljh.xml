@@ -7,14 +7,45 @@
 	 
 	 
 <mapper namespace="com.oracle.s202350101.PrjInfoMapper">
-	 
-	 <select id="ljhPrjInfoSelOne" parameterType="int" resultType="PrjInfo">
-	 	SELECT	project_name, project_startdate, project_enddate
+	
+	<select id="ljhPrjInfoSelOne" parameterType="int" resultType="PrjInfo">
+		SELECT	project_name, project_startdate, project_enddate
 	 	FROM	prj_info
 	 	WHERE	project_id = #{project_id}
-	 </select>
+	</select>
 	
+	<select id="ljhMeetingDateList" parameterType="int" resultType="Meeting">
+		SELECT	*
+		FROM	meeting
+		WHERE	project_id = #{project_id}
+	</select>
 	
-
+	<select id="ljhMeetingList" parameterType="int" resultType="Meeting">
+		SELECT	*
+		FROM	meeting
+		WHERE	project_id = #{project_id}
+		AND     meeting_status IN (2, 3)
+	</select>
+	
+	<select id="ljhMeetingRead" parameterType="int" resultType="Meeting">
+		SELECT	m.*, u.user_name
+		FROM	meeting m, meeting_member m2, user_info u
+		WHERE	m.meeting_id = #{meeting_id}
+		AND		m.meeting_id = m2.meeting_id
+		AND     m2.user_id = u.user_id
+	</select>
+	
+<!-- 	
+	UPDATE	meeting m, meeting_member m2
+	SET		m.meeting_title = #{meeting_title}, m.meeting_date = #{meeting_date},
+	        m.meeting_place = #{meeting_place}, m.meeting_category = #{meeting_category},
+	        m.meeting_content = #{meeting_content},
+	        <if test="#{attach_name} != null"> m.attach_name = #{attach_name}, </if> 
+	        <if test="#{attach_path} != null"> m.attach_path = #{attach_path}, </if>
+	        m.user_id = #{user_id}
+	WHERE	meeting_id = #{meeting_id}
+	AND     project_id = #{project_id}
+	AND     m2.user_id = m.user_id
+ -->		
+	
 </mapper>
-

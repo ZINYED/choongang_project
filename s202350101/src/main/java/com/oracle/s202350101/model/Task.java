@@ -22,4 +22,8 @@ public class Task {
 		private String	Task_Priority;
 		private String	Task_Status;
 		private int		Garbage;
+		
+		// 조회용
+		private int		status_count;
+		private String	user_name;
 }
