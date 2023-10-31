@@ -35,17 +35,34 @@
 		AND     m2.user_id = u.user_id
 	</select>
 	
-<!-- 	
-	UPDATE	meeting m, meeting_member m2
-	SET		m.meeting_title = #{meeting_title}, m.meeting_date = #{meeting_date},
-	        m.meeting_place = #{meeting_place}, m.meeting_category = #{meeting_category},
-	        m.meeting_content = #{meeting_content},
-	        <if test="#{attach_name} != null"> m.attach_name = #{attach_name}, </if> 
-	        <if test="#{attach_path} != null"> m.attach_path = #{attach_path}, </if>
-	        m.user_id = #{user_id}
-	WHERE	meeting_id = #{meeting_id}
-	AND     project_id = #{project_id}
-	AND     m2.user_id = m.user_id
- -->		
+	<select id="ljhPrjMemList" parameterType="int" resultType="PrjMemList">
+		SELECT  u.user_name, p.user_id
+		FROM    user_info u, prj_mem_list p
+		WHERE   u.user_id = p.user_id
+		AND     p.project_id = #{project_id}
+	</select>
+	
+	<insert id="ljhMeetingInsert" parameterType="Meeting">
+		INSERT ALL
+		INTO meeting VALUES (max(meeting_id)+1, #{project_id}, #{meeting_date}, #{meeting_title}, #{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, savedName, uploadPath}
+		INTO meeting_member VALUES (max(meeting_id)+1, #{project_id}, #{meeting_member})
+		SELECT *
+		FROM dual
+	</insert>
+	
+	<update id="ljhMeetingReportUpdate" parameterType="Meeting">
+		UPDATE	meeting m, meeting_member m2
+		SET		m.meeting_title = #{meeting_title}, m.meeting_date = #{meeting_date},
+		        m.meeting_place = #{meeting_place}, m.meeting_category = #{meeting_category},
+		        m.meeting_content = #{meeting_content},
+		        <if test="#{attach_name} != null"> m.attach_name = #{attach_name}, </if> 
+		        <if test="#{attach_path} != null"> m.attach_path = #{attach_path}, </if>
+		        m2.meeting_id = #{m.meeting_id},
+		        m2.project_id = #{m.project_id},
+		        m2.user_id = #{m.user_id}
+		WHERE	meeting_id = #{meeting_id}
+		AND     project_id = #{project_id}
+		AND     m2.user_id = m.user_id
+	</update>		
 	
 </mapper>

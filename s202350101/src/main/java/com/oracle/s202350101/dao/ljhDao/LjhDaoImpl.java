@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.oracle.s202350101.model.Meeting;
 import com.oracle.s202350101.model.PrjInfo;
+import com.oracle.s202350101.model.PrjMemList;
 
 import lombok.RequiredArgsConstructor;
 
@@ -76,6 +77,61 @@ public class LjhDaoImpl implements LjhDao {
 		}
 		
 		return meetingList;
+	}
+
+	@Override
+	public List<PrjMemList> getPrjMember(int project_id) {
+		List<PrjMemList> prjMemList = null;
+		System.out.println("LjhDaoImpl getPrjMember Start");
+		
+		try {
+			prjMemList = session.selectList("ljhPrjMemList", project_id);
+			System.out.println("LjhDaoImpl getPrjMember prjMemList.size() -> " + prjMemList.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getPrjMember Exception : " + e.getMessage());
+		}
+		
+		return prjMemList;
+	}
+
+	@Override
+	public int insertMeetingDate(Meeting meeting) {
+		int insertResult = 0;
+		System.out.println("LjhDaoImpl insertMeetingDate Start");
+		
+		try {
+			insertResult = session.insert("ljhMeetingInsert", meeting);
+			System.out.println("LjhDaoImpl insertMeetingDate insertResult -> " + insertResult);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl insertMeetingDate Exception : " + e.getMessage());
+		}
+		
+		return insertResult;
+	}
+	   // Iterate over the meetingDateList array			meetingDateList
+/* 		   for (var step = 0; step < ${meetingDateList.length}; step++) {
+	      var meeting = ${meetingDateList[step]};
+	      events.push({
+	         title: meeting.meeting_title,
+	         start: meeting.meeting_date,
+	         end: meeting.meeting_date
+	      });
+	   } */
+
+
+	@Override
+	public int updateMeetingReport(Meeting meeting) {
+		int updateResult = 0;
+		System.out.println("LjhDaoImpl updateMeetingReport Start");
+		
+		try {
+			updateResult = session.update("ljhMeetingReportUpdate", meeting);
+			System.out.println("LjhDaoImpl updateMeetingReport updateResult -> " + updateResult);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl updateMeetingReport Exception : " + e.getMessage());
+		}
+		
+		return updateResult;
 	}
 
 }

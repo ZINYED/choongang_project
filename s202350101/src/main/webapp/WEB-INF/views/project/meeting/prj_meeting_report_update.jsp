@@ -101,10 +101,34 @@ table tr {
 							</c:forEach>
 							<tr>
 								<th>참석자</th>
-								<!-- 체크박스 활용해서 참석자 선택 수정 -->
-								<td><input type="text"
-									value="<c:forEach items='${meeting }' var='meeting'>${meeting.user_name},
-							</c:forEach>">
+								<td>
+									<!-- 체크박스 활용해서 참석자 선택 수정 -->
+<!-- 						!!!!!!!!!			 --> 
+
+									<c:forEach items="${prjMemList}" var="prjMem">
+										<%
+											int result = 0;
+										%>
+										<c:forEach items="${meeting}" var="meet">
+											<c:if test="${prjMem.user_id == meet.user_id }">
+												<%
+													result += 1;
+												%>
+											</c:if>
+										</c:forEach>
+										
+										<c:choose>
+											<c:when test="${result > 0 }">
+												<input type="checkbox" value="${prjMem.user_id }" checked> ${prjMem.user_name}	
+												
+											</c:when>
+											<c:otherwise>
+												<input type="checkbox" value="${prjMem.user_id }"> ${prjMem.user_name}
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+									
+<!-- 						!!!!!!!!!!!!!!!			 -->
 								</td>
 							</tr>
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">

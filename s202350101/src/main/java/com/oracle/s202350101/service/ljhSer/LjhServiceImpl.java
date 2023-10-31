@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.oracle.s202350101.dao.ljhDao.LjhDao;
 import com.oracle.s202350101.model.Meeting;
 import com.oracle.s202350101.model.PrjInfo;
+import com.oracle.s202350101.model.PrjMemList;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,6 +55,36 @@ public class LjhServiceImpl implements LjhService {
 		List<Meeting> meetingList = ljhd.getMeetingList(project_id);
 		
 		return meetingList;
+	}
+
+	@Override
+	public List<PrjMemList> getPrjMember(int project_id) {
+		System.out.println("LjhServiceImpl getPrjMember Start");
+		
+		List<PrjMemList> prjMemList = ljhd.getPrjMember(project_id);
+		
+		return prjMemList;
+	}
+
+	@Override
+	public int insertMeetingDate(Meeting meeting) {
+		System.out.println("LjhServiceImpl insertMeetingDate Start");
+		int insertResult = 0;
+		
+		insertResult = ljhd.insertMeetingDate(meeting);
+		
+		return insertResult;
+	}
+
+	@Override
+	public int updateMeetingReport(Meeting meeting) {
+		System.out.println("LjhServiceImpl updateMeetingReport Start");
+		
+		int updateResult = 0;
+		
+		updateResult = ljhd.updateMeetingReport(meeting);
+		
+		return updateResult;
 	}
 
 }

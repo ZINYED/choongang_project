@@ -49,31 +49,91 @@
 		});
 	});
 	
-	// fullcalendar
+ 	// fullcalendar
 	document.addEventListener('DOMContentLoaded', function() {
 		var calendarEl = document.getElementById('calendar');
+		
+		var events = [];
+
+		// Iterate over the meetings using JSTL				meetingDateList
+		<c:forEach var="meeting" items="${meetingDateList}">
+		events.push({
+			title : '${meeting.meeting_title}',
+			start : '${meeting.meeting_date}',
+			end : '${meeting.meeting_date}',
+			color : '#F2CB61'
+		});
+		</c:forEach>
+		
 		var calendar = new FullCalendar.Calendar(calendarEl, {
-			initialView: 'dayGridMonth',
-			selectable: true,
+			initialView : 'dayGridMonth',
+			selectable : true,
+			events : events,
 			
-			dateClick: function (info) {
+			dateClick : function(info) {
 				console.log("clicked date : " + info.dateStr);
+				
 			},
 			
 			headerToolbar: {
-                left: 'addEventButton', // headerToolbar에 버튼을 추가
+                left: 'addEventButton meetingListButton',						// headerToolbar 왼쪽에 커스텀 버튼 추가
                 center: 'title'
             },
-
+			
 			customButtons: {
 				addEventButton: {
-					text: '회의일정 등록',
+					text : '회의일정 등록',
+					click : function() {					// 버튼 클릭 시 이벤트 추가
+                        $("#calendarModal").modal("show");	// modal 나타내기
+					}
+				},
+				
+				meetingListButton: {
+					text : '회의록',
+					click : function() {
+						location.href = 'prj_meeting_report_list?project_id=${project_id}';
+					}
 				}
 			}
-            
 		});
+
 		calendar.render();
 	});
+
+ 	//
+/*  	document.addEventListener('click', function() {
+ 		
+ 		
+ 		
+ 	}) */
+ 	
+	// form 입력값 체크
+	function chk() {
+
+		// meeting_member : 참석자 
+		const query = 'input[name="meeting_member"]:checked';			// 	체크된 참석자 	
+		const selectedElements = document.querySelectorAll(query);		//	모든 체크된 참석자 
+
+		// 선택된 목록의 갯수 세기
+		const selectedElementsCnt = selectedElements.length;			//	체크된 참석자 수
+		console.log(selectedElementsCnt);								//	검증.
+
+		if (!frm.meeting_title.value) {									//	제목 없으면 발생.
+			alert("제목을 입력하세요.");
+			frm.meeting_title.focus();
+			return false;
+		}
+
+		if (!frm.meeting_date.value) {									//	날짜 지정 안하면 발생.
+			alert("일정을 선택하세요.");
+			return false;
+		}
+
+		if (selectedElementsCnt < 1) {									//	체크된 참석자 없으면 발생.
+			alert("참석자를 선택하세요.");
+			return false;
+		}
+	}
 </script>
 </head>
 <body>
@@ -92,8 +152,59 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
+			<!-- fullcalendar 추가 -->
 			<div id='calendar'></div>
-			
+
+			<!-- modal 추가 -->
+		    <div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		        aria-hidden="true">
+		        <div class="modal-dialog" role="document">
+		        	<form action="prj_meeting_date_write" name="frm" onsubmit="return chk()">
+			            <div class="modal-content">
+			                <div class="modal-header">
+			                    <h5 class="modal-title" id="exampleModalLabel">회의 일정 등록</h5>
+			                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                        <span aria-hidden="true">&times;</span>
+			                    </button>
+			                </div>
+			                <div class="modal-body">
+			                    <div class="form-group">
+			                        <label for="taskId" class="col-form-label">회의 제목</label>
+			                        <input type="text" class="form-control" id="meeting_title" name="meeting_title">
+			                        <label for="taskId" class="col-form-label">회의 일정</label>
+			                        <input type="date" class="form-control" id="meeting_date" name="meeting_date">
+			                        <label for="taskId" class="col-form-label">회의 장소</label>
+			                        <input type="text" class="form-control" id="meeting_place" name="meeting_place">
+			                        <label for="taskId" class="col-form-label">참석자</label><p>
+			                        
+			                        <c:forEach var="prjMem" items="${prjMemList }">
+			                        	<input type="checkbox" id="meeting_member" name="meeting_member" value="${prjMem.user_id }"> ${prjMem.user_name }<br>
+			                        </c:forEach><br>
+			                        
+			                        <label for="taskId" class="col-form-label">회의 유형</label><br>
+			                        <select id="meeting_category" name="meeting_category">
+			                        	<option value="킥오프미팅">킥오프미팅</option>
+			                        	<option value="주간 회의">주간 회의</option>
+			                        	<option value="월간 회의">월간 회의</option>
+			                        	<option value="내부 회의">내부 회의</option> 
+			                        </select><br>
+			                        
+			                        <label for="taskId" class="col-form-label">첨부파일</label>
+			                        <input type="file" class="form-control">
+			                        <label for="taskId" class="col-form-label">회의 내용</label>
+			                        <input type="text" class="form-control" id="meeting_content" name="meeting_content">
+			                    </div>
+			                </div>
+			                <div class="modal-footer">
+			                	<input type="submit" class="btn btn-warning" value="추가">
+			                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+			                        id="sprintSettingModalClose">취소</button>
+			                </div>
+			            </div>
+		            </form>
+		        </div>
+		    </div>
+
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
 		</main>		
 		
