@@ -83,68 +83,82 @@ table tr {
 				<!------------------------------ //개발자 소스 입력 START ------------------------------->
 				<div id="meetingList">
 					<label id="title">회의록</label>
-					<form action="prj_meeting_report_update_2">
+					<form action="prj_meeting_report_update_2" method="post" enctype="multipart/form-data">
+						<input type="hidden" value="${meeting_id }" name="meeting_id">
+						<input type="hidden" value="${project_id }" name="project_id">
 						<table id="meeting">
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 								<tr>
 									<th>회의제목</th>
-									<td><input type="text" value="${meeting.meeting_title}"></td>
+									<td><input type="text" name="meeting_title"
+										value="${meeting.meeting_title}"></td>
 								</tr>
 								<tr>
 									<th>회의일정</th>
-									<td><input type="date" value="${meeting.meeting_date}"></td>
+									<td><input type="date" name="meeting_date"
+										value="${meeting.meeting_date}"></td>
 								</tr>
 								<tr>
 									<th>회의장소</th>
-									<td><input type="text" value="${meeting.meeting_place}"></td>
+									<td><input type="text" name="meeting_place"
+										value="${meeting.meeting_place}"></td>
 								</tr>
 							</c:forEach>
 							<tr>
 								<th>참석자</th>
 								<td>
-									<!-- 체크박스 활용해서 참석자 선택 수정 -->
-<!-- 						!!!!!!!!!			 --> 
-
+									<!-- 체크박스 활용해서 참석자 선택 수정 --> <!-- 						!!!!!!!!!			 -->     
 									<c:forEach items="${prjMemList}" var="prjMem">
-										<%
-											int result = 0;
-										%>
+										<c:set var="result" value="0" />
+
 										<c:forEach items="${meeting}" var="meet">
-											<c:if test="${prjMem.user_id == meet.user_id }">
-												<%
-													result += 1;
-												%>
-											</c:if>
+										    <c:if test="${prjMem.user_name == meet.user_name }">
+										        <c:set var="result" value="${result + 1}" />
+										    </c:if>
 										</c:forEach>
-										
 										<c:choose>
-											<c:when test="${result > 0 }">
-												<input type="checkbox" value="${prjMem.user_id }" checked> ${prjMem.user_name}	
-												
-											</c:when>
+											<c:when test="${result > 0}">
+												<input type="checkbox" name="user_id"
+													value="${prjMem.user_id }" checked> ${prjMem.user_name}
+										    </c:when>
 											<c:otherwise>
-												<input type="checkbox" value="${prjMem.user_id }"> ${prjMem.user_name}
-											</c:otherwise>
+												<input type="checkbox" name="user_id"
+													value="${prjMem.user_id }"> ${prjMem.user_name}
+										    </c:otherwise>
 										</c:choose>
-									</c:forEach>
+
+									</c:forEach> <!-- 						!!!!!!!!!!!!!!!			 -->
 									
-<!-- 						!!!!!!!!!!!!!!!			 -->
+									
+									
 								</td>
 							</tr>
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 								<tr>
 									<th>회의유형</th>
-									<td><select>
-											<option>${meeting.meeting_category}</option>
+									<td><select name="meeting_category">
+											<option value="킥오프미팅"
+												<c:if test="${meeting.meeting_category == '킥오프미팅'}">selected</c:if>>킥오프미팅</option>
+											<option value="주간 업무보고"
+												<c:if test="${meeting.meeting_category == '주간 업무보고'}">selected</c:if>>주간
+												업무보고</option>
+											<option value="월간 회의"
+												<c:if test="${meeting.meeting_category == '월간 회의'}">selected</c:if>>월간
+												회의</option>
+											<option value="내부 회의"
+												<c:if test="${meeting.meeting_category == '내부 회의'}">selected</c:if>>내부
+												회의</option>
+											<option value="회의"
+												<c:if test="${meeting.meeting_category == '회의'}">selected</c:if>>회의</option>
 									</select></td>
 								</tr>
 								<tr>
 									<th>첨부파일</th>
-									<td><input type="file"></td>
+									<td><input type="file" name="file1"></td>
 								</tr>
 								<tr>
 									<th>회의내용</th>
-									<td><textarea rows="5" cols="30">${meeting.meeting_content}</textarea>
+									<td><textarea rows="5" cols="30" name="meeting_content">${meeting.meeting_content}</textarea>
 									</td>
 								</tr>
 							</c:forEach>

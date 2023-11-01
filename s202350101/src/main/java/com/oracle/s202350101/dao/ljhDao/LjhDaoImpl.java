@@ -108,16 +108,6 @@ public class LjhDaoImpl implements LjhDao {
 		
 		return insertResult;
 	}
-	   // Iterate over the meetingDateList array			meetingDateList
-/* 		   for (var step = 0; step < ${meetingDateList.length}; step++) {
-	      var meeting = ${meetingDateList[step]};
-	      events.push({
-	         title: meeting.meeting_title,
-	         start: meeting.meeting_date,
-	         end: meeting.meeting_date
-	      });
-	   } */
-
 
 	@Override
 	public int updateMeetingReport(Meeting meeting) {
@@ -132,6 +122,36 @@ public class LjhDaoImpl implements LjhDao {
 		}
 		
 		return updateResult;
+	}
+
+	@Override
+	public int deleteMeetingMember(Meeting meeting) {
+		int deleteResult = 0;
+		System.out.println("LjhDaoImpl deleteMeetingMember Start");
+		
+		try {
+			deleteResult = session.delete("ljhDeleteMeetingMember", meeting);
+			System.out.println("LjhDaoImpl deleteMeetingMember deleteResult -> " + deleteResult);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl deleteMeetingMember Exception : " + e.getMessage());
+		}
+		
+		return deleteResult;
+	}
+
+	@Override
+	public int insertMeetingMember(Meeting meeting) {
+		int insertResult = 0;
+		System.out.println("LjhDaoImpl insertMeetingMember Start");
+		
+		try {
+			insertResult = session.insert("ljhInsertMeetingMember", meeting);
+			System.out.println("LjhDaoImpl insertMeetingMember insertResult -> " + insertResult);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl insertMeetingMember Exception : " + e.getMessage());
+		}
+		
+		return insertResult;
 	}
 
 }

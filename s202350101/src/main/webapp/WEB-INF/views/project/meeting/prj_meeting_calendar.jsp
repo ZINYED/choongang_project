@@ -13,7 +13,7 @@
 		width: 80%;
 		margin-top: 30px;
 	}
-
+	
 </style>
 <!-- CSS END -->
 
@@ -57,12 +57,12 @@
 
 		// Iterate over the meetings using JSTL				meetingDateList
 		<c:forEach var="meeting" items="${meetingDateList}">
-		events.push({
-			title : '${meeting.meeting_title}',
-			start : '${meeting.meeting_date}',
-			end : '${meeting.meeting_date}',
-			color : '#F2CB61'
-		});
+			events.push({
+				title : '${meeting.meeting_title}',
+				start : '${meeting.meeting_date}',
+				end : '${meeting.meeting_date}',
+				color : '#F2CB61'
+			});
 		</c:forEach>
 		
 		var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -72,11 +72,10 @@
 			
 			dateClick : function(info) {
 				console.log("clicked date : " + info.dateStr);
-				
 			},
 			
 			headerToolbar: {
-                left: 'addEventButton meetingListButton',						// headerToolbar 왼쪽에 커스텀 버튼 추가
+                left: 'addEventButton meetingListButton',	// headerToolbar 왼쪽에 커스텀 버튼 추가
                 center: 'title'
             },
 			
@@ -94,19 +93,17 @@
 						location.href = 'prj_meeting_report_list?project_id=${project_id}';
 					}
 				}
+			},
+			
+			eventClick: function(event) {
+				console.log(event);
 			}
+			
 		});
 
 		calendar.render();
 	});
-
- 	//
-/*  	document.addEventListener('click', function() {
- 		
- 		
- 		
- 	}) */
- 	
+	
 	// form 입력값 체크
 	function chk() {
 
@@ -163,7 +160,7 @@
 			            <div class="modal-content">
 			                <div class="modal-header">
 			                    <h5 class="modal-title" id="exampleModalLabel">회의 일정 등록</h5>
-			                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" data-bs-dismiss="modal">
 			                        <span aria-hidden="true">&times;</span>
 			                    </button>
 			                </div>
@@ -184,9 +181,10 @@
 			                        <label for="taskId" class="col-form-label">회의 유형</label><br>
 			                        <select id="meeting_category" name="meeting_category">
 			                        	<option value="킥오프미팅">킥오프미팅</option>
-			                        	<option value="주간 회의">주간 회의</option>
+			                        	<option value="주간 업무보고">주간 업무보고</option>
 			                        	<option value="월간 회의">월간 회의</option>
-			                        	<option value="내부 회의">내부 회의</option> 
+			                        	<option value="내부 회의">내부 회의</option>
+			                        	<option value="회의">회의</option>
 			                        </select><br>
 			                        
 			                        <label for="taskId" class="col-form-label">첨부파일</label>
@@ -198,7 +196,7 @@
 			                <div class="modal-footer">
 			                	<input type="submit" class="btn btn-warning" value="추가">
 			                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
-			                        id="sprintSettingModalClose">취소</button>
+			                        id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
 			                </div>
 			            </div>
 		            </form>
@@ -208,6 +206,11 @@
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
 		</main>		
 		
+		<div id="right_side" style="width:30%" >
+			<div style="background-color: blue">
+			1
+			</div>
+		</div>
 	</div>
 </div>
 

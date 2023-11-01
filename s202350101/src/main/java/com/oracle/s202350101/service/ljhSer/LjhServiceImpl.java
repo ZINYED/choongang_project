@@ -87,4 +87,26 @@ public class LjhServiceImpl implements LjhService {
 		return updateResult;
 	}
 
+	@Override
+	public int deleteMeetingMember(Meeting meeting) {
+		System.out.println("LjhServiceImpl deleteMeetingMember Start");
+		
+		int deleteResult = 0;
+		
+		deleteResult = ljhd.deleteMeetingMember(meeting);
+		
+		return deleteResult;
+	}
+
+	@Override
+	public int insertMeetingMember(Meeting meeting) {
+		System.out.println("LjhServiceImpl insertMeetingMember Start");
+		
+		int insertResult = 0;
+		
+		insertResult = ljhd.insertMeetingMember(meeting);
+		
+		return insertResult;
+	}
+
 }

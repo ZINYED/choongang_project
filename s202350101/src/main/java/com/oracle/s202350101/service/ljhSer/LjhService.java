@@ -15,5 +15,7 @@ public interface LjhService {
 	List<PrjMemList>	getPrjMember(int project_id);
 	int 				insertMeetingDate(Meeting meeting);
 	int 				updateMeetingReport(Meeting meeting);
+	int 				deleteMeetingMember(Meeting meeting);
+	int 				insertMeetingMember(Meeting meeting);
 
 }

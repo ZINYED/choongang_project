@@ -8,6 +8,13 @@ spring:
     url: jdbc:oracle:thin:@localhost:1521/xe
     username: s202350101_ziny
     password: tiger
+    
+  
+# File Size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 # JPA Setting
   jpa:

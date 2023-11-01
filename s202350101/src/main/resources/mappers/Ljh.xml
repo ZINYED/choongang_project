@@ -14,6 +14,7 @@
 	 	WHERE	project_id = #{project_id}
 	</select>
 	
+	<!-- 회의록 전체 -->
 	<select id="ljhMeetingDateList" parameterType="int" resultType="Meeting">
 		SELECT	*
 		FROM	meeting
@@ -42,6 +43,7 @@
 		AND     p.project_id = #{project_id}
 	</select>
 	
+	<!-- 회의일정 등록 -->
 	<insert id="ljhMeetingInsert" parameterType="Meeting">
 		INSERT ALL
 		INTO meeting VALUES (max(meeting_id)+1, #{project_id}, #{meeting_date}, #{meeting_title}, #{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, savedName, uploadPath}
@@ -50,19 +52,28 @@
 		FROM dual
 	</insert>
 	
+	<!-- meeting 테이블 수정 -->
 	<update id="ljhMeetingReportUpdate" parameterType="Meeting">
-		UPDATE	meeting m, meeting_member m2
-		SET		m.meeting_title = #{meeting_title}, m.meeting_date = #{meeting_date},
-		        m.meeting_place = #{meeting_place}, m.meeting_category = #{meeting_category},
-		        m.meeting_content = #{meeting_content},
-		        <if test="#{attach_name} != null"> m.attach_name = #{attach_name}, </if> 
-		        <if test="#{attach_path} != null"> m.attach_path = #{attach_path}, </if>
-		        m2.meeting_id = #{m.meeting_id},
-		        m2.project_id = #{m.project_id},
-		        m2.user_id = #{m.user_id}
+		UPDATE	meeting
+		SET		meeting_title = #{meeting_title}, meeting_date = #{meeting_date},
+		        meeting_place = #{meeting_place}, meeting_category = #{meeting_category},
+		        attach_name = #{attach_name}, attach_path = #{attach_path},
+		        meeting_content = #{meeting_content}
 		WHERE	meeting_id = #{meeting_id}
 		AND     project_id = #{project_id}
-		AND     m2.user_id = m.user_id
 	</update>		
+	
+	<!-- meeting_member 테이블 삭제 -->
+	<delete id="ljhDeleteMeetingMember" parameterType="Meeting">
+		DELETE
+		FROM	meeting_member
+		WHERE	meeting_id = #{meeting_id}
+		AND		project_id = #{project_id}
+	</delete>
+	
+	<!-- meeting_member 테이블 추가 -->
+	<insert id="ljhInsertMeetingMember" parameterType="Meeting">
+		INSERT INTO meeting_member VALUES (#{meeting_id}, #{project_id}, #{user_id})
+	</insert>
 	
 </mapper>

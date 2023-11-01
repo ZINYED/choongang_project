@@ -40,8 +40,15 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.3.1'
 	testImplementation 'org.springframework.security:spring-security-test'
+	
+//	파일 업로드 라이브러리
+//	implementation 'commons-io:commons-io:2.11.0'    /* Apache commons-io */
+//	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' /* Apache Commons FileUpload */	
 }
-
+//	dependencies {
+//	    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+//	    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+//	}
 tasks.named('test') {
 	useJUnitPlatform()
 }
