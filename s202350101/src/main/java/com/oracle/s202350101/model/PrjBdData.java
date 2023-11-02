@@ -22,4 +22,6 @@ public class PrjBdData {
 	private int 	doc_indent;			private String 	alarm_flag;
 	private String 	parent_doc_user_id;	private String 	parent_doc_no;
 	
+	// 조회용 추가
+	private String	app_name;
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/header.jsp" %> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,25 +8,6 @@
 <title>Insert title here</title>
 
 <!--CSS START -->
-<style type="text/css">
-	#meetingList {
-		padding: 20px;
-	}
-	#meeting {
-		width: 80%;
-		padding: 20px;
-		text-align: center;
-	}
-	table tr {
-		height: 50px;
-		border-bottom: solid gray 1px;
-	}
-	#title {
-		width: 80%;
-		text-align: center;
-		font-size: 25pt;
-	}
-</style>
 <!-- CSS END -->
 
 <!-- JS START -->
@@ -59,7 +40,6 @@
 			}
 		});
 	});
-
 </script>
 </head>
 <body>
@@ -78,52 +58,33 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
-			<div id="meetingList">
-				<label id="title">회의록</label>
-				<input type="hidden" name="user_id" value="${user_id }">
-				<input type="hidden" name="user_id" value="${project_id }">
-				<input type="hidden" name="user_id" value="${meeting_id }">
-				<table id="meeting">
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
-						<tr>
-							<th>회의제목</th><td>${meeting.meeting_title}</td>
-						</tr>
-						<tr>
-							<th>회의일정</th><td>${meeting.meeting_date}</td>
-						</tr>
-						<tr>
-							<th>회의장소</th><td>${meeting.meeting_place}</td>
-						</tr>
-					</c:forEach>
-					<tr>
-						<th>참석자</th>
-						<td><c:forEach items="${meeting }" var="meeting">
-							${meeting.user_name}
-						</c:forEach></td>
-					</tr>
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
-						<tr>
-							<th>회의유형</th><td>${meeting.meeting_category}</td>
-						</tr>
-						<tr>
-							<th>첨부파일</th>
-							<td><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${savedName}"> ${savedName}</td>
-						</tr>
-						<tr>
-							<th>회의내용</th><td>${meeting.meeting_content}</td>							
-						</tr>
-					</c:forEach>
-					<tr>
-						<td colspan="2">
-						<input type="button" value="목록" onclick="location.href='/prj_meeting_report_list?project_id=${project_id}'">
-						<input type="button" value="수정" onclick="location.href='/prj_meeting_report_update?meeting_id=${meeting_id}&project_id=${project_id}'">
-						<input type="button" value="삭제" onclick="location.href='/prj_meeting_report_delete?meeting_id=${meeting_id}&project_id=${project_id}&user_id=${user_id}'">
-						</td>
-					</tr>
-				</table>
-			</div>
+	  		<div id="contents">
+		    	<div class="col-lg-4">
+		    		
+			        <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
+			        <h2 class="fw-normal">문경훈</h2>
+			        <h3 class="fw-normal">Cristalmoon112</h3>
+			        <p>소속 : 중앙 이대점 501반 09번
+			        <p>핸드폰 번호 : 010 - xxxx - xxxx
+			        <p>생년월일 : 2020년 10월 13일
+			        
+			        <p><a class="btn btn-secondary" href="mypage_check_pw">개인정보수정 »</a></p>
+		      	</div>
+		  		
+		    	<h1>환경설정</h1><p>
+		    	
+			    	댓글알림  : YES<input type="radio" value="Y">    NO<input type="radio" value="N"><p>
+			    	답글알림  : YES<input type="radio" value="Y">    NO<input type="radio" value="N"><p>
+			    	프로젝트 생성 승인알림  : YES<input type="radio" value="Y">    NO<input type="radio" value="N"><p>
+			    	회의일정알림  : YES<input type="radio" value="Y">    NO<input type="radio" value="N"><p>
+			    	채팅이용  : YES<input type="radio" value="Y">    NO<input type="radio" value="N"><p>
+		    	
+		    		<p><a class="btn btn-secondary" href="#">확인 »</a></p>
+		    	
+		    </div>
+	  		
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
-		</main>
+		</main>		
 		
 	</div>
 </div>

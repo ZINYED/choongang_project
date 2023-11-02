@@ -20,8 +20,8 @@
 	        </ul>
 			<ul class="nav nav-pills">
 				<li class="nav-item">
-					<a class="nav-link px-2 link-light" aria-current="page" href="#">홍길동</a>
-				</li>        
+					<a class="nav-link px-2 link-light" aria-current="page" href="#">${userInfo.user_name }</a>
+				</li>
 			</ul>
 			<div class="dropdown text-end">
 				<a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -29,9 +29,9 @@
 				</a>
 				<ul class="dropdown-menu text-small" style="">
 					<li><a class="dropdown-item" href="#">채팅창</a></li>
-					<li><a class="dropdown-item" href="#">내 정보 설정</a></li>
+					<li><a class="dropdown-item" href="mypage_main">내 정보 설정</a></li>
 					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="#">로그아웃</a></li>
+					<li><a class="dropdown-item" href="user_logout">로그아웃</a></li>
 				</ul>
 			</div>
 			<div class="d-flex" role="search" style="margin-left:10px">        

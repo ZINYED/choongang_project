@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/header.jsp" %> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,25 +8,6 @@
 <title>Insert title here</title>
 
 <!--CSS START -->
-<style type="text/css">
-	#meetingList {
-		padding: 20px;
-	}
-	#meeting {
-		width: 80%;
-		padding: 20px;
-		text-align: center;
-	}
-	table tr {
-		height: 50px;
-		border-bottom: solid gray 1px;
-	}
-	#title {
-		width: 80%;
-		text-align: center;
-		font-size: 25pt;
-	}
-</style>
 <!-- CSS END -->
 
 <!-- JS START -->
@@ -59,7 +40,6 @@
 			}
 		});
 	});
-
 </script>
 </head>
 <body>
@@ -78,52 +58,81 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
-			<div id="meetingList">
-				<label id="title">회의록</label>
-				<input type="hidden" name="user_id" value="${user_id }">
-				<input type="hidden" name="user_id" value="${project_id }">
-				<input type="hidden" name="user_id" value="${meeting_id }">
-				<table id="meeting">
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
+	  		<div class="container-fluid">
+					<p>
+					<h3>내가 쓴 게시글 : ${totalBdQna } 개</h3>
+					<p>
+					<table>
 						<tr>
-							<th>회의제목</th><td>${meeting.meeting_title}</td>
+							<td><button type="button" class="btn btn-secondary btn-sm" onclick="goto('project_board_data_write.html')">작성</button></td>
 						</tr>
-						<tr>
-							<th>회의일정</th><td>${meeting.meeting_date}</td>
-						</tr>
-						<tr>
-							<th>회의장소</th><td>${meeting.meeting_place}</td>
-						</tr>
-					</c:forEach>
-					<tr>
-						<th>참석자</th>
-						<td><c:forEach items="${meeting }" var="meeting">
-							${meeting.user_name}
-						</c:forEach></td>
-					</tr>
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
-						<tr>
-							<th>회의유형</th><td>${meeting.meeting_category}</td>
-						</tr>
-						<tr>
-							<th>첨부파일</th>
-							<td><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${savedName}"> ${savedName}</td>
-						</tr>
-						<tr>
-							<th>회의내용</th><td>${meeting.meeting_content}</td>							
-						</tr>
-					</c:forEach>
-					<tr>
-						<td colspan="2">
-						<input type="button" value="목록" onclick="location.href='/prj_meeting_report_list?project_id=${project_id}'">
-						<input type="button" value="수정" onclick="location.href='/prj_meeting_report_update?meeting_id=${meeting_id}&project_id=${project_id}'">
-						<input type="button" value="삭제" onclick="location.href='/prj_meeting_report_delete?meeting_id=${meeting_id}&project_id=${project_id}&user_id=${user_id}'">
-						</td>
-					</tr>
-				</table>
-			</div>
+					</table>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<td>게시판</td>
+								<td>제목</td>
+								<td>작성자</td>
+								<td>작성일</td>
+								<td>조회수</td>
+								<td>추천수</td>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- <tr onclick="goto('project_board_data_read.html')"> -->
+							<tr>	
+								<c:forEach var="bdQna" items="${qnaList }">
+									<tr><td>${bdQna.app_name }</td>
+									<td><a href="bdQnaContent?doc_no=${bdQna.doc_no }">${bdQna.subject }</a></td>
+									<td>${bdQna.user_id }</td>
+									<td>${bdQna.create_date }</td>
+									<td>${bdQna.bd_count }</td>
+									<td>${bdQna.good_count }</td></tr>
+								</c:forEach>
+								<c:forEach var="bdFree" items="${freeList }">
+									<tr><td>${bdFree.app_name }</td>
+									<td><a href="bdQnaContent?doc_no=${bdFree.doc_no }">${bdFree.subject }</a></td>
+									<td>${bdFree.user_id }</td>
+									<td>${bdFree.create_date }</td>
+									<td>${bdFree.bd_count }</td>
+									<td>${bdFree.good_count }</td></tr>
+								</c:forEach>
+								<c:forEach var="PrjBdData" items="${dataPrjList }">
+									<tr><td>${PrjBdData.app_name }</td>
+									<td><a href="bdQnaContent?doc_no=${PrjBdData.doc_no }">${PrjBdData.subject }</a></td>
+									<td>${PrjBdData.user_id }</td>
+									<td>${PrjBdData.create_date }</td>
+									<td>${PrjBdData.bd_count }</td>
+									<td>${PrjBdData.good_count }</td></tr>
+								</c:forEach>
+								<c:forEach var="PrjBdRep" items="${RepPrjList }">
+									<tr><td>${PrjBdRep.app_name }</td>
+									<td><a href="bdQnaContent?doc_no=${PrjBdRep.doc_no }">${PrjBdRep.subject }</a></td>
+									<td>${PrjBdRep.user_id }</td>
+									<td>${PrjBdRep.create_date }</td>
+									<td>${PrjBdRep.create_date }</td>
+									<td>${PrjBdRep.create_date }</td></tr>
+								</c:forEach>
+							</tr>
+						</tbody>
+					</table>
+					<nav aria-label="Page navigation example">
+					  <ul class="pagination justify-content-center">
+					    <li class="page-item disabled">
+					      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+					    </li>
+					    <li class="page-item"><a class="page-link" href="#">1</a></li>
+					    <li class="page-item"><a class="page-link" href="#">2</a></li>
+					    <li class="page-item"><a class="page-link" href="#">3</a></li>
+					    <li class="page-item">
+					      <a class="page-link" href="#">Next</a>
+					    </li>
+					  </ul>
+					</nav>
+				</div>
+	  		
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
-		</main>
+		</main>		
 		
 	</div>
 </div>

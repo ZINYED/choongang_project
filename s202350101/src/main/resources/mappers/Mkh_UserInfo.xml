@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- com.oracle.s202350101.뒤에 매핑하고 싶은 모델쓰면 됩니다 
+	 mapper 여러개 쓰셔도 됩니다. -->
+	 
+<mapper namespace="com.oracle.s202350101.UserInfoMapper">
+	
+	<!-- 회원가입 sql -->
+	<insert id="InsertUserInfo" parameterType="UserInfo">    <!-- #{project_id, jdbcType = VARCHAR} -->
+		insert into user_info (user_id,      class_id,    user_pw,    user_name,    user_number,    user_email,  user_auth) 
+					   VALUES (#{user_id}, #{class_id}, #{user_pw}, #{user_name}, #{user_number}, #{user_email}, 'student')  
+	</insert>
+	
+	<!-- 로그인 check -->
+	<select id="userLoginConfirm" parameterType="UserInfo" resultType="userInfo">
+		Select *
+		From  user_info 
+		Where user_id = #{user_id}
+		And   user_pw = #{user_pw}
+	</select>
+	
+
+</mapper>

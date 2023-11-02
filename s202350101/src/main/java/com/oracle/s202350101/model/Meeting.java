@@ -25,6 +25,7 @@ public class Meeting {
 	private String 	attach_path;
 	
 	// 조회용
+	private String 			meetuser_id;
 	private String			user_name;
 	private MeetingMember	meetingMember;
 	

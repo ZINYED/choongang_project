@@ -86,6 +86,7 @@ table tr {
 					<form action="prj_meeting_report_update_2" method="post" enctype="multipart/form-data">
 						<input type="hidden" value="${meeting_id }" name="meeting_id">
 						<input type="hidden" value="${project_id }" name="project_id">
+						
 						<table id="meeting">
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 								<tr>
@@ -112,17 +113,17 @@ table tr {
 										<c:set var="result" value="0" />
 
 										<c:forEach items="${meeting}" var="meet">
-										    <c:if test="${prjMem.user_name == meet.user_name }">
+										    <c:if test="${prjMem.user_id== meet.meetuser_id }">
 										        <c:set var="result" value="${result + 1}" />
 										    </c:if>
 										</c:forEach>
 										<c:choose>
 											<c:when test="${result > 0}">
-												<input type="checkbox" name="user_id"
+												<input type="checkbox" name="meetuser_id"
 													value="${prjMem.user_id }" checked> ${prjMem.user_name}
 										    </c:when>
 											<c:otherwise>
-												<input type="checkbox" name="user_id"
+												<input type="checkbox" name="meetuser_id"
 													value="${prjMem.user_id }"> ${prjMem.user_name}
 										    </c:otherwise>
 										</c:choose>
@@ -154,7 +155,7 @@ table tr {
 								</tr>
 								<tr>
 									<th>첨부파일</th>
-									<td><input type="file" name="file1"></td>
+									<td><input type="file" name="file1"> ${pageContext.request.contextPath}/upload/${savedName}</td>
 								</tr>
 								<tr>
 									<th>회의내용</th>

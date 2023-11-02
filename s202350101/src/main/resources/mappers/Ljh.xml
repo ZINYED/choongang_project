@@ -28,12 +28,13 @@
 		AND     meeting_status IN (2, 3)
 	</select>
 	
+	<!-- .getMeetingRead(meeting_id) -->
 	<select id="ljhMeetingRead" parameterType="int" resultType="Meeting">
-		SELECT	m.*, u.user_name
-		FROM	meeting m, meeting_member m2, user_info u
-		WHERE	m.meeting_id = #{meeting_id}
-		AND		m.meeting_id = m2.meeting_id
-		AND     m2.user_id = u.user_id
+    	SELECT	m.*, u.user_name,u.user_id as meetuser_id
+	    FROM	meeting m, meeting_member m2, user_info u
+	    WHERE	m.meeting_id = #{meeting_id}
+	    AND		m.meeting_id = m2.meeting_id
+	    AND     m2.meetuser_id = u.user_id
 	</select>
 	
 	<select id="ljhPrjMemList" parameterType="int" resultType="PrjMemList">
@@ -46,7 +47,7 @@
 	<!-- 회의일정 등록 -->
 	<insert id="ljhMeetingInsert" parameterType="Meeting">
 		INSERT ALL
-		INTO meeting VALUES (max(meeting_id)+1, #{project_id}, #{meeting_date}, #{meeting_title}, #{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, savedName, uploadPath}
+		INTO meeting VALUES (max(meeting_id)+1, #{project_id}, #{meeting_date}, #{meeting_title}, #{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, #{attach_name}, #{attach_path}}
 		INTO meeting_member VALUES (max(meeting_id)+1, #{project_id}, #{meeting_member})
 		SELECT *
 		FROM dual
@@ -63,7 +64,7 @@
 		AND     project_id = #{project_id}
 	</update>		
 	
-	<!-- meeting_member 테이블 삭제 -->
+	<!-- .deleteMeetingMember / meeting_member 테이블 삭제 -->
 	<delete id="ljhDeleteMeetingMember" parameterType="Meeting">
 		DELETE
 		FROM	meeting_member
@@ -73,7 +74,12 @@
 	
 	<!-- meeting_member 테이블 추가 -->
 	<insert id="ljhInsertMeetingMember" parameterType="Meeting">
-		INSERT INTO meeting_member VALUES (#{meeting_id}, #{project_id}, #{user_id})
+		INSERT INTO meeting_member VALUES (#{meeting_id}, #{project_id}, #{meetuser_id})
 	</insert>
+	
+	<!-- .deleteMeetingReport -->
+	<delete id="ljhDeleteMeetingReport" parameterType="int">
+		DELETE FROM meeting WHERE meeting_id = #{meeting_id}
+	</delete>
 	
 </mapper>

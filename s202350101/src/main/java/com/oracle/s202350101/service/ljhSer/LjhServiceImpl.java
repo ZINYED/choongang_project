@@ -3,6 +3,10 @@ package com.oracle.s202350101.service.ljhSer;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.oracle.s202350101.dao.ljhDao.LjhDao;
 import com.oracle.s202350101.model.Meeting;
@@ -14,7 +18,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LjhServiceImpl implements LjhService {
-	
+
+	private final PlatformTransactionManager transactionManager;
 	private final LjhDao	ljhd;
 	
 	// 프로젝트 기간 조회
@@ -76,6 +81,7 @@ public class LjhServiceImpl implements LjhService {
 		return insertResult;
 	}
 
+	// 1
 	@Override
 	public int updateMeetingReport(Meeting meeting) {
 		System.out.println("LjhServiceImpl updateMeetingReport Start");
@@ -87,6 +93,7 @@ public class LjhServiceImpl implements LjhService {
 		return updateResult;
 	}
 
+	// 2
 	@Override
 	public int deleteMeetingMember(Meeting meeting) {
 		System.out.println("LjhServiceImpl deleteMeetingMember Start");
@@ -98,6 +105,7 @@ public class LjhServiceImpl implements LjhService {
 		return deleteResult;
 	}
 
+	// 3
 	@Override
 	public int insertMeetingMember(Meeting meeting) {
 		System.out.println("LjhServiceImpl insertMeetingMember Start");
@@ -108,5 +116,55 @@ public class LjhServiceImpl implements LjhService {
 		
 		return insertResult;
 	}
+
+	@Override
+	public int deleteMeetingReport(int meeting_id) {
+		System.out.println("LjhServiceImpl deleteMeetingReport Start");
+		
+		int deleteResult = 0;
+		
+		deleteResult = ljhd.deleteMeetingReport(meeting_id);
+		
+		return deleteResult;
+	}
+	
+	public int meetingReportUpdate(Meeting meeting) {
+		
+		String[] meetMems = meeting.getUser_id().split(",");	// 체크된 참석자 배열로 저장 
+
+		int insertResult = 0;
+		int updateResult = 0;
+		int deleteResult = 0;
+
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
+		
+		try {
+
+			updateResult = ljhd.updateMeetingReport(meeting);
+			deleteResult = ljhd.deleteMeetingMember(meeting);
+			for (int i = 0; i<meetMems.length; i++) {
+				Meeting mt = new Meeting(); 
+				mt.setMeetuser_id(meetMems[i]);
+				mt.setMeeting_id(meeting.getMeeting_id());
+				mt.setProject_id(meeting.getProject_id());
+				
+				insertResult += ljhd.insertMeetingMember(mt);		// 회의 참석자 신규 등록
+			}
+
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			System.out.println("LjhServiceImpl meetingReportUpdate Exception -> " + e.getMessage());
+			
+		}
+		
+		int totalResult = updateResult+deleteResult+insertResult;
+		
+		return totalResult;
+		
+	}
+	
+	
+	
 
 }

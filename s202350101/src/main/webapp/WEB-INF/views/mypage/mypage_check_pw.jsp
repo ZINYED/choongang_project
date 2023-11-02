@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/header.jsp" %> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,25 +8,6 @@
 <title>Insert title here</title>
 
 <!--CSS START -->
-<style type="text/css">
-	#meetingList {
-		padding: 20px;
-	}
-	#meeting {
-		width: 80%;
-		padding: 20px;
-		text-align: center;
-	}
-	table tr {
-		height: 50px;
-		border-bottom: solid gray 1px;
-	}
-	#title {
-		width: 80%;
-		text-align: center;
-		font-size: 25pt;
-	}
-</style>
 <!-- CSS END -->
 
 <!-- JS START -->
@@ -59,7 +40,6 @@
 			}
 		});
 	});
-
 </script>
 </head>
 <body>
@@ -78,52 +58,20 @@
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
-			<div id="meetingList">
-				<label id="title">회의록</label>
-				<input type="hidden" name="user_id" value="${user_id }">
-				<input type="hidden" name="user_id" value="${project_id }">
-				<input type="hidden" name="user_id" value="${meeting_id }">
-				<table id="meeting">
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
-						<tr>
-							<th>회의제목</th><td>${meeting.meeting_title}</td>
-						</tr>
-						<tr>
-							<th>회의일정</th><td>${meeting.meeting_date}</td>
-						</tr>
-						<tr>
-							<th>회의장소</th><td>${meeting.meeting_place}</td>
-						</tr>
-					</c:forEach>
-					<tr>
-						<th>참석자</th>
-						<td><c:forEach items="${meeting }" var="meeting">
-							${meeting.user_name}
-						</c:forEach></td>
-					</tr>
-					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
-						<tr>
-							<th>회의유형</th><td>${meeting.meeting_category}</td>
-						</tr>
-						<tr>
-							<th>첨부파일</th>
-							<td><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${savedName}"> ${savedName}</td>
-						</tr>
-						<tr>
-							<th>회의내용</th><td>${meeting.meeting_content}</td>							
-						</tr>
-					</c:forEach>
-					<tr>
-						<td colspan="2">
-						<input type="button" value="목록" onclick="location.href='/prj_meeting_report_list?project_id=${project_id}'">
-						<input type="button" value="수정" onclick="location.href='/prj_meeting_report_update?meeting_id=${meeting_id}&project_id=${project_id}'">
-						<input type="button" value="삭제" onclick="location.href='/prj_meeting_report_delete?meeting_id=${meeting_id}&project_id=${project_id}&user_id=${user_id}'">
-						</td>
-					</tr>
-				</table>
-			</div>
+	  		 <div id="contents">
+		    	<h1>개인 정보 수정</h1><p>
+		    	
+		    	<h2>비밀번호 재확인</h2><p>
+		    	<h4>회원님의 정보를 안전하게 보호하기 위해 비밀번호를 다시 한번 확인해주세요</h4>
+		    	
+		    	<hr>
+		    	아이디 : <input type="text" placeholder="Id"><p>
+		    	비밀번호 : <input type="password" placeholder="Password"><p>
+		    	<a href="mypage_update"><input type="button" value="확인"></a>
+		    </div>
+	  		
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
-		</main>
+		</main>		
 		
 	</div>
 </div>

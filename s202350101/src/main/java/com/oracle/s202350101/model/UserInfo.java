@@ -29,4 +29,13 @@ public class UserInfo {
 	
 	// 조회용 추가
 	private String	project_name;
+	private String	class_area;
+	
+	// 페이징용 추가
+	private String	search;
+	private String	keyword;
+	private String	pageNum;
+	private int		total;
+	private int 	start;
+	private int 	end;
 }

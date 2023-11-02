@@ -102,9 +102,9 @@
  					<li class="menu-box"><a href="/project/manager/p1.html">프로젝트 생성</a></li>
  					<li class="menu-box"><a href="/project/manager/p2.html">프로젝트 단계 프로파일</a></li>
  					<li class="menu-box"><a href="/project/work/project_home.html">프로젝트 홈</a></li>
- 					<li class="menu-box"><a href="prj_calendar?project_id=1">프로젝트 캘린더</a></li>
+ 					<li class="menu-box"><a href="prj_calendar">프로젝트 캘린더</a></li>
  					<li class="menu-box"><a href="/project/board/project_board_data_list.html">공지/자료</a></li>
- 					<li class="menu-box"><a href="prj_meeting_calendar?project_id=1">회의록</a></li>
+ 					<li class="menu-box"><a href="prj_meeting_calendar">회의록</a></li>
  					<li class="menu-box"><a href="/project/board/project_board_report_list.html">업무보고</a></li>
  				</ul>
  				

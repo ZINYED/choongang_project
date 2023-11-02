@@ -109,6 +109,7 @@ public class LjhDaoImpl implements LjhDao {
 		return insertResult;
 	}
 
+	// 1
 	@Override
 	public int updateMeetingReport(Meeting meeting) {
 		int updateResult = 0;
@@ -124,6 +125,7 @@ public class LjhDaoImpl implements LjhDao {
 		return updateResult;
 	}
 
+	// 2
 	@Override
 	public int deleteMeetingMember(Meeting meeting) {
 		int deleteResult = 0;
@@ -139,6 +141,7 @@ public class LjhDaoImpl implements LjhDao {
 		return deleteResult;
 	}
 
+	// 3
 	@Override
 	public int insertMeetingMember(Meeting meeting) {
 		int insertResult = 0;
@@ -152,6 +155,21 @@ public class LjhDaoImpl implements LjhDao {
 		}
 		
 		return insertResult;
+	}
+
+	@Override
+	public int deleteMeetingReport(int meeting_id) {
+		int deleteResult = 0;
+		System.out.println("LjhDaoImpl deleteMeetingReport Start");
+		
+		try {
+			deleteResult = session.delete("ljhDeleteMeetingReport", meeting_id);
+			System.out.println("LjhDaoImpl deleteMeetingReport deleteResult -> " + deleteResult);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl deleteMeetingReport Exception : " + e.getMessage());
+		}
+		
+		return deleteResult;
 	}
 
 }
