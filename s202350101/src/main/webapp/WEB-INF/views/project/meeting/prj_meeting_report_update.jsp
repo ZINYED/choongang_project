@@ -108,7 +108,6 @@ table tr {
 							<tr>
 								<th>참석자</th>
 								<td>
-									<!-- 체크박스 활용해서 참석자 선택 수정 --> <!-- 						!!!!!!!!!			 -->     
 									<c:forEach items="${prjMemList}" var="prjMem">
 										<c:set var="result" value="0" />
 
@@ -119,39 +118,33 @@ table tr {
 										</c:forEach>
 										<c:choose>
 											<c:when test="${result > 0}">
-												<input type="checkbox" name="meetuser_id"
-													value="${prjMem.user_id }" checked> ${prjMem.user_name}
+												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }" checked> ${prjMem.user_name}
 										    </c:when>
 											<c:otherwise>
-												<input type="checkbox" name="meetuser_id"
-													value="${prjMem.user_id }"> ${prjMem.user_name}
+												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }"> ${prjMem.user_name}
 										    </c:otherwise>
 										</c:choose>
 
-									</c:forEach> <!-- 						!!!!!!!!!!!!!!!			 -->
-									
-									
-									
+									</c:forEach>
 								</td>
 							</tr>
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 								<tr>
 									<th>회의유형</th>
-									<td><select name="meeting_category">
+									<td>
+										<select name="meeting_category">
 											<option value="킥오프미팅"
 												<c:if test="${meeting.meeting_category == '킥오프미팅'}">selected</c:if>>킥오프미팅</option>
 											<option value="주간 업무보고"
-												<c:if test="${meeting.meeting_category == '주간 업무보고'}">selected</c:if>>주간
-												업무보고</option>
+												<c:if test="${meeting.meeting_category == '주간 업무보고'}">selected</c:if>>주간 업무보고</option>
 											<option value="월간 회의"
-												<c:if test="${meeting.meeting_category == '월간 회의'}">selected</c:if>>월간
-												회의</option>
+												<c:if test="${meeting.meeting_category == '월간 회의'}">selected</c:if>>월간 회의</option>
 											<option value="내부 회의"
-												<c:if test="${meeting.meeting_category == '내부 회의'}">selected</c:if>>내부
-												회의</option>
+												<c:if test="${meeting.meeting_category == '내부 회의'}">selected</c:if>>내부 회의</option>
 											<option value="회의"
 												<c:if test="${meeting.meeting_category == '회의'}">selected</c:if>>회의</option>
-									</select></td>
+										</select>
+									</td>
 								</tr>
 								<tr>
 									<th>첨부파일</th>
@@ -159,14 +152,14 @@ table tr {
 								</tr>
 								<tr>
 									<th>회의내용</th>
-									<td><textarea rows="5" cols="30" name="meeting_content">${meeting.meeting_content}</textarea>
-									</td>
+									<td><textarea rows="5" cols="30" name="meeting_content">${meeting.meeting_content}</textarea></td>
 								</tr>
 							</c:forEach>
 							<tr>
-								<td colspan="2"><input type="button" value="취소"
-									onclick="location.href='prj_meeting_report_list?project_id=${project_id }'">
-									<input type="submit" value="수정 완료"></td>
+								<td colspan="2">
+									<input type="button" value="취소" onclick="location.href='prj_meeting_report_list?project_id=${project_id }'">
+									<input type="submit" value="수정 완료">
+								</td>
 							</tr>
 						</table>
 					</form>

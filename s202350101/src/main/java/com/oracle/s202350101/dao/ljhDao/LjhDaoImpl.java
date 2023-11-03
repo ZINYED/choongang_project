@@ -34,19 +34,20 @@ public class LjhDaoImpl implements LjhDao {
 		return prjInfo;
 	}
 
+	// 전체 회의 SELECT (status 1, 2, 3 모두)
 	@Override
-	public List<Meeting> getMeetingDate(int project_id) {
-		List<Meeting> meetingDateList = null;
-		System.out.println("LjhDaoImpl getMeeting Start");
+	public List<Meeting> getMeetingList(int project_id) {
+		List<Meeting> meetingList = null;
+		System.out.println("LjhDaoImpl getMeetingList Start");
 		
 		try {
-			meetingDateList = session.selectList("ljhMeetingDateList", project_id);
-			System.out.println("LjhDaoImpl getMeeting meetingDateList.size() :" + meetingDateList.size());
+			meetingList = session.selectList("ljhMeetingList", project_id);
+			System.out.println("LjhDaoImpl getMeetingList meetingDateList.size() :" + meetingList.size());
 		} catch (Exception e) {
-			System.out.println("LjhDaoImpl getMeeting Exception : " + e.getMessage());
+			System.out.println("LjhDaoImpl getMeetingList Exception : " + e.getMessage());
 		}
 		
-		return meetingDateList;
+		return meetingList;
 	}
 
 	@Override
@@ -63,20 +64,21 @@ public class LjhDaoImpl implements LjhDao {
 		
 		return meetingRead;
 	}
-
+	
+	// meeting_status = 2, 3 (회의록만, 일정+회의록)
 	@Override
-	public List<Meeting> getMeetingList(int project_id) {
-		List<Meeting> meetingList = null;
-		System.out.println("LjhDaoImpl getMeetingList Start");
+	public List<Meeting> getMeetingReportList(int project_id) {
+		List<Meeting> meetingReportList = null;
+		System.out.println("LjhDaoImpl getMeetingReportList Start");
 		
 		try {
-			meetingList = session.selectList("ljhMeetingList", project_id);
-			System.out.println("LjhDaoImpl getMeetingList meetingList.size() -> " + meetingList.size());
+			meetingReportList = session.selectList("ljhMeetingReportList", project_id);
+			System.out.println("LjhDaoImpl getMeetingReportList meetingList.size() -> " + meetingReportList.size());
 		} catch (Exception e) {
-			System.out.println("LjhDaoImpl getMeetingList Exception : " + e.getMessage());
+			System.out.println("LjhDaoImpl getMeetingReportList Exception : " + e.getMessage());
 		}
 		
-		return meetingList;
+		return meetingReportList;
 	}
 
 	@Override
@@ -170,6 +172,36 @@ public class LjhDaoImpl implements LjhDao {
 		}
 		
 		return deleteResult;
+	}
+
+	@Override
+	public int insertMember(Meeting mt) {
+		int result = 0;
+		System.out.println("LjhDaoImpl insertMember Start");
+		
+		try {
+			result = session.insert("ljhInsertMember", mt);
+			System.out.println("LjhDaoImpl insertMember result -> " + result);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl insertMember Exception : " + e.getMessage());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<Meeting> getMeetingDate(int project_id) {
+		System.out.println("LjhDaoImpl getMeetingDate Start");
+		List<Meeting> meetingDate = null;
+		
+		try {
+			meetingDate = session.selectList("ljhMeetingDate", project_id);
+			System.out.println("LjhDaoImpl getMeetingDate meetingDate.size() -> " + meetingDate.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getMeetingDate Exception : " + e.getMessage());
+		}
+		
+		return meetingDate;
 	}
 
 }

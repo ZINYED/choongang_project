@@ -76,121 +76,141 @@ table tr {
 	});
 
 	// fullcalendar
-	document
-			.addEventListener(
-					'DOMContentLoaded',
-					function() {
-						var calendarEl = document.getElementById('calendar');
+	document.addEventListener('DOMContentLoaded', function() {
+		var calendarEl = document.getElementById('calendar');
 
-						var events = [];
+		var meetingDateEvents = [];
 
-						// Iterate over the meetings using JSTL				meetingDateList
-						<c:forEach var="meeting" items="${meetingDateList}">
-						events.push({
-							title : '${meeting.meeting_title}',
-							start : '${meeting.meeting_date}',
-							end : '${meeting.meeting_date}',
-							color : '#F2CB61'
-						});
-						</c:forEach>
+		// Iterate over the meetings using JSTL				meetingDateList
+		<c:forEach var="meeting" items="${meetingDateList}">			//회의 일정		1이 노란색
+			meetingDateEvents.push({
+				title : '${meeting.meeting_title}',
+				start : '${meeting.meeting_date}',
+				end : '${meeting.meeting_date}',
+				color : '#F2CB61'
+			});
+		</c:forEach>
+		
+		var meetingEvents = [];
+		
+		<c:forEach var="meeting" items="${meetingList}">				//회의록			2,3 보라
+			meetingEvents.push({
+				title : '${meeting.meeting_title}',
+				start : '${meeting.meeting_date}',
+				end : '${meeting.meeting_date}',
+				color : '#B5B2FF'
+			});
+		</c:forEach>
 
-						var calendar = new FullCalendar.Calendar(
-								calendarEl,
-								{
-									initialView : 'dayGridMonth',
-									selectable : true,
-									events : events,
+		console.log("meetingEvents: "+meetingEvents);
+		console.log("meetingDateEvents: " +meetingDateEvents);
+		
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView : 'dayGridMonth',
+			selectable : true,
+			events : meetingEvents.concat(meetingDateEvents),
 
-									dateClick : function(info) {
-										console.log("clicked date : "
-												+ info.dateStr);
-									},
+			dateClick : function(info) {
+				console.log("clicked date : " + info.dateStr);
+			},
 
-									headerToolbar : {
-										left : 'addEventButton meetingListButton', // headerToolbar 왼쪽에 커스텀 버튼 추가
-										center : 'title'
-									},
+			headerToolbar : {
+				left : 'addEventButton meetingListButton', // headerToolbar 왼쪽에 커스텀 버튼 추가
+				center : 'title'
+			},
 
-									customButtons : {
-										addEventButton : {
-											text : '회의일정 등록',
-											click : function() { // 버튼 클릭 시 이벤트 추가
-												$("#calendarModal").modal(
-														"show"); // modal 나타내기
-											}
-										},
+			customButtons : {
+				addEventButton : {
+					text : '회의일정 등록',
+					click : function() { // 버튼 클릭 시 이벤트 추가
+						$("#calendarModal").modal("show"); // modal 나타내기
+					}
+				},
 
-										meetingListButton: {
-										    text: '회의록',
-										    click: function() {
-										    	var project_id = ${project_id};
-										        var sendurl = "prj_meeting_report_list_ajax/?project_id=" + ${project_id}; // project_id를 적절히 정의해야 합니다.
-										        console.log("location.href = 'prj_meeting_report_list?project_id=" + project_id + "'");
-										        console.log("sendURL: " + sendurl);
+				meetingListButton: {
+				    text: '회의록',
+				    click: function() {
+				    	var project_id = ${project_id};
+				        var sendurl = "prj_meeting_report_list_ajax/?project_id=" + ${project_id}; // project_id를 적절히 정의해야 합니다.
+				        console.log("location.href = 'prj_meeting_report_list?project_id=" + project_id + "'");
+				        console.log("sendURL : " + sendurl);
 
-										        $.ajax({
-										            url: sendurl,
-										            dataType: 'json',
-										            success: function(jsondata) {
-										                var projectList = $('#meeting');
-										                var projectList_body = $('#meetingList');
+				        $.ajax({
+				            url: sendurl,					// 이동할 페이지
+				            dataType: 'json',				// return 데이터 타입
+				            success: function(jsondata) {	// 성공 시 실행
+				                var meetingList = $('#meeting');
+				                var meetingList_body = $('#meetingList');
 
-										                projectList.empty();
+				                meetingList.empty();
 
-										                // jQuery로 스타일 조작
-										                if (projectList_body.css('display') == 'none') {
-										                	projectList_body.show();
-										                } else {
-										                	projectList_body.hide();
-										                }
+				                // jQuery로 스타일 조작
+				                if (meetingList_body.css('display') == 'none') {
+				                	meetingList_body.show();
+				                } else {
+				                	meetingList_body.hide();
+				                }
 
-										                $.each(jsondata, function(index, MTList) {
-										                    console.log("MTList: " + MTList.meeting_title);
-										                    console.log("MTList: " + MTList.meeting_date);
+				                $.each(jsondata, function(index, MTList) {
+				                    console.log("MTList: " + MTList.meeting_title);
+				                    console.log("MTList: " + MTList.meeting_date);
 
-										                    var authOptionBox = $('<div><h2>' + MTList.meeting_date + '</h2><h2><a href="prj_meeting_report_read/?meeting_id=' + MTList.meeting_id + '&project_id='+MTList.project_id+'">' + MTList.meeting_title + '</a></h2></div>');
+				                    var authOptionBox = $('<div><h2>' + MTList.meeting_date + '</h2><h2><a href="prj_meeting_report_read/?meeting_id=' + MTList.meeting_id + '&project_id=' + MTList.project_id + '">' + MTList.meeting_title + '</a></h2></div>');
 
-										                    projectList.append(authOptionBox);
-										                });
-										            }
-										        });
-										    }
-										}
+				                    meetingList.append(authOptionBox);
+				                });
+				            }
+				        });
+				    }
+				}
+			},
+			
+			eventClick: function(meetingDateEvents) {
+			    const element = meetingDateEvents.el; // 클릭한 이벤트 요소
+			    const backgroundColor = window.getComputedStyle(element).backgroundColor; // 배경색 가져오기
 
-									},
+			    /* alert("backgroundColor"+backgroundColor); */
+			    console.log("클릭한 곳의 배경색: " + backgroundColor);
+			    
+			    // var allEvents = Calendar.getEvents();		// 생성된 이벤트 모두 가져오기
+			    
+			    if (backgroundColor == "rgb(242, 203, 97)") {
+			    	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			    	// ajax 써서 선택한 회의일정의 데이터 가져와서 모달창에 뿌려주기
+			    	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			    	
+			    	
+			    	$("#dateClickModal").modal("show"); // modal 나타내기
+			    }
+			}
+		});
 
-									eventClick : function(event) {
-										console.log(event);
-									}
-
-								});
-
-						calendar.render();
-					});
+		calendar.render();
+	});
 
 	// form 입력값 체크
 	function chk() {
 
 		// meeting_member : 참석자 
-		const query = 'input[name="meeting_member"]:checked'; // 	체크된 참석자 	
-		const selectedElements = document.querySelectorAll(query); //	모든 체크된 참석자 
+		const query = 'input[name="meetuser_id"]:checked'; 			// 	체크된 참석자 	
+		const selectedElements = document.querySelectorAll(query);	//	모든 체크된 참석자 
 
 		// 선택된 목록의 갯수 세기
-		const selectedElementsCnt = selectedElements.length; //	체크된 참석자 수
-		console.log(selectedElementsCnt); //	검증.
+		const selectedElementsCnt = selectedElements.length;	//	체크된 참석자 수
+		console.log(selectedElementsCnt);						//	검증.
 
-		if (!frm.meeting_title.value) { //	제목 없으면 발생.
+		if (!frm.meeting_title.value) { 		//	제목 없으면 발생.
 			alert("제목을 입력하세요.");
 			frm.meeting_title.focus();
 			return false;
 		}
 
-		if (!frm.meeting_date.value) { //	날짜 지정 안하면 발생.
+		if (!frm.meeting_date.value) { 			//	날짜 지정 안하면 발생.
 			alert("일정을 선택하세요.");
 			return false;
 		}
 
-		if (selectedElementsCnt < 1) { //	체크된 참석자 없으면 발생.
+		if (selectedElementsCnt < 1) { 			//	체크된 참석자 없으면 발생.
 			alert("참석자를 선택하세요.");
 			return false;
 		}
@@ -217,61 +237,104 @@ table tr {
 				<!-- fullcalendar 추가 -->
 				<div id='calendar'></div>
 
-				<!-- modal 추가 -->
-				<div class="modal fade" id="calendarModal" tabindex="-1"
-					role="dialog" aria-labelledby="exampleModalLabel"
-					aria-hidden="true">
+				<!-- 회의일정 등록 modal 추가 -->
+				<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
-						<form action="prj_meeting_date_write" name="frm"
-							onsubmit="return chk()" method="post"
-							enctype="multipart/form-data">
+						<form action="prj_meeting_date_write" name="frm" onsubmit="return chk()" method="post" enctype="multipart/form-data">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title" id="exampleModalLabel">회의 일정 등록</h5>
-									<button type="button" class="close" data-dismiss="modal"
-										aria-label="Close" data-bs-dismiss="modal">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" data-bs-dismiss="modal">
 										<span aria-hidden="true">&times;</span>
 									</button>
 								</div>
 								<div class="modal-body">
 									<div class="form-group">
-										<label for="taskId" class="col-form-label">회의 제목</label> <input
-											type="text" class="form-control" id="meeting_title"
-											name="meeting_title"> <label for="taskId"
-											class="col-form-label">회의 일정</label> <input type="date"
-											class="form-control" id="meeting_date" name="meeting_date">
+										<input type="hidden" name="project_id" value="${project_id }">
+										<label for="taskId" class="col-form-label">회의 제목</label>
+										<input type="text" class="form-control" id="meeting_title" name="meeting_title">
+										<label for="taskId"	class="col-form-label">회의 일정</label>
+										<input type="date"	class="form-control" id="meeting_date" name="meeting_date">
 
-										<label for="taskId" class="col-form-label">회의 장소</label> <input
-											type="text" class="form-control" id="meeting_place"
-											name="meeting_place"> <label for="taskId"
-											class="col-form-label">참석자</label>
-										<p>
-											<c:forEach var="prjMem" items="${prjMemList }">
-												<input type="checkbox" id="user_id" name="user_id"
-													value="${prjMem.user_id }"> ${prjMem.user_name }<br>
-											</c:forEach>
-											<br> <label for="taskId" class="col-form-label">회의
-												유형</label><br> <select id="meeting_category"
-												name="meeting_category">
-												<option value="킥오프미팅">킥오프미팅</option>
-												<option value="주간 업무보고">주간 업무보고</option>
-												<option value="월간 회의">월간 회의</option>
-												<option value="내부 회의">내부 회의</option>
-												<option value="회의">회의</option>
-											</select><br> <label for="taskId" class="col-form-label">첨부파일</label>
-											<input type="file" class="form-control" name="file1">
+										<label for="taskId" class="col-form-label">회의 장소</label>
+										<input type="text" class="form-control" id="meeting_place" name="meeting_place">
+										
+										<label for="taskId" class="col-form-label">참석자</label><p>
+										<c:forEach var="prjMem" items="${prjMemList }">
+											<input type="checkbox" id="meetuser_id" name="meetuser_id" value="${prjMem.user_id }"> ${prjMem.user_name }<br>
+										</c:forEach><br>
+										
+										<label for="taskId" class="col-form-label">회의 유형</label><br>
+										<select id="meeting_category" name="meeting_category">
+											<option value="킥오프미팅">킥오프미팅</option>
+											<option value="주간 업무보고">주간 업무보고</option>
+											<option value="월간 회의">월간 회의</option>
+											<option value="내부 회의">내부 회의</option>
+											<option value="회의">회의</option>
+										</select><br>
+										
+										<label for="taskId" class="col-form-label">첨부파일</label>
+										<input type="file" class="form-control" name="file1">
 
-											<label for="taskId" class="col-form-label">회의 내용</label> 
-											<input
-												type="text" class="form-control" id="meeting_content"
-												name="meeting_content">
+										<label for="taskId" class="col-form-label">회의 내용</label> 
+										<input type="text" class="form-control" id="meeting_content" name="meeting_content">
 									</div>
 								</div>
 								<div class="modal-footer">
 									<input type="submit" class="btn btn-warning" value="추가">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal" id="sprintSettingModalClose"
-										data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				
+				<!-- 일정 선택 시 modal 추가 -->
+				<div class="modal fade" id="dateClickModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<form action="prj_meeting_date_write" name="frm" onsubmit="return chk()" method="post" enctype="multipart/form-data">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="exampleModalLabel">회의록 등록</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close" data-bs-dismiss="modal">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<div class="form-group">
+										<input type="hidden" name="project_id" value="${project_id }">
+										<label for="taskId" class="col-form-label">회의 제목</label>
+										<input type="text" class="form-control" id="meeting_title" name="meeting_title">
+										<label for="taskId"	class="col-form-label">회의 일정</label>
+										<input type="date"	class="form-control" id="meeting_date" name="meeting_date">
+
+										<label for="taskId" class="col-form-label">회의 장소</label>
+										<input type="text" class="form-control" id="meeting_place" name="meeting_place">
+										
+										<label for="taskId" class="col-form-label">참석자</label><p>
+										<c:forEach var="prjMem" items="${prjMemList }">
+											<input type="checkbox" id="meetuser_id" name="meetuser_id" value="${prjMem.user_id }"> ${prjMem.user_name }<br>
+										</c:forEach><br>
+										
+										<label for="taskId" class="col-form-label">회의 유형</label><br>
+										<select id="meeting_category" name="meeting_category">
+											<option value="킥오프미팅">킥오프미팅</option>
+											<option value="주간 업무보고">주간 업무보고</option>
+											<option value="월간 회의">월간 회의</option>
+											<option value="내부 회의">내부 회의</option>
+											<option value="회의">회의</option>
+										</select><br>
+										
+										<label for="taskId" class="col-form-label">첨부파일</label>
+										<input type="file" class="form-control" name="file1">
+
+										<label for="taskId" class="col-form-label">회의 내용</label> 
+										<input type="text" class="form-control" id="meeting_content" name="meeting_content">
+									</div>
+								</div>
+								<div class="modal-footer">
+									<input type="submit" class="btn btn-warning" value="추가">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</form>
@@ -286,9 +349,7 @@ table tr {
 
 							</div>
 						</div>
-
 					</div>
-
 				</div>
 				<!------------------------------ //개발자 소스 입력 END ------------------------------->
 			</main>

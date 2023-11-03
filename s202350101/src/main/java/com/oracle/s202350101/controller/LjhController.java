@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -52,7 +53,7 @@ public class LjhController {
 		prjInfo = ljhs.getProject(project_id);
 		
 		List<Meeting> meetingDateList = new ArrayList<Meeting>();
-		meetingDateList = ljhs.getMeetingDate(project_id);
+		meetingDateList = ljhs.getMeetingList(project_id);
 		
 		model.addAttribute("prj", prjInfo);
 		model.addAttribute("meetingDateList", meetingDateList);
@@ -71,14 +72,18 @@ public class LjhController {
 		
 		int project_id = userInfoDTO.getProject_id();
 		
-		List<PrjMemList> prjMemList = new ArrayList<PrjMemList>();
+		List<PrjMemList> prjMemList = new ArrayList<PrjMemList>();	// 프로젝트 팀원 목록
 		prjMemList = ljhs.getPrjMember(project_id);
 		
-		List<Meeting> meetingDateList = new ArrayList<Meeting>();
+		List<Meeting> meetingList = new ArrayList<Meeting>();		// meeting_status = 2, 3 (회의록만, 일정+회의록)
+		meetingList = ljhs.getMeetingReportList(project_id);
+		
+		List<Meeting> meetingDateList = new ArrayList<Meeting>();	// meeting_status = 1 (회의일정만)
 		meetingDateList = ljhs.getMeetingDate(project_id);
 		
-		model.addAttribute("prjMemList", prjMemList);
-		model.addAttribute("meetingDateList", meetingDateList);
+		model.addAttribute("prjMemList", prjMemList);				// 프로젝트 팀원 목록
+		model.addAttribute("meetingDateList", meetingDateList);		// meeting_status = 1 (회의일정만)
+		model.addAttribute("meetingList", meetingList);				// meeting_status = 2, 3 (회의록만, 일정+회의록)
 		model.addAttribute("project_id", project_id);
 		
 		return "project/meeting/prj_meeting_calendar";
@@ -103,10 +108,10 @@ public class LjhController {
 	@RequestMapping(value = "prj_meeting_report_list_ajax")		//?project_id=~~~
 	public List<Meeting> meetingList_ajax(int project_id, Model model) {
 		
-		System.out.println("LjhController meetingList");
+		System.out.println("LjhController meetingList_ajax");
 		
 		List<Meeting> meetingList = new ArrayList<Meeting>();
-		meetingList = ljhs.getMeetingList(project_id);
+		meetingList = ljhs.getMeetingReportList(project_id);
 		
 		return meetingList;
 	}
@@ -158,7 +163,8 @@ public class LjhController {
 		System.out.println("LjhController meetingReportUpdate");
 		
 		// 첨부파일 업로드
-		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+		String attach_path = "upload";
+		String uploadPath = request.getSession().getServletContext().getRealPath(attach_path);		// 저장 위치 주소 지정
 		
 		System.out.println("File Upload Post Start");
 		
@@ -170,26 +176,17 @@ public class LjhController {
 		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 		log.info("Return savedName : " + savedName);
 		meeting.setAttach_name(savedName);
-		meeting.setAttach_path(uploadPath);
+		meeting.setAttach_path(attach_path);
+		
+		model.addAttribute("meeting", meeting);
 		
 		int result = ljhs.meetingReportUpdate(meeting);					//	update + delete + (insert * MemberCount)
 		
-		
 		int meeting_id = meeting.getMeeting_id();
 		model.addAttribute("meeting_id", meeting_id);
-		
 		model.addAttribute("savedName", savedName);
 		
-		if (result > 0) return "redirect:prj_meeting_report_read/?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id()+"&meeting_title="    +meeting.getMeeting_title()
-								+"&meeting_date="+meeting.getMeeting_date()+"&meeting_place="+meeting.getMeeting_place()+"&meetuser_id="+meeting.getMeetuser_id()
-								+"&meeting_category="+meeting.getMeeting_category()+"&attach_name="+savedName+"&attach_path="+uploadPath
-								+"&meeting_content="+meeting.getMeeting_content();
-		else {
-			return "redirect:prj_meeting_report_update";				//	meeting 넘기기 아니면
-																		//	필요한거 하나씩
-									//?meeting_id=${meeting_id}&project_id=${project_id}&user_id=${user_id}'"	처럼!!!!!!!!!!!!!!!
-			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		}
+		return "redirect:prj_meeting_report_read/?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id();
 	}
 	
 	// 회의일정 등록
@@ -205,6 +202,7 @@ public class LjhController {
 		meeting.setUser_id(loginUserId);
 		
 		// 첨부파일 업로드
+		String attach_path = "upload";
 		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
 		
 		System.out.println("File Upload Post Start");
@@ -217,30 +215,16 @@ public class LjhController {
 		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 		log.info("Return savedName : " + savedName);
 		meeting.setAttach_name(savedName);
-		meeting.setAttach_path(uploadPath);
-		
-		// 회의일정 등록
-		int insertResult = ljhs.insertMeetingDate(meeting);
-		
-		// 회의 참석자 등록
-		int insertMemberResult = 0;
-		String[] meetMems = meeting.getUser_id().split(",");		// 체크된 참석자 배열로 저장 
-		for (int i = 0; i<meetMems.length; i++) {
-			Meeting mt = new Meeting(); 
-			mt.setUser_id(meetMems[i]);
-			mt.setMeeting_id(meeting.getMeeting_id());
-			mt.setProject_id(meeting.getProject_id());
-			
-			insertMemberResult += ljhs.insertMeetingMember(mt);		// 회의 참석자 등록
-		}
+		meeting.setAttach_path(attach_path);
 		
 		System.out.println("meeting -> " + meeting);
-		model.addAttribute("meeting", meeting);
 		
-		if (insertResult > 0) return "forward:prj_meeting_calendar";
-		else {
-			return "forward:prj_meeting_date_write";
-		}
+		System.out.println("meetuser_id -> : " + meeting.getMeetuser_id());
+		
+		// 회의일정 등록 + 참석자 등록
+		int result = ljhs.insertMeeting(meeting);
+		
+		return "redirect:prj_meeting_calendar";
 	}
 
 	private String uploadFile(String originalFilename, byte[] bytes, String uploadPath) throws IOException {
@@ -265,24 +249,19 @@ public class LjhController {
 		return savedName;
 	}
 	
+	@ResponseBody
 	@RequestMapping(value = "prj_meeting_report_delete")
-	public String prjMeetingReportDelete(Meeting meeting, Model model, HttpServletRequest request) {
+	// 이상이 없으면 200 리턴
+	public ResponseEntity prjMeetingReportDelete(Meeting meeting, Model model, HttpServletRequest request) {
+		log.info("request : {}", request.getRequestURI());
+		
 		System.out.println("LjhController prjMeetingReportDelete Start");
-		
-		// user 정보 세션에 저장해오기
-		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
-		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
-		
-		String loginUserId = userInfoDTO.getUser_id();
-		
+
 		int deleteResult = 0;
 		
-		if (loginUserId == meeting.getUser_id()) {
-			deleteResult = ljhs.deleteMeetingReport(meeting.getMeeting_id());
-		}
+		deleteResult = ljhs.deleteMeetingReport(meeting);
 		
-		return "prj_meeting_report_list";
+		return ResponseEntity.ok(deleteResult);
 	}
-	
 	
 }

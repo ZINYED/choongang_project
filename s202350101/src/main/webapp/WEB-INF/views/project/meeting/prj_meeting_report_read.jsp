@@ -26,6 +26,9 @@
 		text-align: center;
 		font-size: 25pt;
 	}
+	.uploadFile {
+		height: 100px;
+	}
 </style>
 <!-- CSS END -->
 
@@ -58,8 +61,36 @@
 				$('#footer').html(data);
 			}
 		});
-	});
 
+	});
+	
+	function delchk(){
+		// 클릭 이벤트 핸들러
+	    // 이곳에 버튼이 클릭될 때 실행하고자 하는 코드를 작성합니다.
+		var answer = confirm('회의록을 삭제하시겠습니까?')
+		
+		if (answer) {		// 확인 버튼 누르면 동작
+			var meeting_id = ${meeting_id};
+			var project_id = ${project_id};
+			
+			var sendurl = "/prj_meeting_report_delete/?meeting_id=" + meeting_id + "&project_id=" + project_id;
+
+			console.log("sendURL : " + sendurl);
+			$.ajax({
+				
+				url: sendurl,
+				dataType: 'json',
+				success : function(data){
+					alert("삭제되었습니다");
+					location.href="/prj_meeting_calendar";
+				}
+			});
+			
+		} else {
+			return false;
+		}
+	};
+	
 </script>
 </head>
 <body>
@@ -72,8 +103,7 @@
 	<div class="row">
  		
  		<!-- 메뉴 -->
-		<div id="menubar" class="menubar border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-		</div>
+		<div id="menubar" class="menubar border-right col-md-3 col-lg-2 p-0 bg-body-tertiary"></div>
 		
 		<!-- 본문 -->
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -81,8 +111,8 @@
 			<div id="meetingList">
 				<label id="title">회의록</label>
 				<input type="hidden" name="user_id" value="${user_id }">
-				<input type="hidden" name="user_id" value="${project_id }">
-				<input type="hidden" name="user_id" value="${meeting_id }">
+				<input type="hidden" name="project_id" value="${project_id }">
+				<input type="hidden" name="meeting_id" value="${meeting_id }">
 				<table id="meeting">
 					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 						<tr>
@@ -107,17 +137,19 @@
 						</tr>
 						<tr>
 							<th>첨부파일</th>
-							<td><img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${savedName}"> ${savedName}</td>
+							<!-- !!!!!!!!!!!!!!!!!!!!!!!!!! 첨부파일 없으면 안나오게 설정 필요 !!!!!!!!!!!!!!!!!!!!!!!!!! -->
+							<td><img class="uploadFile" alt="UpLoad File" src="${pageContext.request.contextPath}/${meeting.attach_path }/${meeting.attach_name}"> ${meeting.attach_name}</td>
 						</tr>
 						<tr>
-							<th>회의내용</th><td>${meeting.meeting_content}</td>							
+							<th>회의내용</th><td>${meeting.meeting_content}</td>
 						</tr>
 					</c:forEach>
 					<tr>
 						<td colspan="2">
-						<input type="button" value="목록" onclick="location.href='/prj_meeting_report_list?project_id=${project_id}'">
+						<input type="button" value="목록" onclick="location.href='/prj_meeting_calendar?project_id=${project_id}'">
 						<input type="button" value="수정" onclick="location.href='/prj_meeting_report_update?meeting_id=${meeting_id}&project_id=${project_id}'">
-						<input type="button" value="삭제" onclick="location.href='/prj_meeting_report_delete?meeting_id=${meeting_id}&project_id=${project_id}&user_id=${user_id}'">
+						<input type="button" value="삭제" id="deleteChk" onclick="delchk()">
+						
 						</td>
 					</tr>
 				</table>

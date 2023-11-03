@@ -32,14 +32,14 @@ public class LjhServiceImpl implements LjhService {
 		return prjInfo;
 	}
 
-	// 회의 일정 조회 (meeting_status = 1 or 3)
+	// 전체 회의 SELECT (status 1, 2, 3 모두)
 	@Override
-	public List<Meeting> getMeetingDate(int project_id) {
-		System.out.println("LjhServiceImpl getMeeting Start");
+	public List<Meeting> getMeetingList(int project_id) {
+		System.out.println("LjhServiceImpl getMeetingList Start");
 
-		List<Meeting> meetingDateList = ljhd.getMeetingDate(project_id);
+		List<Meeting> meetingList = ljhd.getMeetingList(project_id);
 		
-		return meetingDateList;
+		return meetingList;
 	}
 	
 	// 회의록 상세
@@ -52,14 +52,14 @@ public class LjhServiceImpl implements LjhService {
 		return meetingRead;
 	}
 
-	// 회의록 리스트 (meeting_status = 2 or 3)
+	// 회의록 리스트	// meeting_status = 2, 3 (회의록만, 일정+회의록)
 	@Override
-	public List<Meeting> getMeetingList(int project_id) {
-		System.out.println("LjhServiceImpl getMeetingRead Start");
+	public List<Meeting> getMeetingReportList(int project_id) {
+		System.out.println("LjhServiceImpl getMeetingReportList Start");
 		
-		List<Meeting> meetingList = ljhd.getMeetingList(project_id);
+		List<Meeting> meetingReportList = ljhd.getMeetingReportList(project_id);
 		
-		return meetingList;
+		return meetingReportList;
 	}
 
 	@Override
@@ -70,7 +70,8 @@ public class LjhServiceImpl implements LjhService {
 		
 		return prjMemList;
 	}
-
+	
+	// meeting TBL 등록
 	@Override
 	public int insertMeetingDate(Meeting meeting) {
 		System.out.println("LjhServiceImpl insertMeetingDate Start");
@@ -81,7 +82,7 @@ public class LjhServiceImpl implements LjhService {
 		return insertResult;
 	}
 
-	// 1
+	// meeting TBL 수정
 	@Override
 	public int updateMeetingReport(Meeting meeting) {
 		System.out.println("LjhServiceImpl updateMeetingReport Start");
@@ -93,7 +94,7 @@ public class LjhServiceImpl implements LjhService {
 		return updateResult;
 	}
 
-	// 2
+	// meeting_member TBL delete
 	@Override
 	public int deleteMeetingMember(Meeting meeting) {
 		System.out.println("LjhServiceImpl deleteMeetingMember Start");
@@ -105,7 +106,7 @@ public class LjhServiceImpl implements LjhService {
 		return deleteResult;
 	}
 
-	// 3
+	// meeting_member TBL insert
 	@Override
 	public int insertMeetingMember(Meeting meeting) {
 		System.out.println("LjhServiceImpl insertMeetingMember Start");
@@ -118,30 +119,54 @@ public class LjhServiceImpl implements LjhService {
 	}
 
 	@Override
-	public int deleteMeetingReport(int meeting_id) {
+	public int deleteMeetingReport(Meeting meeting) {
 		System.out.println("LjhServiceImpl deleteMeetingReport Start");
 		
-		int deleteResult = 0;
+		int memberDelete = 0;
+		int meetingDelete = 0;
 		
-		deleteResult = ljhd.deleteMeetingReport(meeting_id);
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		
-		return deleteResult;
+		try {
+			memberDelete = ljhd.deleteMeetingMember(meeting);
+			System.out.println("deleteMeetingReport memberDelete -> " + memberDelete);
+			meetingDelete = ljhd.deleteMeetingReport(meeting.getMeeting_id());
+			System.out.println("deleteMeetingReport meetingDelete -> " + meetingDelete);
+			
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			System.out.println("LjhServiceImpl deleteMeetingReport Exception -> " + e.getMessage());
+		}
+		
+		int totalResult = meetingDelete+memberDelete;
+		
+		return totalResult;
 	}
 	
+	@Override
 	public int meetingReportUpdate(Meeting meeting) {
 		
-		String[] meetMems = meeting.getUser_id().split(",");	// 체크된 참석자 배열로 저장 
+		System.out.println("LjhServiceImpl meetingReportUpdate Start");
+		
+		String[] meetMems = meeting.getMeetuser_id().split(",");	// 체크된 참석자 배열로 저장 
+		
+		System.out.println("LjhServiceImpl meetingReportUpdate meetMems -> " + meetMems);
 
-		int insertResult = 0;
 		int updateResult = 0;
 		int deleteResult = 0;
+		int insertResult = 0;
 
 		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
 		
 		try {
 
 			updateResult = ljhd.updateMeetingReport(meeting);
+			System.out.println("meetingReportUpdate updateResult -> " + updateResult);
+			
 			deleteResult = ljhd.deleteMeetingMember(meeting);
+			System.out.println("meetingReportUpdate deleteResult -> " + deleteResult);
+			
 			for (int i = 0; i<meetMems.length; i++) {
 				Meeting mt = new Meeting(); 
 				mt.setMeetuser_id(meetMems[i]);
@@ -149,6 +174,48 @@ public class LjhServiceImpl implements LjhService {
 				mt.setProject_id(meeting.getProject_id());
 				
 				insertResult += ljhd.insertMeetingMember(mt);		// 회의 참석자 신규 등록
+				System.out.println("meetingReportUpdate insertResult -> " + insertResult);
+			}
+
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			System.out.println("LjhServiceImpl meetingReportUpdate Exception -> " + e.getMessage());
+		}
+
+		int totalResult = updateResult+deleteResult+insertResult;
+		
+		return totalResult;
+		
+	}
+
+	@Override
+	public int insertMeeting(Meeting meeting) {
+		
+		System.out.println("LjhServiceImpl meetingReportUpdate Start");
+		
+		String[] meetMems = meeting.getMeetuser_id().split(",");	// 체크된 참석자 배열로 저장 
+		
+		System.out.println("LjhServiceImpl meetingReportUpdate meetMems.length -> " + meetMems.length);
+		
+		// 참석자
+		int meetingInsert = 0;
+		// 회의일정 등록 (meeting TBL)
+		int memberInsert = 0;
+		
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
+		
+		try {
+			meetingInsert = ljhd.insertMeetingDate(meeting);
+			
+			for (int i = 0; i<meetMems.length; i++) {
+				Meeting mt = new Meeting(); 
+				mt.setMeetuser_id(meetMems[i]);
+				mt.setMeeting_id(meeting.getMeeting_id());
+				mt.setProject_id(meeting.getProject_id());
+				
+				memberInsert += ljhd.insertMember(mt);		// 회의 참석자 신규 등록
+				System.out.println("meetingReportUpdate insertResult -> " + memberInsert);
 			}
 
 			transactionManager.commit(txStatus);
@@ -157,11 +224,20 @@ public class LjhServiceImpl implements LjhService {
 			System.out.println("LjhServiceImpl meetingReportUpdate Exception -> " + e.getMessage());
 			
 		}
-		
-		int totalResult = updateResult+deleteResult+insertResult;
+
+		int totalResult = meetingInsert + memberInsert;
 		
 		return totalResult;
+	}
+
+	// meeting_status = 1 (회의일정만 SELECT)
+	@Override
+	public List<Meeting> getMeetingDate(int project_id) {
+		System.out.println("LjhServiceImpl getMeetingDate Start");
 		
+		List<Meeting> meetingDateList = ljhd.getMeetingDate(project_id);
+		
+		return meetingDateList;
 	}
 	
 	
