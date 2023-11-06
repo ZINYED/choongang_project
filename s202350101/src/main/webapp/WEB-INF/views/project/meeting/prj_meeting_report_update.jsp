@@ -9,26 +9,42 @@
 
 <!--CSS START -->
 <style type="text/css">
-#meetingList {
-	padding: 20px;
-}
-
-#meeting {
-	width: 80%;
-	padding: 20px;
-	text-align: center;
-}
-
-table tr {
-	height: 50px;
-	border-bottom: solid gray 1px;
-}
-
-#title {
-	width: 80%;
-	text-align: center;
-	font-size: 25pt;
-}
+	#meetingList {
+		padding: 20px;
+	}
+	
+	#meeting {
+		width: 80%;
+		padding: 20px;
+		text-align: center;
+	}
+	#title {
+		width: 80%;
+		text-align: center;
+		font-size: 25pt;
+	}
+	table tr {
+		height: 50px;
+		border-bottom: solid gray 1px;
+	}
+	table td {
+		text-align: left;
+	    width: 70%;
+	    padding-left: 30px;
+	}
+	.button {
+		text-align: center;
+	}
+	.uploadFile {
+		height: 100px;
+		padding-right: 20px;
+	}
+	.box {
+		width: 80%;
+	}
+	textarea {
+		width: 80%;
+	}
 </style>
 <!-- CSS END -->
 
@@ -91,18 +107,15 @@ table tr {
 							<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
 								<tr>
 									<th>회의제목</th>
-									<td><input type="text" name="meeting_title"
-										value="${meeting.meeting_title}"></td>
+									<td><input type="text" class="box" name="meeting_title" value="${meeting.meeting_title}"></td>
 								</tr>
 								<tr>
 									<th>회의일정</th>
-									<td><input type="date" name="meeting_date"
-										value="${meeting.meeting_date}"></td>
+									<td><input type="date" class="box" name="meeting_date" value="${meeting.meeting_date}"></td>
 								</tr>
 								<tr>
 									<th>회의장소</th>
-									<td><input type="text" name="meeting_place"
-										value="${meeting.meeting_place}"></td>
+									<td><input type="text" class="box" name="meeting_place" value="${meeting.meeting_place}"></td>
 								</tr>
 							</c:forEach>
 							<tr>
@@ -110,7 +123,6 @@ table tr {
 								<td>
 									<c:forEach items="${prjMemList}" var="prjMem">
 										<c:set var="result" value="0" />
-
 										<c:forEach items="${meeting}" var="meet">
 										    <c:if test="${prjMem.user_id== meet.meetuser_id }">
 										        <c:set var="result" value="${result + 1}" />
@@ -118,13 +130,12 @@ table tr {
 										</c:forEach>
 										<c:choose>
 											<c:when test="${result > 0}">
-												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }" checked> ${prjMem.user_name}
+												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }" checked> ${prjMem.user_name} 
 										    </c:when>
 											<c:otherwise>
-												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }"> ${prjMem.user_name}
+												<input type="checkbox" name="meetuser_id" value="${prjMem.user_id }"> ${prjMem.user_name} 
 										    </c:otherwise>
 										</c:choose>
-
 									</c:forEach>
 								</td>
 							</tr>
@@ -132,7 +143,7 @@ table tr {
 								<tr>
 									<th>회의유형</th>
 									<td>
-										<select name="meeting_category">
+										<select name="meeting_category" class="box">
 											<option value="킥오프미팅"
 												<c:if test="${meeting.meeting_category == '킥오프미팅'}">selected</c:if>>킥오프미팅</option>
 											<option value="주간 업무보고"
@@ -148,7 +159,8 @@ table tr {
 								</tr>
 								<tr>
 									<th>첨부파일</th>
-									<td><input type="file" name="file1"> ${pageContext.request.contextPath}/upload/${savedName}</td>
+									<td><input type="file" name="file1">
+										<img class="uploadFile" alt="UpLoad File" src="${pageContext.request.contextPath}/${meeting.attach_path }/${meeting.attach_name}"> ${meeting.attach_name}</td>
 								</tr>
 								<tr>
 									<th>회의내용</th>
@@ -156,8 +168,8 @@ table tr {
 								</tr>
 							</c:forEach>
 							<tr>
-								<td colspan="2">
-									<input type="button" value="취소" onclick="location.href='prj_meeting_report_list?project_id=${project_id }'">
+								<td colspan="2" class="button">
+									<input type="button" value="취소" onclick="location.href='prj_meeting_report_read?meeting_id=${meeting_id }&project_id=${project_id}'">
 									<input type="submit" value="수정 완료">
 								</td>
 							</tr>

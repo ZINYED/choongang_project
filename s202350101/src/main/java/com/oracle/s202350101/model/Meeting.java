@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 
-//@Date 
+//@Data
 @Getter
 @Setter
 @ToString

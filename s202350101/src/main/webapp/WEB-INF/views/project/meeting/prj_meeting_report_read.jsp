@@ -17,17 +17,26 @@
 		padding: 20px;
 		text-align: center;
 	}
-	table tr {
-		height: 50px;
-		border-bottom: solid gray 1px;
-	}
 	#title {
 		width: 80%;
 		text-align: center;
 		font-size: 25pt;
 	}
+	table tr {
+		height: 50px;
+		border-bottom: solid gray 1px;
+	}
+	table td {
+		text-align: left;
+	    width: 70%;
+	    padding-left: 30px;
+	}
+	.button {
+		text-align: center;
+	}
 	.uploadFile {
 		height: 100px;
+		padding-right: 20px;
 	}
 </style>
 <!-- CSS END -->
@@ -80,7 +89,7 @@
 				
 				url: sendurl,
 				dataType: 'json',
-				success : function(data){
+				success : function(data) {
 					alert("삭제되었습니다");
 					location.href="/prj_meeting_calendar";
 				}
@@ -128,7 +137,7 @@
 					<tr>
 						<th>참석자</th>
 						<td><c:forEach items="${meeting }" var="meeting">
-							${meeting.user_name}
+							 ${meeting.user_name}  
 						</c:forEach></td>
 					</tr>
 					<c:forEach items="${meeting }" var="meeting" begin="0" end="0">
@@ -137,7 +146,6 @@
 						</tr>
 						<tr>
 							<th>첨부파일</th>
-							<!-- !!!!!!!!!!!!!!!!!!!!!!!!!! 첨부파일 없으면 안나오게 설정 필요 !!!!!!!!!!!!!!!!!!!!!!!!!! -->
 							<td><img class="uploadFile" alt="UpLoad File" src="${pageContext.request.contextPath}/${meeting.attach_path }/${meeting.attach_name}"> ${meeting.attach_name}</td>
 						</tr>
 						<tr>
@@ -145,11 +153,10 @@
 						</tr>
 					</c:forEach>
 					<tr>
-						<td colspan="2">
+						<td colspan="2" class="button">
 						<input type="button" value="목록" onclick="location.href='/prj_meeting_calendar?project_id=${project_id}'">
 						<input type="button" value="수정" onclick="location.href='/prj_meeting_report_update?meeting_id=${meeting_id}&project_id=${project_id}'">
 						<input type="button" value="삭제" id="deleteChk" onclick="delchk()">
-						
 						</td>
 					</tr>
 				</table>

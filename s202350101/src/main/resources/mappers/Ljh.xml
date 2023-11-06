@@ -83,7 +83,7 @@
 		DELETE FROM meeting WHERE meeting_id = #{meeting_id}
 	</delete>
 	
-	<!-- 회의일정 등록 -->
+	<!-- 회의일정 등록 (meeting_status = 1) -->
 	<insert id="ljhMeetingInsert" parameterType="Meeting">
 		INSERT INTO meeting
 		VALUES ((SELECT max(meeting_id)+1 FROM meeting), #{project_id}, #{meeting_date}, #{meeting_title}, 
@@ -94,6 +94,24 @@
 	<insert id="ljhInsertMember" parameterType="Meeting">
 		INSERT INTO meeting_member
 		VALUES ((SELECT max(meeting_id) FROM meeting), #{project_id}, #{meetuser_id})
+	</insert>
+	
+	<!-- 회의일정 -> 회의록 등록 (meeting_status = 3 변경) -->
+	<update id="ljhReportUpdate" parameterType="Meeting">
+		UPDATE	meeting
+		SET		meeting_title = #{meeting_title}, meeting_date = #{meeting_date},
+		        meeting_place = #{meeting_place}, meeting_category = #{meeting_category},
+		        attach_name = #{attach_name}, attach_path = #{attach_path},
+		        meeting_content = #{meeting_content}, meeting_status = 3
+		WHERE	meeting_id = #{meeting_id}
+		AND     project_id = #{project_id}
+	</update>
+	
+	<!-- 회의록 등록 (meeting_status = 2) -->
+	<insert id="ljhReportInsert" parameterType="Meeting">
+		INSERT INTO meeting
+		VALUES ((SELECT max(meeting_id)+1 FROM meeting), #{project_id}, #{meeting_date}, #{meeting_title}, 
+				#{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 2, #{attach_name}, #{attach_path})
 	</insert>
 	
 </mapper>

@@ -189,18 +189,18 @@ public class LjhServiceImpl implements LjhService {
 		
 	}
 
+	// 회의일정 등록 (meeting_status = 1)
 	@Override
 	public int insertMeeting(Meeting meeting) {
-		
-		System.out.println("LjhServiceImpl meetingReportUpdate Start");
+		System.out.println("LjhServiceImpl insertMeeting Start");
 		
 		String[] meetMems = meeting.getMeetuser_id().split(",");	// 체크된 참석자 배열로 저장 
 		
-		System.out.println("LjhServiceImpl meetingReportUpdate meetMems.length -> " + meetMems.length);
+		System.out.println("LjhServiceImpl insertMeeting meetMems.length -> " + meetMems.length);
 		
-		// 참석자
-		int meetingInsert = 0;
 		// 회의일정 등록 (meeting TBL)
+		int meetingInsert = 0;
+		// 참석자 등록
 		int memberInsert = 0;
 		
 		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
@@ -215,14 +215,13 @@ public class LjhServiceImpl implements LjhService {
 				mt.setProject_id(meeting.getProject_id());
 				
 				memberInsert += ljhd.insertMember(mt);		// 회의 참석자 신규 등록
-				System.out.println("meetingReportUpdate insertResult -> " + memberInsert);
+				System.out.println("insertMeeting insertResult -> " + memberInsert);
 			}
 
 			transactionManager.commit(txStatus);
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
-			System.out.println("LjhServiceImpl meetingReportUpdate Exception -> " + e.getMessage());
-			
+			System.out.println("LjhServiceImpl insertMeeting Exception -> " + e.getMessage());
 		}
 
 		int totalResult = meetingInsert + memberInsert;
@@ -240,7 +239,88 @@ public class LjhServiceImpl implements LjhService {
 		return meetingDateList;
 	}
 	
-	
-	
+	@Override
+	public int insertMeetingReport(Meeting meeting) {
+		System.out.println("LjhServiceImpl insertMeetingReport Start");
+		
+		String[] meetMems = meeting.getMeetuser_id().split(",");	// 체크된 참석자 배열로 저장 
+		
+		System.out.println("LjhServiceImpl insertMeetingReport meetMems -> " + meetMems);
 
+		int delMemResult = 0;		// 기존 참석자 삭제
+		int inMemResult = 0;		// 참석자 새로 등록
+		int updateResult = 0;		// 회의록 등록 (meeting_status = 3으로 변경)
+		
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
+		
+		try {
+
+			updateResult = ljhd.updateReport(meeting);		// 회의록 등록 (meeting_status = 3으로 변경)
+			System.out.println("insertMeetingReport updateResult -> " + updateResult);
+			
+			delMemResult = ljhd.deleteMeetingMember(meeting);		// 기존 참석자 삭제
+			System.out.println("insertMeetingReport delMemResult -> " + delMemResult);
+			
+			for (int i = 0; i<meetMems.length; i++) {
+				Meeting mt = new Meeting(); 
+				mt.setMeetuser_id(meetMems[i]);
+				mt.setMeeting_id(meeting.getMeeting_id());
+				mt.setProject_id(meeting.getProject_id());
+				
+				inMemResult += ljhd.insertMeetingMember(mt);		// 참석자 새로 등록
+				System.out.println("insertMeetingReport inMemResult -> " + inMemResult);
+			}
+
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			System.out.println("LjhServiceImpl meetingReportUpdate Exception -> " + e.getMessage());
+		}
+
+		int totalResult = updateResult+inMemResult+delMemResult;
+		
+		return totalResult;
+		
+	}
+
+	// 회의록 등록 (meeting_status = 2)
+	@Override
+	public int insertReport(Meeting meeting) {
+		System.out.println("LjhServiceImpl insertReport Start");
+		
+		String[] meetMems = meeting.getMeetuser_id().split(",");	// 체크된 참석자 배열로 저장 
+		
+		System.out.println("LjhServiceImpl insertReport meetMems.length -> " + meetMems.length);
+		
+		// 회의일정 등록 (meeting TBL)
+		int meetingInsert = 0;
+		// 참석자 등록
+		int memberInsert = 0;
+		
+		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition()); 
+		
+		try {
+			meetingInsert = ljhd.insertMeetingReport(meeting);
+			
+			for (int i = 0; i<meetMems.length; i++) {
+				Meeting mt = new Meeting(); 
+				mt.setMeetuser_id(meetMems[i]);
+				mt.setMeeting_id(meeting.getMeeting_id());
+				mt.setProject_id(meeting.getProject_id());
+				
+				memberInsert += ljhd.insertMember(mt);		// 회의 참석자 신규 등록
+				System.out.println("insertReport insertResult -> " + memberInsert);
+			}
+
+			transactionManager.commit(txStatus);
+		} catch (Exception e) {
+			transactionManager.rollback(txStatus);
+			System.out.println("LjhServiceImpl insertReport Exception -> " + e.getMessage());
+		}
+
+		int totalResult = meetingInsert + memberInsert;
+		
+		return totalResult;
+	}
+	
 }

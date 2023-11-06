@@ -21,6 +21,8 @@ public interface LjhService {
 	int 				deleteMeetingReport(Meeting meeting);
 	int 				meetingReportUpdate(Meeting meeting);
 	int 				insertMeeting(Meeting meeting);
+	int 				insertMeetingReport(Meeting meeting);
+	int 				insertReport(Meeting meeting);
 
 
 }

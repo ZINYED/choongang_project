@@ -204,4 +204,35 @@ public class LjhDaoImpl implements LjhDao {
 		return meetingDate;
 	}
 
+	@Override
+	public int updateReport(Meeting meeting) {
+		System.out.println("LjhDaoImpl updateReport Start");
+		
+		int result = 0;
+		
+		try {
+			result = session.update("ljhReportUpdate", meeting);
+			System.out.println("LjhDaoImpl updateReport result -> " + result);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl updateReport Exception : " + e.getMessage());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public int insertMeetingReport(Meeting meeting) {
+		int result = 0;
+		
+		try {
+			result = session.update("ljhReportInsert", meeting);
+			System.out.println("LjhDaoImpl updateReport result -> " + result);
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl updateReport Exception : " + e.getMessage());
+		}
+		
+		return 0;
+	}
+
+
 }

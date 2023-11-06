@@ -20,6 +20,8 @@ public interface LjhDao {
 	int 				insertMeetingMember(Meeting meeting);
 	int 				deleteMeetingReport(int meeting_id);
 	int 				insertMember(Meeting mt);
+	int 				updateReport(Meeting meeting);
+	int 				insertMeetingReport(Meeting meeting);
 
 
 }
