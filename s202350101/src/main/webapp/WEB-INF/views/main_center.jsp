@@ -252,7 +252,7 @@
         <small class="opacity-50 text-nowrap">1w</small>
       </div>
     </a>
-  </div>
+</div>
   
 			<div class="list-group p-3 px-md-3">
 			    <label class="list-group-item d-flex gap-2">

@@ -9,6 +9,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -235,7 +237,8 @@ public class LjhController {
 		
 		return "redirect:prj_meeting_calendar";
 	}
-
+	
+	// 파일 업로드 메소드
 	private String uploadFile(String originalFilename, byte[] bytes, String uploadPath) throws IOException {
 		// Universally Unique Identity (UUID)
 		UUID uid = UUID.randomUUID();
@@ -329,5 +332,9 @@ public class LjhController {
 	
 		return "redirect:/prj_meeting_calendar";
 	}
+
+	@MessageMapping("/app/~~")
+	@SendTo("/~~")
+	return List<Meeting>
 	
 }

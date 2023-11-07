@@ -1,5 +1,58 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style type="text/css">
+	#notify {
+	    position: absolute;
+	    width: 300px;
+	    height: 400px;
+	    background-color: skyblue;
+	    right: 200;
+	    z-index: 999;
+	}
+</style>
+
+<script type="text/javascript">
+	let stompClient;
+	
+	$(document).ready(function () {
+	    onSocket();
+	})
+	
+	
+	function onSocket() {
+	    let socket = new SockJS('/websocket');
+	    stompClient = Stomp.over(socket);
+	    stompClient.connect({}, function (frame) {
+	        console.log('Connected: ' + frame);
+	        stompClient.send('/app/~~')
+	        
+	        stompClient.subscribe("/app/~~", {}, function(data){
+	        	
+	        });	        
+	    });
+	}
+
+	
+	// 알림버튼 클릭 시 작동
+	function notifyClick() {
+		
+		var con = document.getElementById("notify");
+		
+		if (con.style.display == 'none') {
+			con.style.display = 'block';
+		} else {
+			con.style.display = 'none';
+		}
+		
+	};
+</script>
+    
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/main">PMS</a>
@@ -34,6 +87,9 @@
 					<li><a class="dropdown-item" href="user_logout">로그아웃</a></li>
 				</ul>
 			</div>
+			<div>
+				<button type="button" onclick="notifyClick()">알림</button>
+			</div>
 			<div class="d-flex" role="search" style="margin-left:10px">        
 				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
 				<button class="btn btn-outline-secondary" type="submit">Search</button>
@@ -41,3 +97,12 @@
 		</div>
 	</div>
 </nav>
+
+<div id="notify" style="display: none;">
+	<div id="notifyBox">
+	
+	</div>
+</div>
+
+</head>
+</html>
