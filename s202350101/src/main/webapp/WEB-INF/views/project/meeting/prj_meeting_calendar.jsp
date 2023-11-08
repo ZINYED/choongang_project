@@ -308,7 +308,7 @@
 	});
 
 	// form 입력값 체크
-	function chk() {
+	function chk1() {
 
 		// meeting_member : 참석자 
 		const query = 'input[name="meetuser_id"]:checked'; 			// 	체크된 참석자 	
@@ -316,15 +316,20 @@
 
 		// 선택된 목록의 갯수 세기
 		const selectedElementsCnt = selectedElements.length;	//	체크된 참석자 수
-		console.log(selectedElementsCnt);						//	검증.
+		console.log("selectedElementsCnt: "+selectedElementsCnt);						//	검증.
 
-		if (!frm.meeting_title.value) { 		//	제목 없으면 발생.
+		if (!frm1.meeting_status.value) {
+			alert("분류를 선택하세요.");
+			return false;
+		}
+		
+		if (!frm1.meeting_title.value) { 		//	제목 없으면 발생.
 			alert("제목을 입력하세요.");
-			frm.meeting_title.focus();
+			frm1.meeting_title.focus();
 			return false;
 		}
 
-		if (!frm.meeting_date.value) { 			//	날짜 지정 안하면 발생.
+		if (!frm1.meeting_date.value) { 			//	날짜 지정 안하면 발생.
 			alert("일정을 선택하세요.");
 			return false;
 		}
@@ -333,6 +338,36 @@
 			alert("참석자를 선택하세요.");
 			return false;
 		}
+		
+	}
+	
+	// form 입력값 체크
+	function chk2() {
+
+		// meeting_member : 참석자 
+		const query = 'input[name="meetuser_id"]:checked'; 			// 	체크된 참석자 	
+		const selectedElements = document.querySelectorAll(query);	//	모든 체크된 참석자 
+
+		// 선택된 목록의 갯수 세기
+		const selectedElementsCnt = selectedElements.length;	//	체크된 참석자 수
+		console.log("selectedElementsCnt: "+selectedElementsCnt);						//	검증.
+		
+		if (!frm2.meeting_title.value) { 		//	제목 없으면 발생.
+			alert("제목을 입력하세요.");
+			frm2.meeting_title.focus();
+			return false;
+		}
+
+		if (!frm2.meeting_date.value) { 			//	날짜 지정 안하면 발생.
+			alert("일정을 선택하세요.");
+			return false;
+		}
+
+		if (selectedElementsCnt < 1) { 			//	체크된 참석자 없으면 발생.
+			alert("참석자를 선택하세요.");
+			return false;
+		}
+		
 	}
 	
 	// 회의일정 삭제
@@ -381,7 +416,7 @@
 				<!-- 회의일정 등록 modal 추가 -->
 				<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
-						<form action="prj_meeting_date_write" name="frm" onsubmit="return chk()" method="post" enctype="multipart/form-data">
+						<form action="prj_meeting_date_write" name="frm1" onsubmit="return chk1()" method="post" enctype="multipart/form-data">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title" id="exampleModalLabel">회의 등록</h5>
@@ -424,7 +459,7 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<input type="submit" class="btn btn-warning" value="추가">
+									<input type="submit" class="btn btn-outline-success" value="추가">
 									<button type="button" class="btn btn-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
 								</div>
 							</div>
@@ -435,7 +470,7 @@
 				<!-- 일정 선택 시 회의록 등록하는  modal 추가 -->
 				<div class="modal fade" id="dateClickModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
-						<form action="prj_meeting_report_insert" name="frm" onsubmit="return chk()" method="post" enctype="multipart/form-data">
+						<form action="prj_meeting_report_insert" name="frm2" onsubmit="return chk2()" method="post" enctype="multipart/form-data">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title" id="exampleModalLabel">회의록 등록</h5>
@@ -473,9 +508,9 @@
 									</div>
 								</div>
 								<div class="modal-footer">
-									<input type="submit" class="btn btn-warning" value="추가">
-									<button type="button" class="btn btn-secondary" onclick="delMeetingDate()">일정 삭제</button>
-									<button type="button" class="btn btn-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
+									<input type="submit" class="btn btn-outline-success" value="수정">
+									<button type="button" class="btn btn-outline-dark" onclick="delMeetingDate()">일정 삭제</button>
+									<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</form>

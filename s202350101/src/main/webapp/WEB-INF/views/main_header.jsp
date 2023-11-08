@@ -18,26 +18,69 @@
 </style>
 
 <script type="text/javascript">
+	// stomp 사용	
 	let stompClient;
+	
 	
 	$(document).ready(function () {
 	    onSocket();
-	})
+	});
 	
-	
+	// 소켓 연결	
 	function onSocket() {
-	    let socket = new SockJS('/websocket');
+	    let socket = new SockJS('/websocket');		// websocket = NotifyConfig에서 지정한 엔드포인트
+	    console.log("1");
 	    stompClient = Stomp.over(socket);
+	    console.log("2");
+	    
+        const obj = {
+			// userInfo : '${userInfo}'
+        	project_id : '${userInfo.project_id}',
+        	user_id : '${userInfo.user_id}'
+		};
+        
 	    stompClient.connect({}, function (frame) {
-	        console.log('Connected: ' + frame);
-	        stompClient.send('/app/~~')
-	        
-	        stompClient.subscribe("/app/~~", {}, function(data){
-	        	
-	        });	        
-	    });
-	}
+			console.log('Connected: ' + frame);
 
+	        console.log("3");
+	        console.log(obj);
+
+	        stompClient.subscribe("/noti/test", function(data){
+	        	console.log("hi");
+	        	console.log(data);
+
+                var rtndata = JSON.parse(data.body);
+
+                // 현재 날짜
+                const date = new Date();
+                const year = date.getFullYear();
+                const month = ('0' + (date.getMonth() + 1)).slice(-2);
+                const day = ('0' + (date.getDate())).slice(-2);
+                let now = year + "-" + month + "-" + day;
+
+                console.log("now date: " + now);
+
+                let str = '';
+
+                // 현재 날짜와 meeting_date가 일치하면 화면에 출력
+                for (var i = 0; i < rtndata.length; i++) {
+                    const meetingDate = rtndata[i].meeting_date;
+                    console.log(meetingDate);
+
+                    if (meetingDate == now) {
+                        str += '<p>' + rtndata[i].meeting_date + ' ' + rtndata[i].meeting_title + '</p>';
+                    }
+                }
+                let notify = $('#notify');
+                notify.append(str);
+	        });
+
+	     	// userInfo 같이 보내기
+	        stompClient.send('/queue/post', {}, JSON.stringify(obj));
+	        console.log("4");
+	        
+	    });
+	};
 	
 	// 알림버튼 클릭 시 작동
 	function notifyClick() {

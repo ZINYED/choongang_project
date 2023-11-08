@@ -3,6 +3,7 @@ package com.oracle.s202350101.controller;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -230,7 +231,9 @@ public class LjhController {
 		if (meeting.getMeeting_status() == 1) {
 			// 회의일정 등록 + 참석자 등록
 			result = ljhs.insertMeeting(meeting);
-		} else {
+		} 
+		
+		if (meeting.getMeeting_status() == 2) {
 			// meeting_status = 2 등록
 			result = ljhs.insertReport(meeting);
 		}
@@ -300,41 +303,54 @@ public class LjhController {
 	public String prjMeetingReportInsert(Meeting meeting, Model model, HttpServletRequest request, @RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
 		System.out.println("LjhController prjMeetingReportInsert Start");
 		
-			// user 정보 세션에 저장해오기
-			System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
-			UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
-			
-			String loginUserId = userInfoDTO.getUser_id();		// 세션에 저장된 user_id
-			meeting.setUser_id(loginUserId);
-			
-			// 첨부파일 업로드
-			String attach_path = "upload";
-			String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
-			
-			System.out.println("File Upload Post Start");
-			
-			log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
-			log.info("size : " + file1.getSize());							// 파일 사이즈
-			log.info("contextType : " + file1.getContentType());			// 파일 타입
-			log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
-			
-			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
-			log.info("Return savedName : " + savedName);
-			meeting.setAttach_name(savedName);
-			meeting.setAttach_path(attach_path);
-			
-			System.out.println("meeting -> " + meeting);
-			
-			System.out.println("meetuser_id -> : " + meeting.getMeetuser_id());
-			
-			// 회의록 등록 + 참석자 등록
-			int result = ljhs.insertMeetingReport(meeting);
-	
+		// user 정보 세션에 저장해오기
+		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		String loginUserId = userInfoDTO.getUser_id();		// 세션에 저장된 user_id
+		meeting.setUser_id(loginUserId);
+		
+		// 첨부파일 업로드
+		String attach_path = "upload";
+		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+		
+		System.out.println("File Upload Post Start");
+		
+		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+		log.info("size : " + file1.getSize());							// 파일 사이즈
+		log.info("contextType : " + file1.getContentType());			// 파일 타입
+		log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
+		
+		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
+		log.info("Return savedName : " + savedName);
+		meeting.setAttach_name(savedName);
+		meeting.setAttach_path(attach_path);
+		
+		System.out.println("meeting -> " + meeting);
+		
+		System.out.println("meetuser_id -> : " + meeting.getMeetuser_id());
+		
+		// 회의록 등록 + 참석자 등록
+		int result = ljhs.insertMeetingReport(meeting);
+
 		return "redirect:/prj_meeting_calendar";
 	}
 
-	@MessageMapping("/app/~~")
-	@SendTo("/~~")
-	return List<Meeting>
+	@MessageMapping("/post")
+	@SendTo("/noti/test")
+	public List<Meeting> selMeetingList(HashMap<String, String> map) {
+		System.out.println("LjhController selMeetingList Start");	
+	
+		int loginUserPrj = Integer.parseInt(map.get("project_id"));
+		
+		System.out.println("loginUserPrj : " + loginUserPrj);
+		
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		
+		meetingList = ljhs.getMeetingList(loginUserPrj);
+		System.out.println("meetingList.size() -> " + meetingList.size());
+		
+		return meetingList;
+	}
 	
 }
