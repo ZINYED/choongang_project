@@ -13,19 +13,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.s202350101.model.LjhResponse;
 import com.oracle.s202350101.model.Meeting;
-import com.oracle.s202350101.model.MeetingMember;
 import com.oracle.s202350101.model.PrjInfo;
 import com.oracle.s202350101.model.PrjMemList;
 import com.oracle.s202350101.model.UserInfo;
@@ -337,20 +334,37 @@ public class LjhController {
 	}
 
 	@MessageMapping("/post")
-	@SendTo("/noti/test")
+	@SendTo("/noti/meeting")
 	public List<Meeting> selMeetingList(HashMap<String, String> map) {
 		System.out.println("LjhController selMeetingList Start");	
-	
-		int loginUserPrj = Integer.parseInt(map.get("project_id"));
+		
+ 		int loginUserPrj = Integer.parseInt(map.get("project_id"));		// 세션에 저장된 userinfo의 project_id
+ 		String loginUserId = map.get("user_id");
 		
 		System.out.println("loginUserPrj : " + loginUserPrj);
+		System.out.println("loginUserId : " + loginUserId);
 		
 		List<Meeting> meetingList = new ArrayList<Meeting>();
 		
-		meetingList = ljhs.getMeetingList(loginUserPrj);
+		// 알림 - 접속한 회원 별 회의일정 select
+		meetingList = ljhs.getUserMeeting(map);
+		
+		// meetingList = ljhs.getMeetingList(loginUserPrj);
 		System.out.println("meetingList.size() -> " + meetingList.size());
 		
 		return meetingList;
 	}
+	
+	@MessageMapping("/post")
+	@SendTo("/noti/boardRep")
+	public LjhResponse selBoardRep(HashMap<String, String> map) {
+		System.out.println("LjhController selBoardRep Start");
+		LjhResponse ljh = new LjhResponse();
+		ljh.setSecList(secList);
+		
+		return null;
+	}
+	
+	
 	
 }

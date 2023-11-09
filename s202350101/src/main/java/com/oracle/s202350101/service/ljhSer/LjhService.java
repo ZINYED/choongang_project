@@ -1,5 +1,6 @@
 package com.oracle.s202350101.service.ljhSer;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.oracle.s202350101.model.Meeting;
@@ -23,6 +24,7 @@ public interface LjhService {
 	int 				insertMeeting(Meeting meeting);
 	int 				insertMeetingReport(Meeting meeting);
 	int 				insertReport(Meeting meeting);
+	List<Meeting> 		getUserMeeting(HashMap<String, String> map);
 
 
 }

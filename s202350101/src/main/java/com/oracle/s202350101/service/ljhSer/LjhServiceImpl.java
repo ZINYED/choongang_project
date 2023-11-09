@@ -1,5 +1,6 @@
 package com.oracle.s202350101.service.ljhSer;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -321,6 +322,17 @@ public class LjhServiceImpl implements LjhService {
 		int totalResult = meetingInsert + memberInsert;
 		
 		return totalResult;
+	}
+	
+	
+	// 알림 - 접속한 회원 별 회의일정 select 
+	@Override
+	public List<Meeting> getUserMeeting(HashMap<String, String> map) {
+		List<Meeting> meetingList = null;
+		
+		meetingList = ljhd.getUserMeeting(map);
+		
+		return meetingList;
 	}
 	
 }

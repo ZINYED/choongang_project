@@ -1,5 +1,6 @@
 package com.oracle.s202350101.dao.ljhDao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -231,7 +232,22 @@ public class LjhDaoImpl implements LjhDao {
 			System.out.println("LjhDaoImpl updateReport Exception : " + e.getMessage());
 		}
 		
-		return 0;
+		return result;
+	}
+
+	// 알림 - 접속한 회원 별 회의일정 select
+	@Override
+	public List<Meeting> getUserMeeting(HashMap<String, String> map) {
+		List<Meeting> meetingList = null;
+		
+		try {
+			meetingList = session.selectList("ljhUserMeeting", map);
+			System.out.println("LjhDaoImpl getUserMeeting meetingList.size() -> " + meetingList.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getUserMeeting Exception : " + e.getMessage());
+		}
+		
+		return meetingList;
 	}
 
 

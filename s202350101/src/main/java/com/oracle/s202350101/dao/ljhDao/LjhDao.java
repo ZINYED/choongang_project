@@ -1,5 +1,6 @@
 package com.oracle.s202350101.dao.ljhDao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.oracle.s202350101.model.Meeting;
@@ -22,6 +23,7 @@ public interface LjhDao {
 	int 				insertMember(Meeting mt);
 	int 				updateReport(Meeting meeting);
 	int 				insertMeetingReport(Meeting meeting);
+	List<Meeting> 		getUserMeeting(HashMap<String, String> map);
 
 
 }

@@ -460,7 +460,7 @@
 								</div>
 								<div class="modal-footer">
 									<input type="submit" class="btn btn-outline-success" value="추가">
-									<button type="button" class="btn btn-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-outline-secondary" data-dismiss="modal" id="sprintSettingModalClose" data-bs-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</form>

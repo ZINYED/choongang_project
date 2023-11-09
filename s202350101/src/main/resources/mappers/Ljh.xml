@@ -114,4 +114,15 @@
 				#{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 2, #{attach_name}, #{attach_path})
 	</insert>
 	
+	<!-- 알림 - 접속한 회원 별 회의일정 select -->
+	<select id="ljhUserMeeting" parameterType="hashmap" resultType="Meeting">
+		SELECT  m.*, m2.*
+		FROM    meeting m, meeting_member m2, user_env u
+		WHERE   m2.meetuser_id = #{user_id}
+		AND		m.project_id = #{project_id}
+		AND     m.meeting_id = m2.meeting_id
+		AND     m2.meetuser_id = u.user_id
+		AND     u.env_alarm_meeting = 'Y'
+	</select>
+	
 </mapper>

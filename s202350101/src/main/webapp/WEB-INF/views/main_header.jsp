@@ -10,9 +10,9 @@
 	#notify {
 	    position: absolute;
 	    width: 300px;
-	    height: 400px;
+	    height: 400px auto;
 	    background-color: skyblue;
-	    right: 200;
+	    right: 300px;
 	    z-index: 999;
 	}
 </style>
@@ -27,28 +27,40 @@
 	});
 	
 	// 소켓 연결	
-	function onSocket() {
-	    let socket = new SockJS('/websocket');		// websocket = NotifyConfig에서 지정한 엔드포인트
-	    console.log("1");
-	    stompClient = Stomp.over(socket);
-	    console.log("2");
-	    
+function onSocket() {
+    let stompClient;
+
+    function disconnectWebSocket() {
+        if (stompClient && stompClient.connected) {
+            stompClient.disconnect(function () {
+                console.log("Disconnected WebSocket.");
+                setTimeout(connectWebSocket, 5000); // 5초 후 다시 연결 시도
+            });
+        }
+    }
+
+    function connectWebSocket() {
+        let socket = new SockJS('/websocket');
+        console.log("1");
+        stompClient = Stomp.over(socket);
+        console.log("2");
+
         const obj = {
-			// userInfo : '${userInfo}'
-        	project_id : '${userInfo.project_id}',
-        	user_id : '${userInfo.user_id}'
-		};
-        
-	    stompClient.connect({}, function (frame) {
-			console.log('Connected: ' + frame);
+            project_id: '${userInfo.project_id}',
+            user_id: '${userInfo.user_id}'
+        };
 
-	        console.log("3");
-	        console.log(obj);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
 
-	        stompClient.subscribe("/noti/test", function(data){
-	        	console.log("hi");
-	        	console.log(data);
-
+            console.log("3");
+            console.log(obj);
+			
+            // 회의일정 
+            stompClient.subscribe("/noti/meeting", function (data){
+            	console.log("4");
+            	console.log(data);
+				
                 var rtndata = JSON.parse(data.body);
 
                 // 현재 날짜
@@ -57,31 +69,46 @@
                 const month = ('0' + (date.getMonth() + 1)).slice(-2);
                 const day = ('0' + (date.getDate())).slice(-2);
                 let now = year + "-" + month + "-" + day;
-
                 console.log("now date: " + now);
-
+                
+                let notify = $('#notify');
+                notify.empty();
+                
                 let str = '';
-
-                // 현재 날짜와 meeting_date가 일치하면 화면에 출력
+                
                 for (var i = 0; i < rtndata.length; i++) {
                     const meetingDate = rtndata[i].meeting_date;
                     console.log(meetingDate);
 
                     if (meetingDate == now) {
-                        str += '<p>' + rtndata[i].meeting_date + ' ' + rtndata[i].meeting_title + '</p>';
+						str += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
                     }
                 }
-                let notify = $('#notify');
+                
                 notify.append(str);
-	        });
+            });
+            
+            // 게시판 답글
+            stompClient.subscribe("/noti/boardRep", function(data) {
+            	console.log("게시판 답글");
+            });
+            
 
-	     	// userInfo 같이 보내기
-	        stompClient.send('/queue/post', {}, JSON.stringify(obj));
-	        console.log("4");
-	        
-	    });
-	};
-	
+            stompClient.send('/queue/post', {}, JSON.stringify(obj));
+            console.log("4");
+        });
+    }
+
+    // 초기 연결 수행
+    connectWebSocket();
+
+    // 5초마다 웹 소켓 연결을 끊고 다시 연결
+    setInterval(function () {
+        disconnectWebSocket();
+    }, 5000);
+}
+
+    
 	// 알림버튼 클릭 시 작동
 	function notifyClick() {
 		
@@ -141,7 +168,7 @@
 	</div>
 </nav>
 
-<div id="notify" style="display: none;">
+<div id="notify" style="display: none; overflow-y: scroll; height:400px;">
 	<div id="notifyBox">
 	
 	</div>
