@@ -336,7 +336,7 @@ public class LjhController {
 	}
 	
 	// 회의일정
-	@MessageMapping("/post")
+	@MessageMapping("/meet")
 	@SendTo("/noti/meeting")
 	public List<Meeting> selMeetingList(HashMap<String, String> map) {
 		System.out.println("LjhController selMeetingList Start");	
@@ -362,7 +362,7 @@ public class LjhController {
 	@MessageMapping("/rep")
 	@SendTo("/noti/boardRep")
 	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
-		System.out.println("LjhController selBoardRep Start");
+		System.out.println("LjhController getBoardRep Start");
 		
 		List<PrjBdData> boardRep = new ArrayList<PrjBdData>();
 		
@@ -373,6 +373,20 @@ public class LjhController {
 		return boardRep;
 	}
 	
-	
-	
+//	@MessageMapping("/rep")
+//	@SendTo("/noti/boardRep")
+//	public LjhResponse getBoardRep(HashMap<String,  String> map) {
+//		System.out.println("LjhController getBoardRep Start");
+//		
+//		LjhResponse ljhResponse = new LjhResponse();
+//		
+//		List<PrjBdData> BoardList = ljhs.getParentBoard();
+//		List<PrjBdData> RepList = ljhs.get
+//		
+//		return null;
+//	}
+
+
+
+
 }

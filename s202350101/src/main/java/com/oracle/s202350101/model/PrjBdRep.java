@@ -23,6 +23,12 @@ public class PrjBdRep {
 	private String	attach_name;
 	private String	attach_path;
 	
-	// 조회용 추가
-	private String	app_name;
+	//조회용
+	private int		rn;					//목록 rownum번호
+	private int		start;				//페이지 시작번호
+	private int		end;				//페이지 끝번호
+	private String	user_name;			//작성자명
+	private String	bd_category_name; 	//분류명
+	private String  attach_delete_flag; //편집저장시 기존첨부 삭제여부(D)	
+	private String  app_name;			//어플리케이션 이름
 }

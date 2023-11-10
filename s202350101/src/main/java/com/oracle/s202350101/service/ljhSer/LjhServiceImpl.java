@@ -6,11 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.oracle.s202350101.dao.ljhDao.LjhDao;
-import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.Meeting;
 import com.oracle.s202350101.model.PrjBdData;
 import com.oracle.s202350101.model.PrjInfo;

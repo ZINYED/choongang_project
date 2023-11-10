@@ -116,32 +116,26 @@
 	
 	<!-- 알림 - 접속한 회원 별 회의일정 select -->
 	<select id="ljhUserMeeting" parameterType="hashmap" resultType="Meeting">
-		SELECT  m.*, m2.*
-		FROM    meeting m, meeting_member m2, user_env u
-		WHERE   m2.meetuser_id = #{user_id}
+		SELECT  *
+		FROM    meeting m, meeting_member m2
+		WHERE   m.meeting_id = m2.meeting_id
+		AND     m2.meetuser_id = #{user_id}
 		AND		m.project_id = #{project_id}
-		AND     m.meeting_id = m2.meeting_id
-		AND     m2.meetuser_id = u.user_id
-		AND     u.env_alarm_meeting = 'Y'
 	</select>
 	
 	<!-- 알림 - 접속한 회원 별 게시판 답글 select -->
 	<select id="ljhBoardRep" parameterType="hashmap" resultType="PrjBdData">
-		SELECT  bd.*
-		FROM    user_env u, (   SELECT  p.doc_no, p.user_id, p.parent_doc_no, p.parent_doc_user_id, p.alarm_flag,
-		                                q.doc_no as qna_doc_no, q.user_id as qna_user_id, q.parent_doc_no as qna_parent_doc_no,
-		                                q.parent_doc_user_id as qna_parent_doc_user_id, q.alarm_flag as qna_alarm_flag
-		                        FROM    bd_qna q, prj_bd_data p, user_env u
-		                        WHERE   q.parent_doc_user_id = u.user_id
-		                        AND     p.parent_doc_user_id = u.user_id
-		                        AND     u.user_id = 'tester1'   ) bd
-		WHERE   u.user_id = bd.qna_parent_doc_user_id
-		AND     u.user_id = bd.parent_doc_user_id
-		AND     bd.qna_alarm_flag = 'N'
+ 		SELECT  bd.*
+		FROM    user_env u, (   SELECT  doc_no, project_id, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
+		                        FROM    prj_bd_data
+		                        WHERE   doc_group = doc_no
+		                        AND     user_id = #{user_id}
+		                        OR      parent_doc_user_id = #{user_id}   ) bd
+		WHERE   u.user_id = bd.parent_doc_user_id
 		AND     bd.alarm_flag = 'N'
+		OR      bd.alarm_flag is null
 		AND     u.env_alarm_reply = 'Y'
 		AND     u.user_id = #{user_id}
 	</select>
-	
 	
 </mapper>

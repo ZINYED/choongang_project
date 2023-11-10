@@ -13,5 +13,5 @@ public class PrjMemList {
 	private String	user_id;
 	
 	// 조회용
-	private String	user_name;
+	private String user_name;
 }

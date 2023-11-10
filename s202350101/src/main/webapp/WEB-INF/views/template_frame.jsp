@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/header.jsp" %>
+<%@ include file="/WEB-INF/views/header_main.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,7 +18,7 @@
 		
 		$.ajax({
 			url			: '/main_header',
-			dataType 	: 'text',
+			dataType 	: 'html',
 			success		: function(data) {
 				$('#header').html(data);
 			}
@@ -26,7 +26,7 @@
 		
 		$.ajax({
 			url			: '/main_menu',
-			dataType 	: 'text',
+			dataType 	: 'html',
 			success		: function(data) {
 				$('#menubar').html(data);
 			}
@@ -34,7 +34,7 @@
 	
 		$.ajax({
 			url			: '/main_footer',
-			dataType 	: 'text',
+			dataType 	: 'html',
 			success		: function(data) {
 				$('#footer').html(data);
 			}

@@ -13,4 +13,7 @@ public class ChatRoom {
 	private String 	sender_id;
 	private String 	receiver_id;
 	
+	// 조회용
+	private String  user_name;
+	
 }
