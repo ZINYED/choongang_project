@@ -125,7 +125,7 @@
 	
 	<!-- 알림 - 접속한 회원 별 게시판 답글 select -->
 	<select id="ljhBoardRep" parameterType="hashmap" resultType="PrjBdData">
- 		SELECT  bd.*
+<!--  		SELECT  bd.*
 		FROM    user_env u, (   SELECT  doc_no, project_id, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
 		                        FROM    prj_bd_data
 		                        WHERE   doc_group = doc_no
@@ -135,7 +135,26 @@
 		AND     bd.alarm_flag = 'N'
 		OR      bd.alarm_flag is null
 		AND     u.env_alarm_reply = 'Y'
-		AND     u.user_id = #{user_id}
+		AND     u.user_id = #{user_id} -->
+		
+		SELECT  bd.*
+FROM    user_env u, (   SELECT  app_id, doc_no, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
+                        FROM    prj_bd_data 
+                        WHERE   doc_group = doc_no
+                        AND     user_id = #{user_id}
+                        OR      parent_doc_user_id = #{user_id}
+                        union
+                        SELECT  app_id, doc_no, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
+                        FROM    bd_qna
+                        WHERE   doc_group = doc_no
+                        AND     user_id = #{user_id}
+                        OR      parent_doc_user_id = #{user_id}  ) bd
+WHERE   u.user_id = bd.parent_doc_user_id
+AND     bd.alarm_flag = 'N'
+OR      bd.alarm_flag is null
+AND     u.env_alarm_reply = 'Y'
+AND     u.user_id = #{user_id}
+		
 	</select>
 	
 </mapper>

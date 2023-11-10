@@ -95,11 +95,13 @@
  	            	for (var i = 0; i < repdata.length; i++) {
 	                    const data_doc_no = repdata[i].doc_no;
 	                    const data_subject = repdata[i].subject;
+	                    const data_app_id = repdata[i].app_id;
 	                    
-	                    for (var i = 0; i < repdata.length; i++) {
-	                    	const data_parent_doc_no = repdata[i].parent_doc_no;
-	                    	
-	                    	if (data_doc_no == data_parent_doc_no) {
+	                    for (var j = 0; j < repdata.length; j++) {
+	                    	const data_parent_doc_no = repdata[j].parent_doc_no;
+	                    	const data_parent_app_id = repdata[j].app_id;
+	                    	//		글번호		답글 부모
+	                    	if (data_doc_no == data_parent_doc_no && data_parent_app_id == data_app_id) {
 		                    	repStr += '<p>' + data_subject + '에 새로운 답글이 등록되었습니다.</p>';	
 		                    }	
 	                    }
