@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.oracle.s202350101.dao.ljhDao.LjhDao;
+import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.Meeting;
+import com.oracle.s202350101.model.PrjBdData;
 import com.oracle.s202350101.model.PrjInfo;
 import com.oracle.s202350101.model.PrjMemList;
 
@@ -328,11 +330,23 @@ public class LjhServiceImpl implements LjhService {
 	// 알림 - 접속한 회원 별 회의일정 select 
 	@Override
 	public List<Meeting> getUserMeeting(HashMap<String, String> map) {
+		System.out.println("LjhServiceImpl getUserMeeting Start");
 		List<Meeting> meetingList = null;
 		
 		meetingList = ljhd.getUserMeeting(map);
 		
 		return meetingList;
+	}
+
+	// 알림 - 접속한 회원 별 게시판 답글 select
+	@Override
+	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
+		System.out.println("LjhServiceImpl getBoardRep Start");
+		List<PrjBdData> boardRep = null;
+		
+		boardRep = ljhd.getBoardRep(map);
+		
+		return boardRep;
 	}
 	
 }

@@ -24,4 +24,10 @@ public class PrjBdData {
 	
 	// 조회용 추가
 	private String	app_name;
+	private int		qna_doc_no;					// BD_QNA 테이블 doc_no 
+	private String	qna_user_id;				// BD_QNA 테이블 user_id
+	private int		qna_parent_doc_no;			// BD_QNA 테이블 parent_doc_no
+	private String	qna_parent_doc_user_id;		// BD_QNA 테이블 parent_doc_user_id
+	private String	qna_alarm_flag;				// BD_QNA 테이블 alarm_flag
+	
 }

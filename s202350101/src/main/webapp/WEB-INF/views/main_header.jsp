@@ -91,10 +91,15 @@ function onSocket() {
             // 게시판 답글
             stompClient.subscribe("/noti/boardRep", function(data) {
             	console.log("게시판 답글");
+            	
+            	var repdata = JSON.parse(data.body);
+            	console.log(repdata);
+            	
             });
             
 
             stompClient.send('/queue/post', {}, JSON.stringify(obj));
+            stompClient.send('/queue/rep', {}, JSON.stringify(obj));
             console.log("4");
         });
     }

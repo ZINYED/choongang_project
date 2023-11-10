@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.Meeting;
+import com.oracle.s202350101.model.PrjBdData;
 import com.oracle.s202350101.model.PrjInfo;
 import com.oracle.s202350101.model.PrjMemList;
 
@@ -223,6 +225,7 @@ public class LjhDaoImpl implements LjhDao {
 
 	@Override
 	public int insertMeetingReport(Meeting meeting) {
+		System.out.println("LjhDaoImpl insertMeetingReport Start");
 		int result = 0;
 		
 		try {
@@ -238,6 +241,7 @@ public class LjhDaoImpl implements LjhDao {
 	// 알림 - 접속한 회원 별 회의일정 select
 	@Override
 	public List<Meeting> getUserMeeting(HashMap<String, String> map) {
+		System.out.println("LjhDaoImpl getUserMeeting Start");
 		List<Meeting> meetingList = null;
 		
 		try {
@@ -250,5 +254,20 @@ public class LjhDaoImpl implements LjhDao {
 		return meetingList;
 	}
 
+	// 알림 - 접속한 회원 별 게시판 답글 select
+	@Override
+	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
+		System.out.println("LjhDaoImpl getBoardRep Start");
+		List<PrjBdData> boardRep = null;
+		
+		try {
+			boardRep = session.selectList("ljhBoardRep", map);
+			System.out.println("LjhDaoImpl getBoardRep boardRep.size() -> " + boardRep.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getBoardRep Exception : " + e.getMessage());
+		}
+		
+		return boardRep;
+	}
 
 }

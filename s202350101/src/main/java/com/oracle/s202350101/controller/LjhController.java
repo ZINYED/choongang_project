@@ -21,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.LjhResponse;
 import com.oracle.s202350101.model.Meeting;
+import com.oracle.s202350101.model.PrjBdData;
 import com.oracle.s202350101.model.PrjInfo;
 import com.oracle.s202350101.model.PrjMemList;
 import com.oracle.s202350101.model.UserInfo;
@@ -332,7 +334,8 @@ public class LjhController {
 
 		return "redirect:/prj_meeting_calendar";
 	}
-
+	
+	// 회의일정
 	@MessageMapping("/post")
 	@SendTo("/noti/meeting")
 	public List<Meeting> selMeetingList(HashMap<String, String> map) {
@@ -355,14 +358,19 @@ public class LjhController {
 		return meetingList;
 	}
 	
-	@MessageMapping("/post")
+	// 게시판 답글
+	@MessageMapping("/rep")
 	@SendTo("/noti/boardRep")
-	public LjhResponse selBoardRep(HashMap<String, String> map) {
+	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
 		System.out.println("LjhController selBoardRep Start");
-		LjhResponse ljh = new LjhResponse();
-		ljh.setSecList(secList);
 		
-		return null;
+		List<PrjBdData> boardRep = new ArrayList<PrjBdData>();
+		
+		boardRep = ljhs.getBoardRep(map);
+		
+		System.out.println("boardRep.size() -> " + boardRep.size());
+		
+		return boardRep;
 	}
 	
 	
