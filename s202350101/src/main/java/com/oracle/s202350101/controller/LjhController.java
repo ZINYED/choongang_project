@@ -335,7 +335,7 @@ public class LjhController {
 		return "redirect:/prj_meeting_calendar";
 	}
 	
-	// 회의일정
+	// 회의일정 알림
 	@MessageMapping("/meet")
 	@SendTo("/noti/meeting")
 	public List<Meeting> selMeetingList(HashMap<String, String> map) {
@@ -358,14 +358,13 @@ public class LjhController {
 		return meetingList;
 	}
 	
-	// 게시판 답글
+	// 게시판 답글 알림 (프로젝트 업무보고 + 질문 게시판 통합)
 	@MessageMapping("/rep")
 	@SendTo("/noti/boardRep")
 	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
 		System.out.println("LjhController getBoardRep Start");
 		
 		List<PrjBdData> boardRep = new ArrayList<PrjBdData>();
-		
 		boardRep = ljhs.getBoardRep(map);
 		
 		System.out.println("boardRep.size() -> " + boardRep.size());
@@ -373,20 +372,20 @@ public class LjhController {
 		return boardRep;
 	}
 	
-//	@MessageMapping("/rep")
-//	@SendTo("/noti/boardRep")
-//	public LjhResponse getBoardRep(HashMap<String,  String> map) {
-//		System.out.println("LjhController getBoardRep Start");
-//		
-//		LjhResponse ljhResponse = new LjhResponse();
-//		
-//		List<PrjBdData> BoardList = ljhs.getParentBoard();
-//		List<PrjBdData> RepList = ljhs.get
-//		
-//		return null;
-//	}
-
-
-
-
+	// 게시판 댓글 알림 (공용게시판 + 프로젝트 업무보고 + 프로젝트 공지/자료 통합)
+	@MessageMapping("/comt")
+	@SendTo("/noti/boardComt")
+	public List<PrjBdData> getBoardComt(HashMap<String, String> map) {
+		System.out.println("LjhController getBoardComt Start");
+		
+		List<PrjBdData> boardComt = new ArrayList<PrjBdData>();
+		boardComt = ljhs.getBoardComt(map);
+		
+		System.out.println("boardComt.size() -> " + boardComt.size());
+		
+		return boardComt;
+	}
+	
+	
+	
 }

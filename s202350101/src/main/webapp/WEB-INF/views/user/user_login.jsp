@@ -64,7 +64,7 @@
     <div class="login-wrapper">
         <h2>ChoongAng</h2>
         <form:form action="user_login_check" id="login-form" method="post" modelAttribute="userInfo">
-            <input type="text" 	   name="user_id" placeholder="ID" value="tester1">
+            <input type="text" 	   name="user_id" placeholder="ID" value="tester2">
             <small style="color: red"><form:errors path="user_id"/></small>
             <input type="password" name="user_pw" placeholder="Password" value="tester1">
             <small style="color: red"><form:errors path="user_pw"/></small>

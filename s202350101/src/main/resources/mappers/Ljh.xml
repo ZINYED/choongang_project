@@ -125,36 +125,74 @@
 	
 	<!-- 알림 - 접속한 회원 별 게시판 답글 select -->
 	<select id="ljhBoardRep" parameterType="hashmap" resultType="PrjBdData">
-<!--  		SELECT  bd.*
-		FROM    user_env u, (   SELECT  doc_no, project_id, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
-		                        FROM    prj_bd_data
-		                        WHERE   doc_group = doc_no
-		                        AND     user_id = #{user_id}
-		                        OR      parent_doc_user_id = #{user_id}   ) bd
-		WHERE   u.user_id = bd.parent_doc_user_id
-		AND     bd.alarm_flag = 'N'
-		OR      bd.alarm_flag is null
+		SELECT  p.app_id, p.doc_no, p.subject, p.doc_group, p.alarm_flag, p.parent_doc_user_id, p.parent_doc_no, p.project_id,
+		        (SELECT app_name
+		         FROM   app_info
+		         WHERE  app_id = p.app_id) app_name
+		FROM    prj_bd_data p, app_info a, user_env u
+		WHERE   p.app_id = a.app_id
+		AND     u.user_id = p.user_id
+		AND     (
+		        (p.doc_no = p.doc_group AND p.user_id = #{user_id}) 
+		        OR
+		        (p.parent_doc_user_id = #{user_id} AND alarm_flag = 'N')
+		)
 		AND     u.env_alarm_reply = 'Y'
-		AND     u.user_id = #{user_id} -->
+		UNION
+		SELECT  q.app_id, q.doc_no, q.subject, q.doc_group, q.alarm_flag, q.parent_doc_user_id, q.parent_doc_no, null project_id,
+		        (SELECT app_name
+		         FROM   app_info
+		         WHERE  app_id = q.app_id) app_name
+		FROM    bd_qna q, app_info a, user_env u
+		WHERE   q.app_id = a.app_id
+		AND     u.user_id = q.user_id
+		AND     (
+		        (q.doc_group = q.doc_no AND q.user_id = #{user_id}) 
+		        OR
+		        (q.parent_doc_user_id = #{user_id} AND alarm_flag = 'N')
+		)
+		AND     u.env_alarm_reply = 'Y'
+	</select>
+	
+	<!-- 알림 - 접속한 회원 별 게시판 원글 및 댓글 select -->
+	<select id="ljhBoardComt" parameterType="hashmap" resultType="PrjBdData">
+		<!-- BD_FREE      /   BD_FREE_COMT -->
+		SELECT  f.doc_no, f.user_id, f.subject, f.bd_category, fc.comment_context, f.app_id, null project_id,
+		        (SELECT app_name
+		         FROM   app_info
+		         WHERE  app_id = f.app_id) app_name
+		FROM    bd_free f, bd_free_comt fc, app_info a, user_env u
+		WHERE   f.app_id = a.app_id
+		AND     f.doc_no = fc.doc_no
+		AND     u.user_id = f.user_id
+		AND     (f.user_id = #{user_id} AND fc.alarm_flag = 'N')
+		AND     u.env_alarm_comm = 'Y'
 		
-		SELECT  bd.*
-FROM    user_env u, (   SELECT  app_id, doc_no, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
-                        FROM    prj_bd_data 
-                        WHERE   doc_group = doc_no
-                        AND     user_id = #{user_id}
-                        OR      parent_doc_user_id = #{user_id}
-                        union
-                        SELECT  app_id, doc_no, subject, doc_group, alarm_flag, parent_doc_user_id, parent_doc_no
-                        FROM    bd_qna
-                        WHERE   doc_group = doc_no
-                        AND     user_id = #{user_id}
-                        OR      parent_doc_user_id = #{user_id}  ) bd
-WHERE   u.user_id = bd.parent_doc_user_id
-AND     bd.alarm_flag = 'N'
-OR      bd.alarm_flag is null
-AND     u.env_alarm_reply = 'Y'
-AND     u.user_id = #{user_id}
+		UNION
+		<!-- PRJ_BD_REP   /   BD_REP_COMT -->
+		SELECT  pr.doc_no, pr.user_id, pr.subject, pr.bd_category, prc.comment_context, pr.app_id, pr.project_id,
+		        (SELECT app_name
+		         FROM   app_info
+		         WHERE  app_id = pr.app_id) app_name
+		FROM    prj_bd_rep pr, bd_rep_comt prc, app_info a, user_env u
+		WHERE   pr.app_id = a.app_id
+		AND     pr.doc_no = prc.doc_no
+		AND     u.user_id = pr.user_id
+		AND     (pr.user_id = #{user_id} AND prc.alarm_flag = 'N')
+		AND     u.env_alarm_comm = 'Y'
 		
+		UNION
+		<!-- PRJ_BD_DATA  /   BD_DATA_COMT -->
+		SELECT  pd.doc_no, pd.user_id, pd.subject, pd.bd_category, pdc.comment_context, pd.app_id, pd.project_id,
+		        (SELECT app_name
+		         FROM   app_info
+		         WHERE  app_id = pd.app_id) app_name
+		FROM    prj_bd_data pd, bd_data_comt pdc, app_info a, user_env u
+		WHERE   pd.app_id = a.app_id
+		AND     pd.doc_no = pdc.doc_no
+		AND     u.user_id = pd.user_id
+		AND     (pd.user_id = #{user_id} AND pdc.alarm_flag = 'N')
+		AND     u.env_alarm_comm = 'Y'
 	</select>
 	
 </mapper>

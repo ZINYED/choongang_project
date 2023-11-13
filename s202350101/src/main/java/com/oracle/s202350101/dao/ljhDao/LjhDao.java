@@ -27,6 +27,7 @@ public interface LjhDao {
 	int 				insertMeetingReport(Meeting meeting);
 	List<Meeting> 		getUserMeeting(HashMap<String, String> map);
 	List<PrjBdData> 	getBoardRep(HashMap<String, String> map);
+	List<PrjBdData> 	getBoardComt(HashMap<String, String> map);
 
 
 }

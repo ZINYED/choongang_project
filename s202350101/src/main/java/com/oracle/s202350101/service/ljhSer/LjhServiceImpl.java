@@ -336,7 +336,7 @@ public class LjhServiceImpl implements LjhService {
 		return meetingList;
 	}
 
-	// 알림 - 접속한 회원 별 게시판 답글 select
+	// 알림 - 접속한 회원 별 게시판 원글 및 답글 select
 	@Override
 	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
 		System.out.println("LjhServiceImpl getBoardRep Start");
@@ -345,6 +345,17 @@ public class LjhServiceImpl implements LjhService {
 		boardRep = ljhd.getBoardRep(map);
 		
 		return boardRep;
+	}
+
+	// 알림 - 접속한 회원 별 게시판 원글 및 댓글 select
+	@Override
+	public List<PrjBdData> getBoardComt(HashMap<String, String> map) {
+		System.out.println("LjhServiceImpl getBoardComt Start");
+		List<PrjBdData> boardComt = null;
+		
+		boardComt = ljhd.getBoardComt(map);
+		
+		return boardComt;
 	}
 	
 }

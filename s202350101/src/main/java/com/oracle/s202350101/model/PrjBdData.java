@@ -33,9 +33,5 @@ public class PrjBdData {
 	private String  parent_doc_subject; //원글제목	
 	private String  app_name;			//어플리케이션 이름
 	
-//	private int		qna_doc_no;					// BD_QNA 테이블 doc_no 
-//	private String	qna_user_id;				// BD_QNA 테이블 user_id
-//	private int		qna_parent_doc_no;			// BD_QNA 테이블 parent_doc_no
-//	private String	qna_parent_doc_user_id;		// BD_QNA 테이블 parent_doc_user_id
-//	private String	qna_alarm_flag;				// BD_QNA 테이블 alarm_flag
+	private String	comment_context;	// 댓글 내용
 }

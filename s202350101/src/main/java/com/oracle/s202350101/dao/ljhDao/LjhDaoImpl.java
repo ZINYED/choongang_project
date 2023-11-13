@@ -254,7 +254,7 @@ public class LjhDaoImpl implements LjhDao {
 		return meetingList;
 	}
 
-	// 알림 - 접속한 회원 별 게시판 답글 select
+	// 알림 - 접속한 회원 별 게시판 원글 및 답글 select
 	@Override
 	public List<PrjBdData> getBoardRep(HashMap<String, String> map) {
 		System.out.println("LjhDaoImpl getBoardRep Start");
@@ -268,6 +268,22 @@ public class LjhDaoImpl implements LjhDao {
 		}
 		
 		return boardRep;
+	}
+
+	// 알림 - 접속한 회원 별 게시판 원글 및 댓글 select
+	@Override
+	public List<PrjBdData> getBoardComt(HashMap<String, String> map) {
+		System.out.println("LjhDaoImpl getBoardComt Start");
+		List<PrjBdData> boardComt = null;
+		
+		try {
+			boardComt = session.selectList("ljhBoardComt", map);
+			System.out.println("LjhDaoImpl getBoardComt boardComt.size() -> " + boardComt.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getBoardComt Exception : " + e.getMessage()); 
+		}
+		
+		return boardComt;
 	}
 
 }

@@ -93,24 +93,108 @@
 	            	let repStr = '';
 	            	
  	            	for (var i = 0; i < repdata.length; i++) {
-	                    const data_doc_no = repdata[i].doc_no;
-	                    const data_subject = repdata[i].subject;
-	                    const data_app_id = repdata[i].app_id;
+	                    const doc_no = repdata[i].doc_no;				// 글 번호
+	                    const subject = repdata[i].subject;				// 글 제목
+	                    const board_name = repdata[i].app_name;			// 게시판 이름
+	                    const app_id = repdata[i].app_id;
 	                    
 	                    for (var j = 0; j < repdata.length; j++) {
-	                    	const data_parent_doc_no = repdata[j].parent_doc_no;
-	                    	const data_parent_app_id = repdata[j].app_id;
+	                    	const parent_doc_no = repdata[j].parent_doc_no;
+	                    	const parent_app_id = repdata[j].app_id;
+	                    	
+	                    	const rep_subject = repdata[j].subject;		// 답글 제목
+	                    	const rep_doc_no = repdata[j].doc_no;		// 답글 번호
+	                    	const doc_group = repdata[j].doc_group;		// doc_group
+	                    	
 	                    	//		글번호		답글 부모
-	                    	if (data_doc_no == data_parent_doc_no && data_parent_app_id == data_app_id) {
-		                    	repStr += '<p>' + data_subject + '에 새로운 답글이 등록되었습니다.</p>';	
-		                    }	
+	                    	if (doc_no == parent_doc_no && parent_app_id == app_id) {
+		                    	repStr += '<p>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';	
+		                    }
 	                    }
 	                }
+ 	            	
 	            	repNotify.append(repStr);
+	            });
+	            
+	            // 게시판 댓글
+	            stompClient.subscribe("/noti/boardComt", function(data) {
+	            	var comtdata = JSON.parse(data.body);
+	            	console.log(comtdata);
+	            	
+	            	let comtNotify = $('#comtNotify');
+	            	comtNotify.empty();
+	            	
+	            	let comtStr = '';
+	            	
+	            	for (var i = 0; i < comtdata.length; i++) {
+	            		const app_id 		= comtdata[i].app_id;					//	분류
+            			const board_name 	= comtdata[i].app_name;					// 	게시판 이름
+	            		const bd_category 	= comtdata[i].bd_category;				// 	카테고리
+	            		const doc_no 		= comtdata[i].doc_no;					// 	글 번호
+	            		const subject 		= comtdata[i].subject;					// 	글 제목
+	            		const comment_context 	= comtdata[i].comment_context;		// 	댓글 내용
+	            		const project_id 		= comtdata[i].project_id;			//	프로젝트 ID
+	            		
+	            		var count_comt = 0;		// 댓글 갯수
+	            		
+	            		// 공용게시판
+	            		if (app_id == 1) {
+	            			if (bd_category == '자유') {		// 자유 게시판
+		            			for (var j = 0; j < comtdata.length; j++) {
+		            				const app_id_2 = comtdata[j].app_id;
+		                			const doc_no_2 = comtdata[j].doc_no;
+		                			
+		                			if (doc_no == doc_no_2) {
+		                				console.log("bnbnnbb");
+		                				console.log(j);
+		                				count_comt++;
+		                			}
+		            			}
+	            			
+	            			//	안 읽힌다
+	            				console.log("hihi");	            				
+	            				console.log(comtdata[i]);
+//		            			comtStr += '<p onclick=location.href="/free_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + count_comt + '건 등록되었습니다.</p>';
+		            			comtStr += '<p onclick=location.href="/free_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>"
+	            			}
+	            			
+	            			if (bd_category == '이벤트') {	// 이벤트 게시판
+	            				for (var j = 0; j < comtdata.length; j++) {
+		            				const app_id_2 = comtdata[j].app_id;
+		                			const doc_no_2 = comtdata[j].doc_no;
+		            			}
+		            			
+		            			comtStr += '<p onclick=location.href="/event_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            			}
+	            		}
+	            		
+	            		// 프로젝트 공지/자료
+	            		if (app_id == 3) {
+	            			for (var j = 0; j < comtdata.length; j++) {
+	            				const app_id_2 = comtdata[j].app_id;
+	                			const doc_no_2 = comtdata[j].doc_no;
+	            			}
+	            			
+	            			comtStr += '<p onclick=location.href="prj_board_data_read?doc_no=' + doc_no + '&project_id=' + project_id + '">[' + board_name + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            		}
+	            		
+	            		// 프로젝트 업무보고
+	            		if (app_id == 4) {
+	            			for (var j = 0; j < comtdata.length; j++) {
+	            				const app_id_2 = comtdata[j].app_id;
+	                			const doc_no_2 = comtdata[j].doc_no;
+	            			}
+	            			
+	            			comtStr += '<p onclick=location.href="prj_board_report_read?doc_no=' + doc_no + '&project_id=' + project_id + '">[' + board_name + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            		}
+	            	}
+	            	
+	            	comtNotify.append(comtStr);
 	            });
 
 	            stompClient.send('/queue/meet', {}, JSON.stringify(obj));
 	            stompClient.send('/queue/rep', {}, JSON.stringify(obj));
+	            stompClient.send('/queue/comt', {}, JSON.stringify(obj));
 	            console.log("4");
 	        });
 	    }
@@ -277,6 +361,9 @@
 	
 	</div>
 	<div id="repNotify">
+	
+	</div>
+	<div id="comtNotify">
 	
 	</div>
 </div>
