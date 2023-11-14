@@ -2,13 +2,20 @@
     pageEncoding="UTF-8"%>
 
 <style type="text/css">
+	body{
+	 -ms-overflow-style: none;
+	 }
+	::-webkit-scrollbar {
+	  display: none;
+	}
 	#notify {
 	    position: absolute;
 	    width: 350px;
-	    height: 450px;
-	    background-color: skyblue;
 	    right: 400px;
 	    z-index: 999;
+	    padding: 10px;
+	    background-color: aliceblue;
+	    overflow-y: scroll;
 	}
 </style>
 
@@ -50,12 +57,32 @@
 	
 	            // console.log("3");
 	            console.log(obj);
-	
+				
+	            // 프로젝트 생성 승인 알림 (팀장)
+	            stompClient.subscribe("/noti/newprj", function(data) {
+	            	console.log("프로젝트 생성 승인 알림");
+	            	
+	            	var newprjdata = JSON.parse(data.body);
+	            	console.log(newprjdata);
+	            	
+	            	let newPrjNotify = $('#newPrjNotify');
+	            	newPrjNotify.empty();
+	                
+	                let str = '';
+	            	
+	            	for (var i = 0; i < newprjdata.length; i++) {
+	            		const prjName = newprjdata[i].project_name;						// 프로젝트명
+	            		
+	            		str += '<p onclick="location.href=' + "'/prj_mgr_step_list'" + '">' + prjName + ' 프로젝트 생성이 승인되었습니다.</p>';
+	            	}
+	            	
+	            	newPrjNotify.append(str);
+	            });
+	            
+	            // 회의일정 알림
 	            stompClient.subscribe("/noti/meeting", function (data) {
-					// console.log("hi");
-	                console.log(data);
-	
-	                var rtndata = JSON.parse(data.body);
+					var rtndata = JSON.parse(data.body);
+					console.log(rtndata);
 	
 	                const date = new Date();
 	                const year = date.getFullYear();
@@ -68,18 +95,18 @@
 	                let meetingNotify = $('#meetingNotify');
 	                meetingNotify.empty();
 	                
-	                let str = '';
+	                let meetStr = '';
 	                
 	                for (var i = 0; i < rtndata.length; i++) {
 	                    const meetingDate = rtndata[i].meeting_date;
 	                    // console.log(meetingDate);
 	
 	                    if (meetingDate == now) {
-							str += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
+	                    	meetStr += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
 	                    }
 	                }
 	                
-	                meetingNotify.append(str);
+	                meetingNotify.append(meetStr);
 	            });
 	            
 	            // 게시판 답글
@@ -125,73 +152,71 @@
 	            	comtNotify.empty();
 	            	
 	            	let comtStr = '';
-	            	
+
+    				let doc = 0;
+    				let app = 0;
+    				
 	            	for (var i = 0; i < comtdata.length; i++) {
-	            		const app_id 		= comtdata[i].app_id;					//	분류
-            			const board_name 	= comtdata[i].app_name;					// 	게시판 이름
-	            		const bd_category 	= comtdata[i].bd_category;				// 	카테고리
-	            		const doc_no 		= comtdata[i].doc_no;					// 	글 번호
-	            		const subject 		= comtdata[i].subject;					// 	글 제목
+	            		const app_id 			= comtdata[i].app_id;				//	테이블 분류
+            			const board_name 		= comtdata[i].app_name;				// 	게시판 이름
+	            		const bd_category 		= comtdata[i].bd_category;			// 	카테고리
+	            		const doc_no 			= comtdata[i].doc_no;				// 	글 번호
+	            		const subject 			= comtdata[i].subject;				// 	글 제목
 	            		const comment_context 	= comtdata[i].comment_context;		// 	댓글 내용
+	            		const comment_count		= comtdata[i].comment_count;		// 	댓글 갯수
 	            		const project_id 		= comtdata[i].project_id;			//	프로젝트 ID
-	            		
-	            		var count_comt = 0;		// 댓글 갯수
 	            		
 	            		// 공용게시판
 	            		if (app_id == 1) {
 	            			if (bd_category == '자유') {		// 자유 게시판
-		            			for (var j = 0; j < comtdata.length; j++) {
-		            				const app_id_2 = comtdata[j].app_id;
-		                			const doc_no_2 = comtdata[j].doc_no;
-		                			
-		                			if (doc_no == doc_no_2) {
-		                				console.log("bnbnnbb");
-		                				console.log(j);
-		                				count_comt++;
-		                			}
-		            			}
-	            			
-	            			//	안 읽힌다
-	            				console.log("hihi");	            				
-	            				console.log(comtdata[i]);
-//		            			comtStr += '<p onclick=location.href="/free_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + count_comt + '건 등록되었습니다.</p>';
-		            			comtStr += '<p onclick=location.href="/free_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>"
+								let loc ='free_content';
+	            				if (doc != doc_no || app != app_id){
+	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'free_content'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+	            					console.log('comment_count');
+	            					console.log(comment_count);
+	            					doc = doc_no;
+	            					app = app_id;
+	            				}
 	            			}
-	            			
 	            			if (bd_category == '이벤트') {	// 이벤트 게시판
-	            				for (var j = 0; j < comtdata.length; j++) {
-		            				const app_id_2 = comtdata[j].app_id;
-		                			const doc_no_2 = comtdata[j].doc_no;
-		            			}
-		            			
-		            			comtStr += '<p onclick=location.href="/event_content?doc_no=' + doc_no + '">[' + bd_category + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            				let loc = 'event_content';
+	            				if (doc != doc_no || app != app_id){
+	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'event_content'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+	            					console.log('comment_count');
+	            					console.log(comment_count);
+	            					doc = doc_no;
+	            					app = app_id;
+	            				}
 	            			}
 	            		}
 	            		
 	            		// 프로젝트 공지/자료
 	            		if (app_id == 3) {
-	            			for (var j = 0; j < comtdata.length; j++) {
-	            				const app_id_2 = comtdata[j].app_id;
-	                			const doc_no_2 = comtdata[j].doc_no;
-	            			}
-	            			
-	            			comtStr += '<p onclick=location.href="prj_board_data_read?doc_no=' + doc_no + '&project_id=' + project_id + '">[' + board_name + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            			if (doc != doc_no || app != app_id){
+	            				comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_data_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
+            					console.log('comment_count');
+            					console.log(comment_count);
+            					doc = doc_no;
+            					app = app_id;
+            				}
 	            		}
 	            		
 	            		// 프로젝트 업무보고
 	            		if (app_id == 4) {
-	            			for (var j = 0; j < comtdata.length; j++) {
-	            				const app_id_2 = comtdata[j].app_id;
-	                			const doc_no_2 = comtdata[j].doc_no;
-	            			}
-	            			
-	            			comtStr += '<p onclick=location.href="prj_board_report_read?doc_no=' + doc_no + '&project_id=' + project_id + '">[' + board_name + ' 게시판] ' + subject + "에 [댓글] '" + comment_context + "' 등록되었습니다.</p>";
+	            			if (doc != doc_no || app != app_id){
+	            				comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_report_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
+            					console.log('comment_count');
+            					console.log(comment_count);
+            					doc = doc_no;
+            					app = app_id;
+            				}
 	            		}
-	            	}
+	            	};
 	            	
-	            	comtNotify.append(comtStr);
+ 					comtNotify.append(comtStr);
 	            });
 
+	            stompClient.send('/queue/prj', {}, JSON.stringify(obj));
 	            stompClient.send('/queue/meet', {}, JSON.stringify(obj));
 	            stompClient.send('/queue/rep', {}, JSON.stringify(obj));
 	            stompClient.send('/queue/comt', {}, JSON.stringify(obj));
@@ -220,6 +245,28 @@
 		}
 		
 	};
+	
+	// 페이지 이동
+	function locatFree(cdoc_no, lloc){
+		console.log("locat!");
+		console.log(cdoc_no);
+		window.open(
+			"/" + lloc + "?doc_no=" + cdoc_no,
+			"Child",
+			"width=600, height=570, top=50, left=50"
+		);
+	}
+	
+	function locatPrj(cdoc_no, cproject_id, lloc){
+		console.log("locat!");
+		console.log(cdoc_no);
+		window.open(
+			"/" + lloc + "?doc_no=" + cdoc_no + "&project_id=" + cproject_id,
+			"Child",
+			"width=600, height=570, top=50, left=50"
+		);
+	}
+	
 </script>
 
 <style text="text/css">
@@ -356,15 +403,21 @@
 	</div>
 </nav>
 
-<div id="notify" style="display: none; overflow-y: scroll; height:400px;">
+<div id="notify" style="display: none;  height:400px;">
+	<div id="newPrjNotify">
+	<!-- 프로젝트 생성 승인 알림 -->
+	</div>
+	<p>
 	<div id="meetingNotify">
-	
+	<!-- 회의일정 알림 -->
 	</div>
+	<p>
 	<div id="repNotify">
-	
+	<!-- 답글 알림 -->
 	</div>
+	<p>
 	<div id="comtNotify">
-	
+	<!-- 댓글 알림 -->
 	</div>
 </div>
 

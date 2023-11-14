@@ -29,6 +29,7 @@ public interface LjhService {
 	List<Meeting> 		getUserMeeting(HashMap<String, String> map);
 	List<PrjBdData> 	getBoardRep(HashMap<String, String> map);
 	List<PrjBdData> 	getBoardComt(HashMap<String, String> map);
+	List<PrjInfo> 		getPrjApprove(HashMap<String, String> map);
 
 
 }

@@ -26,15 +26,15 @@ public class PrjInfo {
 	private int		del_status;
 	
 	// Join
-	private String 	project_manager_name; //팀장이름
-	private String 	member_user_id; //선택된 멤버id
-	private int  project_manager_class;		//팀장 class
-	private String project_approve_name;	// 프로젝트 승인 상태
-	private String project_status_name;  // 프로젝트 진행 상태
-	private String del_status_name;		 // 프로젝트 삭제상태
+	private String 	project_manager_name; 	//팀장이름
+	private String 	member_user_id; 		//선택된 멤버id
+	private int  	project_manager_class;	//팀장 class
+	private String	project_approve_name;	// 프로젝트 승인 상태
+	private String	project_status_name;  	// 프로젝트 진행 상태
+	private String	del_status_name;		// 프로젝트 삭제 상태
 	
 	// 조회용
-	private String search;   	private String keyword;
-	private String pageNum;		private int total;
-	private int start; 		 	private int end;
+	private String	search;			private String	keyword;
+	private String	pageNum;		private int		total;
+	private int		start; 		 	private int		end;
 }

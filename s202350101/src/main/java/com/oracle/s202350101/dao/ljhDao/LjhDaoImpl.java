@@ -280,10 +280,26 @@ public class LjhDaoImpl implements LjhDao {
 			boardComt = session.selectList("ljhBoardComt", map);
 			System.out.println("LjhDaoImpl getBoardComt boardComt.size() -> " + boardComt.size());
 		} catch (Exception e) {
-			System.out.println("LjhDaoImpl getBoardComt Exception : " + e.getMessage()); 
+			System.out.println("LjhDaoImpl getBoardComt Exception : " + e.getMessage());
 		}
 		
 		return boardComt;
+	}
+
+	// 프로젝트 생성 승인 알림 (팀장)
+	@Override
+	public List<PrjInfo> getPrjApprove(HashMap<String, String> map) {
+		System.out.println("LjhDaoImpl getPrjApprove Start");
+		List<PrjInfo> prjApprove = null;
+		
+		try {
+			prjApprove = session.selectList("ljhPrjApprove", map);
+			System.out.println("LjhDaoImpl getPrjApprove prjApprove.size() -> " + prjApprove.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getPrjApprove Exception : " + e.getMessage());
+		}
+		
+		return prjApprove;
 	}
 
 }

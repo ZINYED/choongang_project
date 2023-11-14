@@ -165,21 +165,23 @@ public class LjhController {
 	public String meetingReportUpdate(Meeting meeting, Model model, HttpServletRequest request, @RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
 		System.out.println("LjhController meetingReportUpdate");
 		
-		// 첨부파일 업로드
-		String attach_path = "upload";
-		String uploadPath = request.getSession().getServletContext().getRealPath(attach_path);		// 저장 위치 주소 지정
-		
-		System.out.println("File Upload Post Start");
-		
-		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
-		log.info("size : " + file1.getSize());							// 파일 사이즈
-		log.info("contextType : " + file1.getContentType());			// 파일 타입
-		log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
-		
-		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
-		log.info("Return savedName : " + savedName);
-		meeting.setAttach_name(savedName);
-		meeting.setAttach_path(attach_path);
+		if (!file1.isEmpty()) {
+			// 첨부파일 업로드
+			String attach_path = "upload";
+			String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+			
+			System.out.println("File Upload Post Start");
+			
+			log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+			log.info("size : " + file1.getSize());							// 파일 사이즈
+			log.info("contextType : " + file1.getContentType());			// 파일 타입
+			log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
+			
+			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
+			log.info("Return savedName : " + savedName);
+			meeting.setAttach_name(savedName);
+			meeting.setAttach_path(attach_path);
+		}
 		
 		model.addAttribute("meeting", meeting);
 		
@@ -187,14 +189,15 @@ public class LjhController {
 		
 		int meeting_id = meeting.getMeeting_id();
 		model.addAttribute("meeting_id", meeting_id);
-		model.addAttribute("savedName", savedName);
+//		model.addAttribute("savedName", savedName);
 		
 		return "redirect:prj_meeting_report_read/?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id();
 	}
 	
 	// 회의일정 등록
 	@PostMapping(value = "prj_meeting_date_write")
-	public String prjMeetingDateWrite(Meeting meeting, Model model, HttpServletRequest request, @RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
+	public String prjMeetingDateWrite(Meeting meeting, Model model, HttpServletRequest request, 
+						@RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
 		System.out.println("LjhController prjMeetingDateWrite Start");
 
 		// user 정보 세션에 저장해오기
@@ -204,21 +207,23 @@ public class LjhController {
 		String loginUserId = userInfoDTO.getUser_id();		// 세션에 저장된 user_id
 		meeting.setUser_id(loginUserId);
 		
-		// 첨부파일 업로드
-		String attach_path = "upload";
-		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
-		
-		System.out.println("File Upload Post Start");
-		
-		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
-		log.info("size : " + file1.getSize());							// 파일 사이즈
-		log.info("contextType : " + file1.getContentType());			// 파일 타입
-		log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
-		
-		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
-		log.info("Return savedName : " + savedName);
-		meeting.setAttach_name(savedName);
-		meeting.setAttach_path(attach_path);
+		if (!file1.isEmpty()) {
+			// 첨부파일 업로드
+			String attach_path = "upload";
+			String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+			
+			System.out.println("File Upload Post Start");
+			
+			log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+			log.info("size : " + file1.getSize());							// 파일 사이즈
+			log.info("contextType : " + file1.getContentType());			// 파일 타입
+			log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
+			
+			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
+			log.info("Return savedName : " + savedName);
+			meeting.setAttach_name(savedName);
+			meeting.setAttach_path(attach_path);
+		}
 		
 		System.out.println("meeting -> " + meeting);
 		
@@ -309,21 +314,23 @@ public class LjhController {
 		String loginUserId = userInfoDTO.getUser_id();		// 세션에 저장된 user_id
 		meeting.setUser_id(loginUserId);
 		
-		// 첨부파일 업로드
-		String attach_path = "upload";
-		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
-		
-		System.out.println("File Upload Post Start");
-		
-		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
-		log.info("size : " + file1.getSize());							// 파일 사이즈
-		log.info("contextType : " + file1.getContentType());			// 파일 타입
-		log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
-		
-		String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
-		log.info("Return savedName : " + savedName);
-		meeting.setAttach_name(savedName);
-		meeting.setAttach_path(attach_path);
+		if (!file1.isEmpty()) {
+			// 첨부파일 업로드
+			String attach_path = "upload";
+			String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+			
+			System.out.println("File Upload Post Start");
+			
+			log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+			log.info("size : " + file1.getSize());							// 파일 사이즈
+			log.info("contextType : " + file1.getContentType());			// 파일 타입
+			log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
+			
+			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
+			log.info("Return savedName : " + savedName);
+			meeting.setAttach_name(savedName);
+			meeting.setAttach_path(attach_path);
+		}
 		
 		System.out.println("meeting -> " + meeting);
 		
@@ -384,6 +391,20 @@ public class LjhController {
 		System.out.println("boardComt.size() -> " + boardComt.size());
 		
 		return boardComt;
+	}
+	
+	// 프로젝트 생성 승인 알림 (팀장)
+	@MessageMapping("/prj")
+	@SendTo("/noti/newprj")
+	public List<PrjInfo> getPrjApprove(HashMap<String, String> map) {
+		System.out.println("LjhController getPrjApprove Start");
+		
+		List<PrjInfo> prjApprove = new ArrayList<PrjInfo>();
+		prjApprove = ljhs.getPrjApprove(map);
+		
+		System.out.println("prjApprove.size() -> " + prjApprove.size());
+		
+		return prjApprove;
 	}
 	
 	

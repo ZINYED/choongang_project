@@ -358,4 +358,15 @@ public class LjhServiceImpl implements LjhService {
 		return boardComt;
 	}
 	
+	// 프로젝트 생성 승인 알림 (팀장)
+	@Override
+	public List<PrjInfo> getPrjApprove(HashMap<String, String> map) {
+		System.out.println("LjhServiceImpl getPrjApprove Start");
+		List<PrjInfo> prjApprove = null;
+		
+		prjApprove = ljhd.getPrjApprove(map);
+		
+		return prjApprove;
+	}
+	
 }

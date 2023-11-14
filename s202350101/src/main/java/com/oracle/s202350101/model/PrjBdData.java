@@ -23,15 +23,16 @@ public class PrjBdData {
 	private String 	parent_doc_user_id;	private int 	parent_doc_no;
 	
 	
-	//조회용
-	private int		rn;					//목록 rownum번호
-	private int		start;				//페이지 시작번호
-	private int		end;				//페이지 끝번호
-	private String	user_name;			//작성자명
-	private String	bd_category_name; 	//분류명
-	private String  attach_delete_flag; //편집저장시 기존첨부 삭제여부(D)
-	private String  parent_doc_subject; //원글제목	
-	private String  app_name;			//어플리케이션 이름
+	// 조회용
+	private int		rn;					// 목록 rownum번호
+	private int		start;				// 페이지 시작번호
+	private int		end;				// 페이지 끝번호
+	private String	user_name;			// 작성자명
+	private String	bd_category_name; 	// 분류명
+	private String  attach_delete_flag; // 편집저장시 기존첨부 삭제여부(D)
+	private String  parent_doc_subject; // 원글제목	
+	private String  app_name;			// 어플리케이션 이름
 	
 	private String	comment_context;	// 댓글 내용
+	private int		comment_count;		// doc_no 별 댓글 갯수
 }
