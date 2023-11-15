@@ -189,9 +189,8 @@ public class LjhController {
 		
 		int meeting_id = meeting.getMeeting_id();
 		model.addAttribute("meeting_id", meeting_id);
-//		model.addAttribute("savedName", savedName);
-		
-		return "redirect:prj_meeting_report_read/?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id();
+
+		return "redirect:prj_meeting_report_read?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id();
 	}
 	
 	// 회의일정 등록
@@ -268,6 +267,7 @@ public class LjhController {
 		return savedName;
 	}
 	
+	// 회의일정 삭제
 	@ResponseBody
 	@RequestMapping(value = "prj_meeting_report_delete")
 	// 이상이 없으면 200 리턴
@@ -281,6 +281,46 @@ public class LjhController {
 		deleteResult = ljhs.deleteMeetingReport(meeting);
 		
 		return ResponseEntity.ok(deleteResult);
+	}
+	
+	// 회의일정 수정
+	@ResponseBody
+	@RequestMapping(value = "/prj_meeting_date_update")
+	public int prjMeetingDateUpdate(Meeting meeting, Model model, HttpServletRequest request, 
+			@RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
+		
+		System.out.println("LjhController prjMeetingDateUpdate Start");
+		
+		// user 정보 세션에 저장해오기
+		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		String loginUserId = userInfoDTO.getUser_id();		// 세션에 저장된 user_id
+		meeting.setUser_id(loginUserId);
+		
+		if (file1 != null && !file1.isEmpty()) {
+			// 첨부파일 업로드
+			String attach_path = "upload";
+			String uploadPath = request.getSession().getServletContext().getRealPath("/upload/");		// 저장 위치 주소 지정
+			
+			System.out.println("File Upload Post Start");
+			
+			log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+			log.info("size : " + file1.getSize());							// 파일 사이즈
+			log.info("contextType : " + file1.getContentType());			// 파일 타입
+			log.info("uploadPath : " + uploadPath);							// 파일 저장되는 주소
+			
+			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
+			log.info("Return savedName : " + savedName);
+			meeting.setAttach_name(savedName);
+			meeting.setAttach_path(attach_path);
+		}
+		
+		int updateResult = 0;
+		
+		updateResult = ljhs.updateMeetingDate(meeting);
+		
+		return updateResult;
 	}
 	
 	// 회의일정 클릭 시 정보 가져오기
@@ -342,6 +382,8 @@ public class LjhController {
 		return "redirect:/prj_meeting_calendar";
 	}
 	
+
+	//-----------------------------------------------------------------------------------------//
 	// 회의일정 알림
 	@MessageMapping("/meet")
 	@SendTo("/noti/meeting")
@@ -394,8 +436,8 @@ public class LjhController {
 	}
 	
 	// 프로젝트 생성 승인 알림 (팀장)
-	@MessageMapping("/prj")
-	@SendTo("/noti/newprj")
+	@MessageMapping("/approve")
+	@SendTo("/noti/prjapprove")
 	public List<PrjInfo> getPrjApprove(HashMap<String, String> map) {
 		System.out.println("LjhController getPrjApprove Start");
 		
@@ -405,6 +447,26 @@ public class LjhController {
 		System.out.println("prjApprove.size() -> " + prjApprove.size());
 		
 		return prjApprove;
+	}
+	
+	// 프로젝트 생성 신청 - admin 계정만 해당
+	@MessageMapping("/prj")
+	@SendTo("/noti/newprj")
+	public List<PrjInfo> getNewPrj(HashMap<String, String> map) {
+		System.out.println("LjhController getNewPrj Start");
+		
+		List<PrjInfo> newPrjList = new ArrayList<PrjInfo>();
+		
+		String login_user_auth = map.get("user_auth");
+		System.out.println("LjhController getNewPrj login_user_auth -> " + login_user_auth);
+		
+		if ("admin".equals(login_user_auth)) {
+			newPrjList = ljhs.getNewPrj(map);
+			
+			System.out.println("newPrjList.size() -> " + newPrjList.size());
+		}
+		
+		return newPrjList;
 	}
 	
 	

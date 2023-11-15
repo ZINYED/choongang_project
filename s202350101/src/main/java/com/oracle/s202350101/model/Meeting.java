@@ -29,5 +29,6 @@ public class Meeting {
 	private String 			meetuser_id;
 	private String			user_name;
 	private MeetingMember	meetingMember;
+	private String  		attach_delete_flag;		// 편집저장시 기존첨부 삭제여부(D)
 	
 }

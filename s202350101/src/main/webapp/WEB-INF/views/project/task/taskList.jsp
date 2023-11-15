@@ -45,7 +45,7 @@
                     "<td>" + data[i].task_id + "</td>" +
                     "<td>" + data[i].user_name + "</td>" +
                     "<td>" + data[i].project_s_name + "</td>" +
-                    "<td><a href='task_detail?task_id=" + data[i].task_id + "&project_id=" + data[i].project_id + "'>" + data[i].task_subject + "</a></td>" +
+                    "<td><a href='task_detail?taskId=" + data[i].task_id + "&projectId=" + data[i].project_id + "'>" + data[i].task_subject + "</a></td>" +
                     "<td>" + data[i].task_stat_time + "</td>" +
                     "<td>" + data[i].task_end_itme + "</td>" +
                     "<td>" + statusText + "</td>" +
@@ -126,12 +126,11 @@
             <h1>Task List</h1>
             <a class="btn btn-primary" href="task_create_form">새 작업</a>
 
-            <select id="order_by" class="form-control">
-                <option value="task_status">상태별</option>
-                <option value="task_priority">우선순위별</option>
-                <option value="task_end_itme" selected>작업 마감일별</option>
-                <option value="project_step_seq">단계별</option>
-            </select>
+            <form action="task_list">
+                <label for ="search">검색 </label>
+                <input type="text" class="form-control" id="search" name="search">
+            </form>
+
 
             <h3>총 작업수: ${taskCount}</h3>
             <c:choose>
@@ -161,7 +160,7 @@
                             <td>${task.rn}</td>
                             <td>${task.user_name}</td>
                             <td>${task.project_s_name}</td>
-                            <td><a href='task_detail?task_id=${task.task_id}&project_id=${task.project_id}'>${task.task_subject}</a></td>
+                            <td><a href='task_detail?taskId=${task.task_id}&projectId=${task.project_id}'>${task.task_subject}</a></td>
                             <td>${task.task_stat_time}</td>
                             <td>${task.task_end_itme}</td>
                             <td>

@@ -1,27 +1,41 @@
 package com.oracle.s202350101.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.oracle.s202350101.model.BdFree;
 import com.oracle.s202350101.model.BdFreeComt;
-import com.oracle.s202350101.model.UserInfo;
+import com.oracle.s202350101.model.BdFreeGood;
+import com.oracle.s202350101.model.BdQna;
+import com.oracle.s202350101.model.BdQnaGood;
 import com.oracle.s202350101.model.Paging;
+import com.oracle.s202350101.model.UserInfo;
 import com.oracle.s202350101.service.cyjSer.CyjService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import oracle.net.aso.m;
 
-//@Slf4j
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class CyjControllerFreeQna {
@@ -122,36 +136,90 @@ public class CyjControllerFreeQna {
 	// 자유_추천
 	@ResponseBody
 	@RequestMapping(value = "ajaxFreeGoodCount")
-	public int freeGoodCount(int doc_no, Model model) {
+	public String freeGoodCount(HttpServletRequest request, int doc_no) {
 		System.out.println("CyjControllerQna ajaxFreeGoodCount Start----------------------");
 		
-		// 추천수 +1 올리기
-		int freeGoodCount = cs.freeGoodCount(doc_no);
-		System.out.println("추천 doc_no-> "     + doc_no);
-		System.out.println("freeGoodCount-> " + freeGoodCount);
+		System.out.println("session.userInfo-> " + request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
 		
-		// 올린 추천수 갖고 오기 
-		int freeGoodGet = cs.freeGoodGet(doc_no);
-		System.out.println("freeGoodGet-> " + freeGoodGet);
-		model.addAttribute("freeGoodGet", freeGoodGet);
+		// loginId : 추천에서 접속자
+		String loginId = userInfoDTO.getUser_id();
 		
-		return freeGoodGet;
+		BdFreeGood bdFreeGood = new BdFreeGood();
+		bdFreeGood.setDoc_no(doc_no);
+		bdFreeGood.setUser_id(loginId);
+		System.out.println(bdFreeGood.getDoc_no());
+		System.out.println(bdFreeGood.getUser_id());
+		
+		// 1. 추천자 목록에 있는지 중복 체크
+		int freeConfirm = cs.goodConfirm(bdFreeGood);
+		System.out.println("CyjControllerQna freeConfirm-> " + freeConfirm);
+		
+		String result = "";
+		BdFree bdFree = new BdFree();
+		bdFree.setDoc_no(doc_no);
+		
+		if (freeConfirm == 1) {		// 중복 O
+			result = "duplication";
+		} else {					// 중복 X
+			// 2. 추천 insert
+			int freeGoodInsert = cs.notifyGoodInsert(bdFreeGood);
+			System.out.println("CyjControllerQna freeGoodInsert-> " + freeGoodInsert);
+			
+			if (freeGoodInsert == 1) {
+				// 3. 추천 update
+				int freeGoodUpdate = cs.notifyGoodUpdate(bdFreeGood);
+				System.out.println("CyjControllerQna freeGoodUpdate-> " + freeGoodUpdate);
+				// 4. 추천 select
+				int freeGoodSelect = cs.notifyGoodSelect(bdFree);
+				System.out.println("CyjControllerQna freeGoodSelect-> " + freeGoodSelect);
+				result = String.valueOf(freeGoodSelect);
+			} else {
+				result = "error";  // error
+			}
+		}
+		return result;
 	}
 	
 // ------------------------------------------------------------------
 
 	// 자유_새 글 입력하기 위한 페이지 이동             
 	@RequestMapping(value = "free_insert_from")
-	public String freeInsert() {
+	public String freeInsert(Model model) {
 		System.out.println("CyjControllerQna free_insert_from Start----------------------");
+		
+		BdFree bdFree = new BdFree();
+		model.addAttribute("bdFree", bdFree);
 		
 		return "board/board_free/board_free_insert";
 	}
 	
 	// 새 글 입력 
 	@PostMapping(value = "free_insert")
-	public String freeInsert(HttpServletRequest request, BdFree bdFree, Model model) {
+	public String freeInsert(@Valid @ModelAttribute BdFree bdFree, BindingResult bindingResult
+							 ,@RequestParam(value = "file1", required = false) MultipartFile file1
+							 ,HttpServletRequest request, Model model) throws IOException {
 		System.out.println("CyjControllerQna free_insert Start----------------------");
+		
+		if (bindingResult.hasErrors()) {
+			System.out.println("CyjControllerQna free_insert hasErrors");
+			return "board/board_free/board_free_insert";
+		}
+		
+		// file Upload
+		String attach_path = "upload"; // 실제 파일이 저장되는 폴더명, uploadPath의 이름과 동일하게 해야 오류 X
+		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/"); // 저장 위치 지정 
+		
+		System.out.println("CyjController File Upload Post Start");
+		
+		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+		log.info("size : "         + file1.getSize());					// 파일 사이즈
+		log.info("contextType : "  + file1.getContentType());			// 파일 타입
+		log.info("uploadPath : "   + uploadPath);						// 파일 저장되는 주소
+		
+		String saveName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);  // 저장되는 파일명 
+		log.info("saveName: " + saveName);
+			
 		
 		System.out.println("session.userInfo-> " + request.getSession().getAttribute("userInfo"));
 		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
@@ -161,6 +229,12 @@ public class CyjControllerFreeQna {
 		System.out.println(request.getSession().getAttribute("loginId"));
 		bdFree.setUser_id(loginId);
 		
+		if(!file1.isEmpty()) {
+			log.info("파일이 존재합니다  ");
+			bdFree.setAttach_path(attach_path);
+			bdFree.setAttach_name(saveName);
+		}	
+		
 		int freeInsert = cs.freeInsert(bdFree);
 		System.out.println("free free_insert 새 글 입력-> " + freeInsert);
 		
@@ -168,6 +242,27 @@ public class CyjControllerFreeQna {
 		
 		return "redirect:/board_free";
 	}
+	
+		// file upload method
+		private String uploadFile(String originalName, byte[] bytes, String uploadPath) throws IOException {
+			// universally unique identifier (UUID)
+			UUID uid = UUID.randomUUID();
+			System.out.println("uploadPath-> " + uploadPath);
+			
+			// 신규 폴더(Directory) 생성
+			File fileDirectory = new File(uploadPath);
+			if(!fileDirectory.exists()) {
+				fileDirectory.mkdirs();
+				System.out.println("업로드용 폴더 생성 : " + uploadPath);
+			}
+			
+			String savedName = uid.toString() + "_" + originalName;
+			System.out.println("savedName: " + savedName);
+			File target = new File(uploadPath, savedName);
+			FileCopyUtils.copy(bytes, target);  
+			
+			return savedName;
+		}
 	
 // ------------------------------------------------------------------
 
@@ -212,6 +307,241 @@ public class CyjControllerFreeQna {
 		
 		return ajaxFreeDelete;
 	}
+	
+// ----------------------------------------------------------------------		
+// ------------------------- qna 게시판 ------------------------------------
+	
+	// QNA_리스트
+	@RequestMapping(value = "board_qna")
+	public String boardQna(BdQna bdQna, String currentPage, Model model) {
+		System.out.println("CyjControllerQna board_qna Start----------------------");
+		
+		// 총 갯수
+		int qnaTotalCount = cs.qnaTotalCount();
+		System.out.println("CyjControllerQna qnaTotalCount-> " + qnaTotalCount);
+		model.addAttribute("qnaTotalCount", qnaTotalCount);
+		
+		// 추천수 가장 높은 row 3개
+		List<BdQna> qnaRow = cs.qnaRow();
+		System.out.println("CyjControllerQna qnaRow.size()-> " + qnaRow.size());
+		model.addAttribute("qnaRow", qnaRow);
+		
+		// paging 작업
+		Paging page = new Paging(qnaTotalCount, currentPage);
+		bdQna.setStart(page.getStart());
+		bdQna.setEnd(page.getEnd());
+		model.addAttribute("page", page);
+		
+		// 전제 리스트
+		List<BdQna> qnaList = cs.qnaList(bdQna);
+		System.out.println("CyjControllerQna qnaList.size()-> " + qnaList.size());
+		model.addAttribute("qnaList", qnaList);
+		
+		return "board/board_qna/board_qna_list";
+	}
+	
+// ----------------------------------------------------------------------		
+
+	// QNA_새 글 작성하기 위한 페이지 이동
+	@RequestMapping(value = "qna_insert_form")
+	public String qnaInsertForm(HttpServletRequest request, Model model) {
+		System.out.println("CyjControllerQna qna_insert_form Start----------------------");
+		
+		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		BdQna bdQna = new BdQna();		
+		String parent_doc_no = request.getParameter("parent_doc_no");
+
+//		BdQna selectBdQna = cs.selectBdQna(bdQna);
+//		System.out.println("CyjControllerQna selectBdQna-> " + selectBdQna);
+//		model.addAttribute("selectBdQna", selectBdQna);
+		
+		return "board/board_qna/board_qna_insert";
+	}
+	
+	// 새 글 입력
+	@PostMapping(value = "qna_insert")
+	public String qnaInsert(@Valid @ModelAttribute BdQna bdQna, BindingResult bindingResult
+						   ,@RequestParam(value = "file1", required = false) MultipartFile file1
+						   ,HttpServletRequest request , Model model) throws IOException {
+		System.out.println("CyjControllerQna qna_insert Start----------------------");
+		
+		// validation
+		if (bindingResult.hasErrors()) {
+			System.out.println("CyjControllerQna free_insert hasErrors");
+			return "board/board_free/board_free_insert";
+		}
+		
+		// file Upload
+		String attach_path = "upload"; // 실제 파일이 저장되는 폴더명, uploadPath의 이름과 동일하게 해야 오류 X
+		String uploadPath = request.getSession().getServletContext().getRealPath("/upload/"); // 저장 위치 지정 
+		
+		System.out.println("CyjController File Upload Post Start");
+		
+		log.info("originalName : " + file1.getOriginalFilename());		// 원본 파일명
+		log.info("size : "         + file1.getSize());					// 파일 사이즈
+		log.info("contextType : "  + file1.getContentType());			// 파일 타입
+		log.info("uploadPath : "   + uploadPath);						// 파일 저장되는 주소
+		
+		String saveName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);  // 저장되는 파일명 
+		log.info("saveName: " + saveName);
+			
+		// userInfo 정보 
+		System.out.println("session.userInfo-> " + request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		// loginId : 새 글 작성에는 접속자이자 작성자 
+		String loginId = userInfoDTO.getUser_id();
+		System.out.println(request.getSession().getAttribute("loginId"));
+		bdQna.setUser_id(loginId);
+		
+		if(!file1.isEmpty()) {
+			log.info("파일이 존재합니다  ");
+			bdQna.setAttach_path(attach_path);
+			bdQna.setAttach_name(saveName);
+		}	
+		
+		//////////
+		//답변등록의 경우, 기존 답변들 Doc_Step처리
+//		int parent_doc_no = prjBdData.getParent_doc_no();
+//		int project_id = prjBdData.getProject_id();
+//		if(parent_doc_no > 0 && project_id > 0) {
+//			//답변작성인 경우
+//			//------------------------------------------------------
+//			int replyCount = jmhDataSer.updateOtherReply(prjBdData);
+//			//------------------------------------------------------
+//			prjBdData.setDoc_step(prjBdData.getDoc_step()+1);
+//			prjBdData.setDoc_indent(prjBdData.getDoc_indent()+1);
+//		}
+		
+		// 새 게시글 입력
+		int qnaInsert = cs.qnaInsert(bdQna);
+		System.out.println("CyjControllerQna qnaInsert-> " + qnaInsert);
+		model.addAttribute("qnaInsert", qnaInsert);
+		
+		return "redirect:/board_qna";
+	}
+	
+// ----------------------------------------------------------------------		
+
+	// 상세 페이지
+	@GetMapping(value = "qna_content")
+	public String qnaContent(HttpServletRequest request, int doc_no, Model model) {
+		System.out.println("CyjControllerQna qna_content");
+		
+		System.out.println("session.userInfo-> " + request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		// loginId : 상세 페이지에서 접속자 (수정 버튼 보이게) / 작성자 아님 (수정 버튼 안 보이게)
+		String loginId = userInfoDTO.getUser_id();
+		System.out.println("상세페이지 접속자 loginId-> " + loginId);
+		
+		// qna_상세
+		BdQna qnaContent = cs.qnaContent(doc_no);
+		System.out.println("CyjControllerQna qnaContent-> " + qnaContent);
+		model.addAttribute("qnaContent", qnaContent);
+		
+		// 접속자와 작성자 비교 --> 같으면 1, 다르면 0
+		int result = 0;
+		if (loginId.equals(qnaContent.getUser_id())) {
+			result = 1;
+		} else {
+			result = 0;
+		}
+		model.addAttribute("result", result);
+		
+		// qna_조회수
+		int qnaCount = cs.qnaCount(doc_no);
+		System.out.println("CyjControllerQna qnaCount-> " + qnaCount);
+		model.addAttribute("qnaCount", qnaCount);
+		
+		
+		return "board/board_qna/board_qna_content";
+	}
+	
+// ----------------------------------------------------------------------		
+	
+	// qna_추천
+	@ResponseBody
+	@RequestMapping(value = "ajaxQnaGoodCount")
+	public String qnaGoodCount(HttpServletRequest request, int doc_no) {
+		System.out.println("CyjControllerQna ajaxQnaGoodCount Start");
+		
+		System.out.println("session.userInfo-> " + request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		// loginId : 추천에서 접속자
+		String loginId = userInfoDTO.getUser_id();
+		System.out.println("추천 접속자 loginId-> " + loginId);
+		
+		BdQnaGood bdQnaGood = new BdQnaGood();
+		bdQnaGood.setDoc_no(doc_no);
+		bdQnaGood.setUser_id(loginId);
+		System.out.println(bdQnaGood.getDoc_no());
+		System.out.println(bdQnaGood.getUser_id());
+		
+		// 1. 추천자 목록에 있는지 중복 체크
+		int qnaConfirm = cs.qnaConfirm(bdQnaGood);
+		System.out.println("CyjControllerQna qnaConfirm-> " + qnaConfirm);
+		
+		String result = "";
+		BdQna bdQna = new BdQna();
+		bdQna.setDoc_no(doc_no);
+		
+		if (qnaConfirm == 1) {  	// 중복 O
+			result = "duplication";
+		} else {					// 중복 X
+			// 2. 추천 insert
+			int qnaGoodInsert = cs.qnaGoodInsert(bdQnaGood);
+			System.out.println("CyjControllerQna qnaGoodInsert-> " + qnaGoodInsert);
+			
+			if (qnaGoodInsert == 1) {
+				// 3. 추천 update
+				int qnaGoodUpdate = cs.qnaGoodUpdate(bdQnaGood);
+				System.out.println("CyjControllerQna qnaGoodUpdate-> " + qnaGoodUpdate);
+				// 4. 추천 select 
+				int qnaGoodSelect = cs.qnaGoodSelect(bdQna);
+				System.out.println("CyjControllerQna qnaGoodSelect-> " + qnaGoodSelect);
+				result = String.valueOf(qnaGoodSelect);
+			} else {
+				result = "error";  // error
+			}
+		}
+		return result;
+	}
+	
+// ----------------------------------------------------------------------		
+
+	// qna_수정: 상세 정보 get
+	@GetMapping(value = "qna_update")
+	public String qnaUpdate(int doc_no, Model model) {
+		System.out.println("CyjControllerQna qna_update Start");
+		
+		BdQna content = cs.qnaContent(doc_no);
+		System.out.println("CyjControllerQna content-> " + content);
+		model.addAttribute("content", content);
+		
+		return "board/board_qna/board_qna_update";
+	}
+	
+	// qna_수정
+	@PostMapping(value = "qna_update2")
+	public String qnaUpdate2(BdQna bdQna, Model model, RedirectAttributes redirectAttributes) {
+		System.out.println("CyjControllerQna qna_update2 Start");
+		
+		int qnaUpdate = cs.qnaUpdate(bdQna);
+		System.out.println("CyjControllerQna qnaUpdate-> " + qnaUpdate);
+		model.addAttribute("qnaUpdate", qnaUpdate);
+		
+		redirectAttributes.addAttribute("doc_no",bdQna.getDoc_no());
+		
+		return "redirect:/qna_content?doc_no={doc_no}";
+	}
+	
+// ----------------------------------------------------------------------		
+	
+	
 	
 	
 	
