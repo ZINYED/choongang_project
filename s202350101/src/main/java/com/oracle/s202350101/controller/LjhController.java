@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.LjhResponse;
 import com.oracle.s202350101.model.Meeting;
+import com.oracle.s202350101.model.Paging;
 import com.oracle.s202350101.model.PrjBdData;
 import com.oracle.s202350101.model.PrjInfo;
 import com.oracle.s202350101.model.PrjMemList;
@@ -92,7 +93,7 @@ public class LjhController {
 		return "project/meeting/prj_meeting_calendar";
 	}
 	
-	// 회의록 목록
+	// 회의록 목록 (사용 X)
 	@RequestMapping(value = "prj_meeting_report_list")
 	public String meetingList(int project_id, Model model) {
 		System.out.println("LjhController meetingList");
@@ -108,15 +109,27 @@ public class LjhController {
 	
 	// 회의록 목록	ajax
 	@ResponseBody
-	@RequestMapping(value = "prj_meeting_report_list_ajax")		//?project_id=~~~
-	public List<Meeting> meetingList_ajax(int project_id, Model model) {
-		
+	@RequestMapping(value = "prj_meeting_report_list_ajax")
+	public LjhResponse meetingList_ajax(Meeting meeting, String currentPage, Model model) {
 		System.out.println("LjhController meetingList_ajax");
 		
-		List<Meeting> meetingList = new ArrayList<Meeting>();
-		meetingList = ljhs.getMeetingReportList(project_id);
+		LjhResponse ljhResponse = new LjhResponse();
 		
-		return meetingList;
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		meetingList = ljhs.getMeetingReportList(meeting.getProject_id());
+		
+		int total = meetingList.size();
+		
+		Paging paging = new Paging(total, currentPage, 6);
+		meeting.setStart(paging.getStart());
+		meeting.setEnd(paging.getEnd());
+		
+		List<Meeting> mtList = ljhs.getMtRpListPage(meeting);
+		
+		ljhResponse.setFirList(mtList);
+		ljhResponse.setObj(paging);
+		
+		return ljhResponse;
 	}
 	
 	// 회의록 조회
@@ -285,7 +298,7 @@ public class LjhController {
 	
 	// 회의일정 수정
 	@ResponseBody
-	@RequestMapping(value = "/prj_meeting_date_update")
+	@PostMapping(value = "/prj_meeting_date_update")
 	public int prjMeetingDateUpdate(Meeting meeting, Model model, HttpServletRequest request, 
 			@RequestParam(value = "file1", required = false)MultipartFile file1) throws IOException {
 		

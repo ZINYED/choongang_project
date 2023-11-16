@@ -16,6 +16,7 @@
 		width: 80%;
 		padding: 20px;
 		text-align: center;
+		margin-top: 30px;
 	}
 	#title {
 		width: 80%;
@@ -24,7 +25,7 @@
 	}
 	table tr {
 		height: 50px;
-		border-bottom: solid gray 1px;
+		border-top: solid gray 1px;
 	}
 	table td {
 		text-align: left;

@@ -38,6 +38,24 @@
 		ORDER BY meeting_id asc
 	</select>
 	
+	<select id="ljhMtRpListPage" parameterType="Meeting" resultType="Meeting">
+		<![CDATA[
+			SELECT	*
+			FROM	(
+						SELECT	rownum rn, a.*
+						FROM	(
+									SELECT	*
+									FROM	meeting
+									WHERE	project_id = #{project_id}
+									AND     meeting_status IN (2, 3)
+									ORDER BY meeting_id asc
+								) a
+					)
+			WHERE	rn >= #{start}
+			AND		rn <= #{end} 
+		]]>
+	</select>
+	
 	<!-- .getMeetingRead(meeting_id) -->
 	<select id="ljhMeetingRead" parameterType="int" resultType="Meeting">
     	SELECT	m.*, u.user_name,u.user_id as meetuser_id

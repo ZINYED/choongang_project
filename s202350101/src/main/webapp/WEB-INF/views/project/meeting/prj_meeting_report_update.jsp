@@ -16,16 +16,17 @@
 	#meeting {
 		width: 80%;
 		padding: 20px;
-		text-align: center;
+		text-align: center;]
 	}
 	#title {
 		width: 80%;
 		text-align: center;
 		font-size: 25pt;
+		margin-bottom: 30px;
 	}
 	table tr {
 		height: 50px;
-		border-bottom: solid gray 1px;
+		border-top: solid gray 1px;
 	}
 	table td {
 		text-align: left;
@@ -43,6 +44,9 @@
 	}
 	input.form-control.form-control-sm.uploadFile {
     	width: 80%;
+	}
+	.textbox {
+		height: 150px;
 	}
 </style>
 <!-- CSS END -->
@@ -164,11 +168,11 @@
 										<input type="hidden" name="attach_delete_flag" id="idAttachDeleteFlag" value="">
 										<div id="idAttachFile">
 											<c:if test="${meeting.attach_name ne null}">
-												<a href="/${meeting.attach_path}/${board.attach_name}" target="_blank">${meeting.attach_name}</a>
+												<a href="/${meeting.attach_path}/${meeting.attach_name}" target="_blank">${meeting.attach_name}</a>
 												&nbsp;&nbsp;<img src="/common/images/btn_icon_delete2.png" onclick="deleteFlagAttach()" style="cursor:pointer">
 												<%-- <img alt="UpLoad Image" src="${pageContext.request.contextPath}/upload/${board.attach_path}" width="100"> --%>
-											</c:if>													
-										</div>																						
+											</c:if>
+										</div>
 										<div id="idAttachInput" <c:if test="${meeting.attach_name ne null}">style="display:none;"</c:if> >
 											<input type="file" class="form-control form-control-sm uploadFile" name="file1">
 										</div>
@@ -176,7 +180,7 @@
 								</tr>
 								<tr>
 									<th>회의내용</th>
-									<td><textarea rows="5" cols="30" name="meeting_content">${meeting.meeting_content}</textarea></td>
+									<td class="textbox"><textarea rows="6" cols="30" name="meeting_content">${meeting.meeting_content}</textarea></td>
 								</tr>
 							</c:forEach>
 							<tr>

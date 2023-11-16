@@ -426,6 +426,15 @@ public class LjhServiceImpl implements LjhService {
 		return newPrjList;
 	}
 
+	@Override
+	public List<Meeting> getMtRpListPage(Meeting meeting) {
+		System.out.println("LjhServiceImpl getMtRpListPage Start");
+		
+		List<Meeting> mtList = ljhd.getMtRpListPage(meeting);
+		
+		return mtList;
+	}
+
 
 	
 }

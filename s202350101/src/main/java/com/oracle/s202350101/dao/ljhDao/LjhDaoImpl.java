@@ -336,6 +336,21 @@ public class LjhDaoImpl implements LjhDao {
 		return newPrjList;
 	}
 
+	@Override
+	public List<Meeting> getMtRpListPage(Meeting meeting) {
+		System.out.println("LjhDaoImpl getMtRpListPage Start");
+		List<Meeting> mtList = null;
+		
+		try {
+			mtList = session.selectList("ljhMtRpListPage", meeting);
+			System.out.println("LjhDaoImpl getMtRpListPage mtList.size() -> " + mtList.size());
+		} catch (Exception e) {
+			System.out.println("LjhDaoImpl getMtRpListPage Exception : " + e.getMessage());
+		}
+		
+		return mtList;
+	}
+
 
 
 }
