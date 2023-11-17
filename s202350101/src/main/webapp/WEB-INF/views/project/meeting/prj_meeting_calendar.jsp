@@ -23,7 +23,7 @@
 	}
 	
 	#meeting {
-		width: 80%;
+		width: 100%;
 		padding: 20px;
 		text-align: left;
 		padding-top: 20px;
@@ -39,13 +39,13 @@
 	}
 	
 	.list_date {
-		padding-top: 20px;
-		font-size: 14pt;
+		padding-top: 15px;
+		font-size: 11pt;
 		border-bottom: solid gray 1px;
 	}
 	
 	.list_title {
-		font-size: 15pt;
+		font-size: 13pt;
 	}
 	
 	.list_title a {
@@ -67,6 +67,16 @@
 	
 	input.form-control.form-control-sm.uploadFile {
     	width: 80%;
+	}
+	
+	#mtPage {
+		display: flex;
+    	justify-content: center;
+	}
+	
+	:root {
+		--fc-button-text-color: black;
+		--fc-button-bg-color: white;
 	}
 </style>
 
@@ -106,6 +116,7 @@
 		});
 	});
 	
+	// 회의록 페이징 작업
 	function meetpaging(currentPage){
     	
     	var project_id = ${project_id};
@@ -221,8 +232,6 @@
 				meetingListButton: {
 				    text: '회의록',
 				    click: function () {
-
-				    				    	
 				    	var project_id = ${project_id};
 				        var sendurl = "prj_meeting_report_list_ajax/?project_id=" + project_id + "&currentPage=" + 1; // project_id를 적절히 정의해야 합니다.
 				        console.log("location.href = 'prj_meeting_report_list?project_id=" + project_id + "&currentPage=" + 1 + "'");
@@ -647,8 +656,7 @@
 											<option value="월간 회의">월간 회의</option>
 											<option value="내부 회의">내부 회의</option>
 											<option value="회의">회의</option>
-										</se
-										lect><br>
+										</select><br>
 										
 										<label for="taskId" class="col-form-label">첨부파일</label>
 										<input type="file" class="form-control" name="file1">
@@ -726,7 +734,7 @@
 							<div id="meeting">
 
 							</div>
-							<div id="mtPage" class="pagination">
+							<div id="mtPage" class="pagination pagination-sm">
 							
 							</div>
 						</div>

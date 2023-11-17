@@ -10,6 +10,7 @@ import com.oracle.s202350101.model.BdFreeGood;
 import com.oracle.s202350101.model.BdQna;
 import com.oracle.s202350101.model.BdQnaGood;
 import com.oracle.s202350101.model.Code;
+import com.oracle.s202350101.model.Todo;
 
 public interface CyjService {
 
@@ -73,6 +74,7 @@ public interface CyjService {
 	int               qnaGoodInsert(BdQnaGood bdQnaGood);
 	int               qnaGoodUpdate(BdQnaGood bdQnaGood);
 	int               qnaGoodSelect(BdQna bdQna);
+	
 
 	
 
