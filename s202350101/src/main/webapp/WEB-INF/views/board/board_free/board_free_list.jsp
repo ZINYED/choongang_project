@@ -9,7 +9,7 @@
 
 <!--CSS START -->
 <style type="text/css">
-		table {
+	table {
 		width: 100%;
 		margin-top: 10px;
 	}
@@ -19,7 +19,16 @@
 	}
 	
 	td, th, tr {
-		padding: 10px;	
+		padding-left: 20px;
+		vertical-align: middle;	
+	}
+	
+	table tr {
+		height: 50px;
+	}
+	
+	table th, td {
+		text-align: center;
 	}
 	
 	.pagebox {
@@ -58,9 +67,7 @@
 	            $('#footer').html(data);
 	        }
 	    });
-	    
-
-	    
+  
 	    
 	});
 
@@ -83,22 +90,23 @@
 		<main id="center" class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
 
-			<h3>자유 게시판</h3><p>
-			<input type="button" value="새 글 작성" onclick="location.href='free_insert_from'">
+			<h3 class ="pt-4">Free Board</h3>
+		
+			<input type="button" class="mt-4 mb-4" value="작성" onclick="location.href='free_insert_from'">
 			
 			
 			<!-- 추천수 가장 높은 row 3개 -->
-			<h5>추천수 가장 높은 게시글</h5>
-	 		<table border="1">
+			<h5>Best</h5>
+	 		<table class="table table-sm">
 	 			<tr>
-	 				<th>번호</th>      <th>이름</th>       <th>작성일시</th> 
-					<th>수정일시</th>   <th>게시종류</th>     <th>제목</th>      
+	 				<th>번호</th>      <th>이름</th>        <th>작성일</th> 
+					<th>수정일</th>     <th>게시종류</th>     <th>제목</th>      
 					<th>조회수</th>     <th>추천</th>
 	 			</tr>
 	 			
 	 			<c:forEach var="free" items="${freeRow}" varStatus="status"> 
-	 				<tr id="freeRow${free.rn }">
-	 					<td>${free.rn }</td>
+	 				<tr id="free${status.count}">
+	 					<td>${status.count}</td>
 	 					<td>${free.user_name }</td>
 	 					<td>${free.create_date }</td>
 	 					<td>${free.modify_date }</td>
@@ -112,11 +120,11 @@
 			
 			
 			<!-- 전체 리스트 -->
-			<h5>All Count : ${freeTotal} </h5>
-			<table border="1"> 
+			<h5 class="mt-5 pt-3">Count  ${freeTotal} </h5>
+			<table class="table table-sm"> 
 				<tr>
-					<th>번호</th>      <th>이름</th>       <th>작성일시</th> 
-					<th>수정일시</th>   <th>게시종류</th>     <th>제목</th>      
+					<th>번호</th>       <th>이름</th>       <th>작성일</th> 
+					<th>수정일</th>     <th>게시종류</th>     <th>제목</th>      
 					<th>조회수</th>     <th>추천</th>	
 				</tr> 
 				

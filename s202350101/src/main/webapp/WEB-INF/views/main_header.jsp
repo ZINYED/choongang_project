@@ -12,7 +12,7 @@
 	    right: 400px;
 	    z-index: 999;
 	    padding: 0px 10px 10px 10px;
-	    background-color: rgba(13, 110, 253, 0.25);;
+	    background-color: rgba(13, 110, 253, 0.25);
 	    overflow-y: scroll;
 		box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 	}
@@ -60,6 +60,16 @@
     	color: black;
     	font-weight: bold;
 	}
+	#notify_box {
+		padding-top: 5px;
+	}
+	#notify_close{
+        margin: 8px 0px 8px 0px;
+        float: right;
+    }
+    #notify_close_btn{
+/* 		margin: 0 0 0 94%; */
+    }
 </style>
 
 <script type="text/javascript">
@@ -207,7 +217,7 @@
 		                    	if (app_id == 2) {
 //		                    			글번호		답글 부모
 			                    	if (doc_no == parent_doc_no && parent_app_id == app_id) {
-				                    	repStr += '<p>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';	
+				                    	repStr += '<p onclick="location.href=' + "'/board_qna?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';	
 				                    }
 		                    	}
 		                    	
@@ -261,7 +271,7 @@
     	            			if (bd_category == '자유') {		// 자유 게시판
     								let loc ='free_content';
     	            				if (doc != doc_no || app != app_id){
-    	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'free_content'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+    	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'free_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
     	            					console.log('comment_count');
     	            					console.log(comment_count);
     	            					doc = doc_no;
@@ -271,7 +281,7 @@
     	            			if (bd_category == '이벤트') {	// 이벤트 게시판
     	            				let loc = 'event_content';
     	            				if (doc != doc_no || app != app_id){
-    	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'event_content'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+    	            					comtStr += '<p onclick="locatFree('+ doc_no + ", 'event_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
     	            					console.log('comment_count');
     	            					console.log(comment_count);
     	            					doc = doc_no;
@@ -418,6 +428,11 @@
 			"width=" + _width + ", height=" + _height + ", top=" + _top + ", left=" + _left
 		);
 	}
+	
+    function notify_close(){
+        let con = document.getElementById("notify");
+        con.style.display = 'none';
+    }
 	
 </script>
    
@@ -716,32 +731,37 @@
 </nav>
 
 <div id="notify" style="display: none;">
-	<c:if test="${userInfo.user_auth == 'manager'}">
-		<div class="noticate">프로젝트 승인</div>
-		<div id="prjApproveNotify">
-		<!-- 프로젝트 생성 승인 알림 -->
-		</div>
-	</c:if>
-	<c:if test="${userInfo.user_auth == 'manager' || userInfo.user_auth == 'student'}">
-		<div class="noticate">회의</div>
-		<div id="meetingNotify">
-		<!-- 회의일정 알림 -->
-		</div>
-		<div class="noticate">답글</div>
-		<div id="repNotify">
-		<!-- 답글 알림 -->
-		</div>
-		<div class="noticate">댓글</div>
-		<div id="comtNotify">
-		<!-- 댓글 알림 -->
-		</div>
-	</c:if>
-	<c:if test="${userInfo.user_auth == 'admin'}">
-		<div class="noticate">프로젝트 생성 신청</div>
-		<div id="adminNotify">
-		<!-- admin 알림 -->
-		</div>
-	</c:if>
+    <div id="notify_close" >
+		<input onclick="notify_close()" id="notify_close_btn" class="btn-close" type="button">
+    </div>
+    <div id="notify_box">
+		<c:if test="${userInfo.user_auth == 'manager'}">
+			<div class="noticate">프로젝트 승인</div>
+			<div id="prjApproveNotify">
+			<!-- 프로젝트 생성 승인 알림 -->
+			</div>
+		</c:if>
+		<c:if test="${userInfo.user_auth == 'manager' || userInfo.user_auth == 'student'}">
+			<div class="noticate">회의</div>
+			<div id="meetingNotify">
+			<!-- 회의일정 알림 -->
+			</div>
+			<div class="noticate">답글</div>
+			<div id="repNotify">
+			<!-- 답글 알림 -->
+			</div>
+			<div class="noticate">댓글</div>
+			<div id="comtNotify">
+			<!-- 댓글 알림 -->
+			</div>
+		</c:if>
+		<c:if test="${userInfo.user_auth == 'admin'}">
+			<div class="noticate">프로젝트 생성 신청</div>
+			<div id="adminNotify">
+			<!-- admin 알림 -->
+			</div>
+		</c:if>
+	</div>
 </div>
 
 <div id="chatbox" style="display: none">

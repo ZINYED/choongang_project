@@ -5,6 +5,12 @@
   background-color: #fdb933; /* #ffc107 */
 }
 </style>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+<script type="text/javascript">
+
+</script>
+
 <table width="100%">
 	<tr>
 		<td width="70%" style="vertical-align:top">
@@ -80,11 +86,11 @@
 								<li><a href="#" class="link-offset-2 link-underline link-underline-opacity-25 link-underline-opacity-75-hover">Resources</a></li>
 							</ul>
 						</nav>
-					</div>				
+					</div>
 				</div>
 			</div>
 			
-			<div class="d-flex flex-column flex-md-row gap-4 py-md-4 align-items-center justify-content-center"> <!-- p-4 -->
+ 			<div class="d-flex flex-column flex-md-row gap-4 py-md-4 align-items-center justify-content-center"> <!-- p-4 -->
 			
 				<!-- TO-DO LIST -->
 				<div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-100per" data-bs-theme="light" style="height:354px">
@@ -139,10 +145,12 @@
 
 		
 				<!-- 달력 --> 
-				<div class="dropdown-menu d-block position-static p-2 mx-0 shadow rounded-3 w-100per" data-bs-theme="light" style="z-index:auto"><!-- w-340px -->
+				<div id="calendar"></div>
+				
+<!--  				<div class="dropdown-menu d-block position-static p-2 mx-0 shadow rounded-3 w-100per" data-bs-theme="light" style="z-index:auto">w-340px
 					<div class="d-grid gap-1">
 						<div class="cal">
-							<div class="cal-month">
+ 							<div class="cal-month">
 								<button class="btn cal-btn" type="button">
 						    		<svg class="bi" width="16" height="16"><use xlink:href="#arrow-left-short"></use></svg>
 								</button>
@@ -216,7 +224,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</td>
 		<td width="30%" style="vertical-align:top">

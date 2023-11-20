@@ -39,7 +39,7 @@ public class BdQna {
 	private String user_name;
 	private String bd_category_name;
 	
-	
+	private String  doc_group_list;		//알림용 목록 표시 (Y/y)
 	
 
 	

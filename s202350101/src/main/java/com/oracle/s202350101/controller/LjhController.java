@@ -202,7 +202,7 @@ public class LjhController {
 		
 		int meeting_id = meeting.getMeeting_id();
 		model.addAttribute("meeting_id", meeting_id);
-
+		
 		return "redirect:prj_meeting_report_read?meeting_id="+meeting.getMeeting_id()+"&project_id="+meeting.getProject_id();
 	}
 	
