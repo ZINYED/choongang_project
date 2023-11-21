@@ -178,6 +178,7 @@
 			
 
 			<!-- 댓글 등록 -->
+			<div>댓글</div>
 			<form action="comtInsert" method="post">
 					<input type="hidden" id="doc_no"    name="doc_no"    value="${eventContent.doc_no}">
 					<input type="hidden" id="user_id"   name="user_id"   value="${eventContent.user_id}">

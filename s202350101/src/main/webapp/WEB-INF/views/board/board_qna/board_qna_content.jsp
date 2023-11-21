@@ -176,7 +176,7 @@
 				<input type="hidden" name="parent_doc_no" 	   value="${qnaContent.doc_no}">
 				<input type="hidden" name="parent_doc_user_id" value="${qnaContent.user_id}">
 			
-				
+				<div>답변 작성</div>
 				<table class="table table-bordered">
 					<tr>
 			            <th>작성일</th>

@@ -514,6 +514,4 @@ public class LjhController {
 		return ljhResponse;
 	}
 	
-	
-	
 }

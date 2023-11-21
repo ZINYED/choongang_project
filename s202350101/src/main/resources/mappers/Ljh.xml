@@ -145,9 +145,6 @@
 		AND     project_id = #{project_id}
 	</update>
 	
-	
-	
-	
 	<!-- 프로젝트 생성 승인 알림 (팀장) -->
 	<select id="ljhPrjApprove" parameterType="hashmap" resultType="PrjInfo">
 		SELECT  p.*

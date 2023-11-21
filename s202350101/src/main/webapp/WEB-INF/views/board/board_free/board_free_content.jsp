@@ -176,6 +176,7 @@
 
 
 			<!-- 댓글 등록 -->
+			<div>댓글</div>
 			<form action="comtFreeComt" method="post">
 				<input type="hidden" id="doc_no"  name="doc_no"  value="${freeContent.doc_no }">
 				<input type="hidden" id="user_id" name="user_id" value="${freeContent.user_id }">

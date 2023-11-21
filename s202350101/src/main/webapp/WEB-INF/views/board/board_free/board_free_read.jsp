@@ -76,7 +76,8 @@
 				<tr> <th>추천</th>        <td>${freeContent.good_count}</td> </tr>
 				<tr> <th>첨부파일</th>     <td>${freeContent.attach_name}<img alt="" src="${pageContext.request.contextPath}/${freeContent.attach_path}/${freeContent.attach_name}"></td> </tr>	
 			</table>
-				
+			
+			<div>댓글</div>				
 			<table class="table table-sm">
 				<tr>
 					<th>이름</th> <th>작성일</th> <th>내용</th>

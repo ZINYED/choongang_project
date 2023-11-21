@@ -501,6 +501,7 @@ public class CyjControllerFreeQna {
 		}	
 		
 		// 새 글 입력 (원글)
+		bdQna.setAlarm_flag("");
 		int qnaInsert = cs.qnaInsert(bdQna);
 		System.out.println("CyjControllerQna qnaInsert-> " + qnaInsert);
 		model.addAttribute("qnaInsert", qnaInsert);

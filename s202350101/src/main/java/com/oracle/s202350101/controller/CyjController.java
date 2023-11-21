@@ -177,7 +177,6 @@ public class CyjController {
 		// 상세 
 		BdFree bdFreeContent = cs.bdFreeContent(doc_no);
 		System.out.println("CyjController board_content boardContent-> " + bdFreeContent);
-		System.out.println("-----------------------------");
 		System.out.println(loginId);
 		System.out.println(bdFreeContent.getUser_id());
 		
