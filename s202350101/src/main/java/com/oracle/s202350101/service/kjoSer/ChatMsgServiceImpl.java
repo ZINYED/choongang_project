@@ -197,8 +197,10 @@ public class ChatMsgServiceImpl implements ChatMsgService {
             String usID = (Objects.equals(user.getUser_id(), chatR.getReceiver_id()))? chatR.getSender_id() : chatR.getReceiver_id();
             us.setUser_id(usID);
 
-            chatR.setAttach_name(UIser.findbyuserId(us).getAttach_name());
-            chatR.setAttach_path(UIser.findbyuserId(us).getAttach_path());
+            us = UIser.findbyuserId(us);
+            chatR.setUser_name(us.getUser_name());
+            chatR.setAttach_name(us.getAttach_name());
+            chatR.setAttach_path(us.getAttach_path());
             chatR.setRead_cnt(noreadCnt);
         }
         int noreadC = findnoReadMsg(findmsg,cr);

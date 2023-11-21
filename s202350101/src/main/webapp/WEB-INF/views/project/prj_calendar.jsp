@@ -21,10 +21,10 @@
 	}
 	
 	:root {
-		--fc-button-text-color: black;
+		/* --fc-button-text-color: black;
 		--fc-button-bg-color: white;
 		--fc-button-hover-bg-color: rgba(13, 110, 253, 0.1);
-		--fc-button-active-bg-color: white;
+		--fc-button-active-bg-color: white; */
 	}
 	
 	.fc .fc-daygrid-day-frame {
@@ -129,7 +129,7 @@
 				console.log("클릭한 곳의 배경색: " + backgroundColor);
 				
 				if (backgroundColor == "rgb(103, 153, 255)") {
-					var openurl = "/dashboard";
+					var openurl = "/prj_home";
 					
 					console.log("openurl: " + openurl);
 					
