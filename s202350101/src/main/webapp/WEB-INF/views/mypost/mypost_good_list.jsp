@@ -80,7 +80,7 @@
 			</nav>
             
             <div class="container-fluid">
-                <table width="100%" style="margin-top:20px;height:45px">
+                <table width="100%" style="height:45px">
 					<tr>
 						<td style="vertical-align:top"><span class="apptitle">내가 추천한 게시글</span></td>
 						<td align="right">

@@ -145,6 +145,7 @@
 		SELECT * 
 		FROM CODE 
 		WHERE UPPER(table_name)=#{table_name} AND UPPER(field_name)=#{field_name}
+		ORDER BY table_name, field_name, cate_code
 	</select>
 	
 	<!-- 문서 등록 -->

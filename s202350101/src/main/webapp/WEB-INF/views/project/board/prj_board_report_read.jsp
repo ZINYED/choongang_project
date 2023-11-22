@@ -146,7 +146,7 @@ $(function(){
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
 			<div class="container-fluid">
 					<form action="" method="post" enctype="multipart/form-data">
-						<div style="margin-top:20px;height:34px">
+						<div style="height:34px">
 							<span class="apptitle">문서 조회</span>
 						</div>
 						<table width="100%" style="margin-top:10px">

@@ -128,7 +128,7 @@
 						<table width="100%" style="margin-bottom:5px">
 							<tr>
 								<td width="100">
-									<button type="button" class="btn btn-secondary btn-sm" onclick="callAction('write','prj_board_data_write')">작성</button>
+									<button type="button" class="btn btn-dark btn-sm" onclick="callAction('write','prj_board_data_write')">작성</button>
 								</td>
 								<td width="200">
 									<div class="form-check form-switch">
@@ -150,14 +150,13 @@
 						<table class="table table-hover">
 							<colgroup>
 								<col width="5%"></col>
-								<col width="30%"></col>
+								<col width="36%"></col>
 								<col width="10%"></col>
 								<col width="12%"></col>
 								<col width="8%"></col>
 								<col width="15%"></col>
 								<col width="7%"></col>
 								<col width="7%"></col>
-								<col width="6%"></col>
 							</colgroup>
 							<thead class="table-light">
 								<tr>
@@ -169,7 +168,6 @@
 									<th><img src="/common/images/attach/icon_document.png"></th>
 									<th>조회</th>
 									<th>추천</th>
-									<th>댓글</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -182,7 +180,7 @@
 										<c:if test="${board.parent_doc_no ne ''}"><img src="/common/images/icon_reply.gif"></c:if>
 										<a href="javascript:callAction('read','prj_board_data_read?doc_no=${board.doc_no}&project_id=${board.project_id}')">
 										<c:if test="${board.notify_flag eq 'Y'}"><img src="/common/images/icon_notice.gif" style="margin-bottom:4px"></c:if>
-										${board.subject}
+										${board.subject}<c:if test="${board.comment_count > 0}"> (${board.comment_count})</c:if>
 										</a>
 									</td>
 									<td>${board.user_name}</td>
@@ -198,7 +196,6 @@
 									</td>
 									<td>${board.bd_count}</td>
 									<td>${board.good_count}</td>
-									<td>${board.comment_count}</td>
 								</tr>
 								<c:set var="num" value="${num-1}"></c:set>
 							</c:forEach>

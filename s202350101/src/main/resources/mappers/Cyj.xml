@@ -309,14 +309,12 @@
 		and     b.doc_no = #{doc_no}
 	</select>
 	
-	
 	<!-- free_조회수 -->
 	<update id="cyFreeCount" parameterType="BdFree">
 		update   bd_free  
-		set      bd_count = + 1
+		set      bd_count = bd_count + 1
 		where    doc_no = #{doc_no}
 	</update>
-	
 	
 	<!-- free_댓글리스트 -->
 	<select id="cyFreeComtList" parameterType="int" resultType="BdFreeComt">

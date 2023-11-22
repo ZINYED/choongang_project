@@ -196,8 +196,8 @@ public class ChatMsgServiceImpl implements ChatMsgService {
             UserInfo us = new UserInfo();
             String usID = (Objects.equals(user.getUser_id(), chatR.getReceiver_id()))? chatR.getSender_id() : chatR.getReceiver_id();
             us.setUser_id(usID);
-
             us = UIser.findbyuserId(us);
+
             chatR.setUser_name(us.getUser_name());
             chatR.setAttach_name(us.getAttach_name());
             chatR.setAttach_path(us.getAttach_path());

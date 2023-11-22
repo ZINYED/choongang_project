@@ -201,7 +201,7 @@
 			        <tr>
 			            <th>본문</th>
 			            <td>
-			                <input type="text" name="doc_body" class="form-control">
+			                <textarea  cols="50"  rows="10"    name="doc_body" class="form-control"></textarea>
 			                <form:errors path="doc_body" class="error"/>
 			            </td>
 			        </tr>

@@ -1,11 +1,13 @@
 @charset "UTF-8";
 
+/*좌측메뉴*/
 .menubar {
 	min-width: 200px;
 	max-width: 250px;
 	position: fixed;
+	height: 100%;
 }
-
+/*메뉴 타이틀*/
 .apptitle {
 	font-size: 20px;
 	font-weight: bold;
@@ -36,3 +38,5 @@ a:active { /* 마우스 클릭한 상태 */
 }
 a:visited { /* 방문한 상태 */
 }
+
+.errors{color: red;}

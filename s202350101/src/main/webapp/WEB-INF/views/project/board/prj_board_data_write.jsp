@@ -73,7 +73,7 @@ $(function() {
 							</tr>
 							<tr>
 								<td>작성일</td>
-								<td><input type="text" class="form-control" name="create_date_str" value="${todayDate}" readonly></td>
+								<td><input type="date" class="form-control" name="create_date_str" value="${todayDate}" readonly></td>
 							</tr>
 							<c:if test="${parent_doc_user_id ne ''}">
 							<tr>

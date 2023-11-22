@@ -27,7 +27,7 @@
 						<input type="hidden" name="user_id" value="${userInfoDTO.user_id}">
 						<input type="hidden" name="attach_name" value="">
 						<input type="hidden" name="attach_path" value="">
-						<div style="margin-top:20px;height:34px">
+						<div style="height:34px">
 							<span class="apptitle">문서 작성</span>
 						</div>
 						<table width="100%"  style="margin-top:7px">
@@ -49,7 +49,7 @@
 							</tr>
 							<tr>
 								<td>작성일</td>
-								<td><input type="text" class="form-control" name="create_date_str" value="${todayDate}" readonly></td>
+								<td><input type="date" class="form-control" name="create_date_str" value="${todayDate}" readonly></td>
 							</tr>
 							<tr>
 								<td>제목</td>

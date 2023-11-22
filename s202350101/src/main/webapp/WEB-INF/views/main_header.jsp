@@ -3,23 +3,25 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <style type="text/css">
+
 .dropdown-toggle::after{
 	color: white;
 }
 .pms-bg-dark {
-	background-color:#252b46;
+	background-color:#6c757d;/* #252b46 */
 }
 .pms-circle-header {
-	width:32px;
-	height:32px;
-	background-color:#e5e5e5;
+	width:16px;
+	height:16px;
+	line-height:14px;
+	font-weight:bold;
+	background-color:#ffc107;
 	text-align:center;
-	color:#555;
-	line-height:32px;
+	color:#fff;
 	border-radius:50% !important;
 	flex-shrink:0 !important;
 	cursor:pointer;
-	font-size:0.8rem;
+	font-size:0.75rem;
 }
 .pms-circle-header.bg-1 {
 	background-color:#ffc107;
@@ -101,6 +103,11 @@
     #notify_close_btn{
 /* 		margin: 0 0 0 94%; */
     }
+    #cntNotify {
+       position:absolute;
+       top:26px;
+       right:427px;
+    }
 </style>
 
 <script type="text/javascript">
@@ -121,7 +128,7 @@ function onSocket() {
         if (stompClient && stompClient.connected) {
             stompClient.disconnect(function () {
                 console.log("Disconnected WebSocket.");
-                setTimeout(connectWebSocket, 5000); // 5초 후 다시 연결 시도	// 5000
+                setTimeout(connectWebSocket, 5000); // 5초 후 다시 연결 시도
             });
         }
     }
@@ -129,6 +136,7 @@ function onSocket() {
     function connectWebSocket() {
         let socket = new SockJS('/websocket');
         let loginUser = '${userInfo.user_id}';
+        let notCon = $('#cntNotify');
         // console.log("1");
         stompClient = Stomp.over(socket);
         // console.log("2");
@@ -140,10 +148,16 @@ function onSocket() {
         };
 
         stompClient.connect({}, function (frame) {
+
+    		var cntAlarm = 0;
+        	
+        	
             console.log('Connected: ' + frame);
 
             // console.log("3");
             console.log(obj);
+
+    		console.log("cntAlarmSTART");
 			
             // 프로젝트 생성 승인 알림 (팀장)
             stompClient.subscribe("/noti/prjapprove", function(data) {
@@ -169,10 +183,17 @@ function onSocket() {
 	            		const prjName = approvedata[i].project_name;						// 프로젝트명
 	            		
 	            		str += '<p onclick="location.href=' + "'/prj_mgr_step_list'" + '">' + prjName + ' 프로젝트 생성이 승인되었습니다.</p>';
+	            		cntAlarm += 1;
+	            		console.log("cntAlarm");
+	            		console.log(cntAlarm);
 	            	}
                 }
                 
             	prjApproveNotify.append(str);
+        		//
+                notCon.empty();
+                notCon.append(cntAlarm);
+                //
             });
             
             // 회의일정 알림
@@ -206,11 +227,18 @@ function onSocket() {
 	
 	                    if (meetingDate == now) {
 	                    	meetStr += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
+		            		cntAlarm += 1;
+		            		console.log("cntAlarm");
+		            		console.log(cntAlarm);
 	                    }
 	                }
                 }
                 
                 meetingNotify.append(meetStr);
+        		//
+                notCon.empty();
+                notCon.append(cntAlarm);
+                //
             });
             
             // 게시판 답글
@@ -248,7 +276,10 @@ function onSocket() {
 	                    	if (app_id == 2) {
 //	                    			글번호		답글 부모
 		                    	if (doc_no == parent_doc_no && parent_app_id == app_id) {
-			                    	repStr += '<p onclick="location.href=' + "'/board_qna?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';	
+			                    	repStr += '<p onclick="location.href=' + "'/board_qna?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
+				            		cntAlarm += 1;
+				            		console.log("cntAlarm");
+				            		console.log(cntAlarm);
 			                    }
 	                    	}
 	                    	
@@ -256,7 +287,10 @@ function onSocket() {
 	                    	if (app_id == 3) {
 //	                    			글번호		답글 부모
 		                    	if (doc_no == parent_doc_no && parent_app_id == app_id) {
-			                    	repStr += '<p onclick="location.href=' + "'/prj_board_data_list?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';	
+			                    	repStr += '<p onclick="location.href=' + "'/prj_board_data_list?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
+				            		cntAlarm += 1;
+				            		console.log("cntAlarm");
+				            		console.log(cntAlarm);	
 			                    }
 	                    	}
 	                    }
@@ -264,6 +298,10 @@ function onSocket() {
             	}
             	
             	repNotify.append(repStr);
+        		//
+                notCon.empty();
+                notCon.append(cntAlarm);
+                //
             });
             
             // 게시판 댓글
@@ -307,6 +345,9 @@ function onSocket() {
 	            					console.log(comment_count);
 	            					doc = doc_no;
 	            					app = app_id;
+	        	            		cntAlarm += 1;
+				            		console.log("cntAlarm");
+	        	            		console.log(cntAlarm);
 	            				}
 	            			}
 	            			if (bd_category == '이벤트') {	// 이벤트 게시판
@@ -317,6 +358,9 @@ function onSocket() {
 	            					console.log(comment_count);
 	            					doc = doc_no;
 	            					app = app_id;
+	        	            		cntAlarm += 1;
+				            		console.log("cntAlarm");
+	        	            		console.log(cntAlarm);
 	            				}
 	            			}
 	            		}
@@ -329,6 +373,9 @@ function onSocket() {
             					console.log(comment_count);
             					doc = doc_no;
             					app = app_id;
+        	            		cntAlarm += 1;
+			            		console.log("cntAlarm");
+        	            		console.log(cntAlarm);
             				}
 	            		}
 	            		
@@ -340,12 +387,19 @@ function onSocket() {
             					console.log(comment_count);
             					doc = doc_no;
             					app = app_id;
+        	            		cntAlarm += 1;
+			            		console.log("cntAlarm");
+        	            		console.log(cntAlarm);
             				}
 	            		}
 	            	};
 				}
 				
             	comtNotify.append(comtStr);
+        		//
+                notCon.empty();
+                notCon.append(cntAlarm);
+                //
             });
             
          	// 프로젝트 생성 신청 - admin 계정만 해당
@@ -368,10 +422,18 @@ function onSocket() {
         			
         			if (newprj != 0) {
             			newprjStr = '<p onclick="location.href=' + "'/admin_approval'" + '">신규 프로젝트 생성 신청이 ' + newprj + '건 있습니다.</p>';
+	            		cntAlarm += 1;
+	            		console.log("cntAlarm");
+	            		console.log(cntAlarm);
             		}
         		}
         		
         		adminNotify.append(newprjStr);
+        		
+        		//
+                notCon.empty();
+                notCon.append(cntAlarm);
+                //
         	});
 
             stompClient.send('/queue/approve', {}, JSON.stringify(obj));	// 프로젝트 생성 승인
@@ -388,7 +450,7 @@ function onSocket() {
     // 5초마다 웹 소켓 연결을 끊고 다시 연결
     setInterval(function () {
         disconnectWebSocket();
-    }, 5000);	// 5000
+    }, 5000);
 };
 
 // 알림버튼 클릭 시 작동
@@ -524,7 +586,9 @@ function notify_close(){
     }
 
     #cntMsg {
-        color: white;
+    	position:absolute;
+    	top:26px;
+    	right:381px;
     }
 
 </style>
@@ -601,8 +665,12 @@ $(
 
                 console.log(msg);
                 console.log("chatList");
-                let con = '읽지 않은 메시지: ' + noReadChat;
-
+                //let con = '읽지 않은 메시지: ' + noReadChat;
+                let con = noReadChat;
+                console.log("getUserId");
+                console.log(getUserId);
+                console.log("user");
+                console.log(user);
 
                 if (getUserId == user) {
                     cntmsg.empty();
@@ -632,7 +700,14 @@ $(
                         console.log(ChatRoom.attach_name);
                         chatroom_con += '<img className='+'"uploadFile"'+'style='+'"width:30px; height: 30px; border-radius: 70%;"'+' src='+'"'+'${pageContext.request.contextPath}'+ChatRoom.attach_path+'/'+ChatRoom.attach_name+'"></div>';
                         chatroom_con += '<div id="chat_ch_center">';
+                        console.log("ChatRoom.user_name");
+                        console.log(ChatRoom.user_name);
+                        console.log("getUserId");
+                        console.log(getUserId);
+
+
                         chatroom_con += '<p>' +  ChatRoom.user_name + '</p>';
+                        // chatroom_con += '<p>' + ChatRoom.user_name + '</p>';
                         chatroom_con += '<p>'+"'"+ msg_con+"'"+'</p></div>';
                         chatroom_con += '<div id="chat_ch_right"><p>' + show_time + '</p></div>';
                         chatroom_con += '<div id="readCnt"> <p>'+"'"+read_cnt + "'" +'</p></div></div>';
@@ -726,37 +801,68 @@ function showSearchList(docList, keyword){
 </script>
 
 <nav class="navbar navbar-expand-md navbar-dark fixed-top pms-bg-dark">
-	<div class="container-fluid">
-		<a class="navbar-brand" href="/main">PMS</a>
+	<div class="container-fluid">		
+		<button class="btn btn-secondary" onclick="goto('/main')">
+			<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+				<path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+			</svg>
+			<a class="navbar-brand" href="/main"><b>PMS</b></a>
+		</button>		
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarCollapse">
 			<ul class="navbar-nav me-auto mb-2 mb-md-0">
 	        </ul>
+			<img class="uploadFile" style=" width: 32px; height: 32px; border-radius: 50%;" alt="UpLoad File" src="${pageContext.request.contextPath}/${userInfo.attach_path }/${userInfo.attach_name}">
 			<ul class="nav nav-pills">
 				<li class="nav-item">
 					<a class="nav-link px-2 link-light" aria-current="page" href="#">${userInfo.user_name }</a>
 				</li>
 			</ul>
-			<div class="dropdown text-end" style="margin-right:20px">
+			<!-- <div class="dropdown text-end" style="margin-right:20px">
 				<a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-					<!-- <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle"> -->
-					<img class="uploadFile" style=" width: 32px; height: 32px; border-radius: 50%;" alt="UpLoad File" src="${pageContext.request.contextPath}/${userInfo.attach_path }/${userInfo.attach_name}"></td>
+					<img class="uploadFile" style=" width: 32px; height: 32px; border-radius: 50%;" alt="UpLoad File" src="${pageContext.request.contextPath}/${userInfo.attach_path }/${userInfo.attach_name}">
 				</a>
 				<ul class="dropdown-menu text-small" style="">
 					<li><a class="dropdown-item" href="mypage_main">내 정보 설정</a></li>
 					<li><hr class="dropdown-divider"></li>
 					<li><a class="dropdown-item" href="user_logout">로그아웃</a></li>
 				</ul>
-			</div>
-            <span id="chat_button" class="pms-circle-header" onclick="notifyClick()" onmouseover="$(this).addClass('bg-1')" onmouseout="$(this).removeClass('bg-1')" style="margin-right:10px">알림</span>
-            <span id="chat_button" class="pms-circle-header" onclick="chat_button()" onmouseover="$(this).addClass('bg-1')" onmouseout="$(this).removeClass('bg-1')" style="margin-right:10px">채팅</span>
-			<div id="cntMsg"></div>
+			</div> -->
+			<!-- 알림 -->
+			<button class="btn btn-secondary" onclick="notifyClick()">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+					<path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"></path>
+				</svg>
+			</button>
+			<span id="cntNotify" class="pms-circle-header"></span>
+			<!-- 채팅 -->
+			<button class="btn btn-secondary" onclick="chat_button()">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-chat-text" viewBox="0 0 16 16">
+					<path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z"/>
+					<path d="M4 5.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8zm0 2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
+				</svg>
+			</button>
+			<span id="cntMsg" class="pms-circle-header"></span>
+			
+			<!-- 내 정보 설정 -->
+			<button class="btn btn-secondary" onclick="goto('mypage_main')">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-person-gear" viewBox="0 0 16 16">
+					<path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm.256 7a4.474 4.474 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10c.26 0 .507.009.74.025.226-.341.496-.65.804-.918C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4s1 1 1 1h5.256Zm3.63-4.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z"/>
+				</svg>
+			</button>
+			<!-- 로그아웃 -->
+			<button class="btn btn-secondary" onclick="goto('user_logout')">
+				<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-power" viewBox="0 0 16 16">
+					<path d="M7.5 1v7h1V1h-1z"/>
+					<path d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z"/>
+				</svg>
+			</button>	
 
 			<div class="d-flex" role="search" style="margin-left:10px">        
-				<input id="search" class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="keyword">
-				<button class="btn btn-outline-secondary" type="submit" onclick="searchAll()">Search</button>
+				<input id="search" class="form-control me-2" type="search" placeholder="통합검색" aria-label="Search" name="keyword">
+				<button class="btn btn-dark" type="submit" onclick="searchAll()">Search</button>
 			</div>
 		</div>
 	</div>

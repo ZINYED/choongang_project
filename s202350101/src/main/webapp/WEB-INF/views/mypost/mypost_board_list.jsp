@@ -84,7 +84,7 @@
 			</nav>
 			
 	  		<div class="container-fluid">
-                <table width="100%" style="margin-top:20px;height:45px">
+                <table width="100%" style="height:45px">
 					<tr>
 						<td style="vertical-align:top"><span class="apptitle">내가 쓴 게시글</span></td>
 						<td align="right">
@@ -140,7 +140,7 @@
 										<td>${sAll.bd_category }</td>
 										<td><a href="javascript:popup('board_content?doc_no=${sAll.doc_no }')">${sAll.subject }</a></td>
 										<td>${sAll.user_id }</td>
-										<td>${sAll.create_date }</td>
+										<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 										<td>${sAll.bd_count }</td>
 										<td>${sAll.good_count }</td>
 									</tr>
@@ -150,7 +150,7 @@
 										<td>${sAll.bd_category }</td>
 										<td><a href="javascript:popup('ree_content?doc_no=${sAll.doc_no }')">${sAll.subject }</a></td>
 										<td>${sAll.user_id }</td>
-										<td>${sAll.create_date }</td>
+										<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 										<td>${sAll.bd_count }</td>
 										<td>${sAll.good_count }</td>
 									</tr>
@@ -160,7 +160,7 @@
 										<td>${sAll.bd_category }</td>
 										<td><a href="javascript:popup('event_content?doc_no=${sAll.doc_no }')">${sAll.subject }</a></td>
 										<td>${sAll.user_id }</td>
-										<td>${sAll.create_date }</td>
+										<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 										<td>${sAll.bd_count }</td>
 										<td>${sAll.good_count }</td>
 									</tr>
@@ -172,7 +172,7 @@
 									<td><a href="javascript:popup('bdQnaContent?doc_no=${sAll.doc_no }')">${sAll.subject }</a></td>
 									
 									<td>${sAll.user_id }</td>
-									<td>${sAll.create_date }</td>
+									<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 									<td>${sAll.bd_count }</td>
 									<td>${sAll.good_count }</td>
 								</tr>
@@ -182,7 +182,7 @@
 									<td>${sAll.app_name }</td>
 									<td><a href="javascript:popup('prj_board_data_read?doc_no=${sAll.doc_no}&project_id=${sAll.project_id}')">${sAll.subject }</a></td>
 									<td>${sAll.user_id }</td>
-									<td>${sAll.create_date }</td>
+									<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 									<td>${sAll.bd_count }</td>
 									<td>${sAll.good_count }</td>
 								</tr>
@@ -192,7 +192,7 @@
 									<td>${sAll.app_name }</td>
 									<td><a href="javascript:popup('prj_board_report_read?doc_no=${sAll.doc_no }&project_id=${sAll.project_id}')">${sAll.subject }</a></td>
 									<td>${sAll.user_id }</td>
-									<td>${sAll.create_date }</td>
+									<td><fmt:formatDate value="${sAll.create_date}" type="date" pattern="yyyy-MM-dd"/></td>
 									<td>${sAll.bd_count }</td>
 									<td>${sAll.good_count }</td>
 								</tr>
