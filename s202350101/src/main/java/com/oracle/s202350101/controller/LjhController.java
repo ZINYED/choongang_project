@@ -94,18 +94,18 @@ public class LjhController {
 	}
 	
 	// 회의록 목록 (사용 X)
-//	@RequestMapping(value = "prj_meeting_report_list")
-//	public String meetingList(int project_id, Model model) {
-//		System.out.println("LjhController meetingList");
-//		
-//		List<Meeting> meetingList = new ArrayList<Meeting>();
-//		meetingList = ljhs.getMeetingList(project_id);
-//		
-//		model.addAttribute("meetingList", meetingList);
-//		model.addAttribute("project_id", project_id);
-//		
-//		return "project/meeting/prj_meeting_report_list";
-//	}
+	@RequestMapping(value = "prj_meeting_report_list")
+	public String meetingList(int project_id, Model model) {
+		System.out.println("LjhController meetingList");
+		
+		List<Meeting> meetingList = new ArrayList<Meeting>();
+		meetingList = ljhs.getMeetingList(project_id);
+		
+		model.addAttribute("meetingList", meetingList);
+		model.addAttribute("project_id", project_id);
+		
+		return "project/meeting/prj_meeting_report_list";
+	}
 	
 	// 회의록 목록	ajax
 	@ResponseBody
@@ -280,10 +280,9 @@ public class LjhController {
 		return savedName;
 	}
 	
-	// 회의록 삭제
+	// 회의일정 삭제
 	@ResponseBody
 	@RequestMapping(value = "prj_meeting_report_delete")
-	// 이상이 없으면 200 리턴 (ResponseEntity)
 	public int prjMeetingReportDelete(Meeting meeting, Model model, HttpServletRequest request) {
 		log.info("request : {}", request.getRequestURI());
 		
@@ -293,11 +292,10 @@ public class LjhController {
 		
 		deleteResult = ljhs.deleteMeetingReport(meeting);
 		
-//		return ResponseEntity.ok(deleteResult);
 		return deleteResult;
 	}
 	
-	// 회의록 수정
+	// 회의일정 수정
 	@ResponseBody
 	@PostMapping(value = "/prj_meeting_date_update")
 	public int prjMeetingDateUpdate(Meeting meeting, Model model, HttpServletRequest request, 

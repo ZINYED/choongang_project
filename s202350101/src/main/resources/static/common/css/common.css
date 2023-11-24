@@ -48,3 +48,32 @@ a:visited { /* 방문한 상태 */
 }
 
 .errors{color: red;}
+
+
+.dropdown-toggle::after{
+	color: white;
+}
+.pms-bg-dark {
+	background-color:#6c757d;/* #252b46 */
+}
+.pms-circle-header {
+	width:16px;
+	height:16px;
+	line-height:14px;
+	font-weight:bold;
+	background-color:#ffc107;
+	text-align:center;
+	color:#fff;
+	border-radius:50% !important;
+	flex-shrink:0 !important;
+	cursor:pointer;
+	font-size:0.75rem;
+}
+.pms-circle-header.bg-1 {
+	background-color:#ffc107;
+	color:#fff;
+}
+.pms-circle-header.bg-2 {
+	background-color:#88cc55;
+	color:#fff;
+}

@@ -8,8 +8,6 @@
 <meta charset="utf-8">
 <title>PMS Login</title>
 
-<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"> -->
 <link href="/bootstrap-5.3.2-examples/assets/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="/bootstrap-5.3.2-examples/css/sign-in.css" rel="stylesheet">
 

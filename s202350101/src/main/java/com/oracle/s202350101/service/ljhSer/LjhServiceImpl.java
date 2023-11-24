@@ -425,9 +425,7 @@ public class LjhServiceImpl implements LjhService {
 		
 		return newPrjList;
 	}
-	
-	
-	// 회의록 리스트 페이징 작업
+
 	@Override
 	public List<Meeting> getMtRpListPage(Meeting meeting) {
 		System.out.println("LjhServiceImpl getMtRpListPage Start");
