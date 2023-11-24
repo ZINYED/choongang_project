@@ -93,28 +93,31 @@
 			</div>
 		
 			<div class="container-fluid">
-				<input type="button" class="btn btn-secondary btn-sm" value="작성" onclick="location.href='free_insert_from'">
+				<input type="button" class="btn btn-dark btn-sm" value="작성" onclick="location.href='free_insert_from'">
 				
 				
 				<!-- 추천수 가장 높은 row 3개 -->
-				<h5>Best</h5>
+				<div style="text-align:center;"><h6><b><추천 게시글></b></h6></div>
 		 		<table class="table">
-		 			<thead class="table-light">
+			 		<colgroup>
+						<col width="5%"></col><col width="10%"></col><col width="37%"></col><col width="12%"></col>
+						<col width="10%"></col><col width="12%"></col><col width="7%"></col><col width="7%"></col>
+					</colgroup>	
+					<thead class="table-light">
 		 			<tr>
-		 				<th>번호</th>      <th>이름</th>        <th>작성일</th> 
-						<th>수정일</th>     <th>게시종류</th>     <th>제목</th>      
-						<th>조회수</th>     <th>추천</th>
+	 					<th>번호</th><th>게시종류</th><th>제목</th><th>이름</th>       
+					    <th>작성일</th><th>수정일</th><th>조회</th><th>추천</th>
 		 			</tr>
 		 			</thead>
 		 			<tbody>
 		 			<c:forEach var="free" items="${freeRow}" varStatus="status"> 
 		 				<tr id="free${status.count}">
 		 					<td>${status.count}</td>
+		 					<td>${free.bd_category }</td>
+		 					<td><a href="free_content?doc_no=${free.doc_no}">${free.subject }</a></td>
 		 					<td>${free.user_name }</td>
 		 					<td>${free.create_date }</td>
 		 					<td>${free.modify_date }</td>
-		 					<td>${free.bd_category }</td>
-		 					<td><a href="free_content?doc_no=${free.doc_no}">${free.subject }</a></td>
 		 					<td>${free.bd_count }</td>
 		 					<td>${free.good_count }</td>
 		 				</tr>
@@ -126,22 +129,25 @@
 				<!-- 전체 리스트 -->
 				<h6 class="mt-5 pt-3" style="text-align:right">총 건수 : ${freeTotal} </h6>
 				<table class="table">
+			 		<colgroup>
+						<col width="5%"></col><col width="10%"></col><col width="37%"></col><col width="12%"></col>
+						<col width="10%"></col><col width="12%"></col><col width="7%"></col><col width="7%"></col>
+					</colgroup>	
 					<thead class="table-light">
 					<tr>
-						<th>번호</th>       <th>이름</th>       <th>작성일</th> 
-						<th>수정일</th>     <th>게시종류</th>     <th>제목</th>      
-						<th>조회수</th>     <th>추천</th>	
+	 					<th>번호</th><th>게시종류</th><th>제목</th><th>이름</th>       
+					    <th>작성일</th><th>수정일</th><th>조회</th><th>추천</th>
 					</tr> 
 					</thead>
 					<tbody>
 					<c:forEach var="list" items="${freeList }" varStatus="status">
 						<tr id="bdFree${status.count }"> 
 							<td>${status.count}</td> 
+							<td>${list.bd_category}</td>
+							<td><a href="free_content?doc_no=${list.doc_no}">${list.subject}</a></td>
 							<td>${list.user_name}</td>     
 						    <td>${list.create_date}</td> 
 							<td>${list.modify_date}</td>  
-							<td>${list.bd_category}</td>
-							<td><a href="free_content?doc_no=${list.doc_no}">${list.subject}</a></td>
 						    <td>${list.bd_count}</td>     
 						    <td>${list.good_count}</td> 
 						</tr>

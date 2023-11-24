@@ -150,9 +150,9 @@
 	                <table class="table table-hover" id="table1">
 	                	<colgroup>
 							<col width="5%"></col>
-							<col width="10%"></col>
 							<col width="12%"></col>
 							<col width="36%"></col>
+							<col width="10%"></col>
 							<col width="11%"></col>
 							<col width="12%"></col>
 							<col width="14%"></col>
@@ -160,9 +160,9 @@
 	                    <thead class="table-light">
 	                    <tr>
 	                        <th>작업번호</th>
-	                        <th>작업 담당자</th>
 	                        <th>프로젝트 단계</th>
 	                        <th>작업명</th>
+	                        <th>작업 담당자</th>
 	                        <th>작업시작일</th>
 	                        <th>마감일</th>
 	                        <th>복구</th>
@@ -172,14 +172,14 @@
 	                    <c:forEach var="task" items="${garbageList}">
 	                        <tr>
 	                            <td>${task.rn}</td>
-	                            <td>${task.user_name}</td>
 	                            <td>${task.project_s_name}</td>
 	                            <td>${task.task_subject}</td>
+	                            <td>${task.user_name}</td>
 	                            <td>${task.task_start_time}</td>
 	                            <td>${task.task_end_time}</td>
 	                            <td>
-	                                <button class="btn btn-outline-primary btn-sm" onclick="taskDelete('${currentUserId}','${task.user_id}',${task.task_id},${task.project_id})">영구 삭제</button>
-	                                <button class="btn btn-outline-primary btn-sm" onclick="taskRestore('${currentUserId}','${task.user_id}',${task.task_id},${task.project_id})">복구</button>
+	                                <button class="btn btn-danger btn-sm" onclick="taskDelete('${currentUserId}','${task.user_id}',${task.task_id},${task.project_id})">영구 삭제</button>
+	                                <button class="btn btn-dark btn-sm" onclick="taskRestore('${currentUserId}','${task.user_id}',${task.task_id},${task.project_id})">복구</button>
 	                            </td>
 	                        </tr>
 	                        <c:set var="num" value="${num - 1 }"></c:set>

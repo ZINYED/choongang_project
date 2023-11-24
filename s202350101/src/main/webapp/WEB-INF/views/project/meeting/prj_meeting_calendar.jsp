@@ -551,7 +551,7 @@
 	
 	// 회의일정 삭제
 	function delMeetingDate() {
-		var answer = confirm('회의록을 삭제하시겠습니까?') 
+		var answer = confirm('회의 일정을 삭제하시겠습니까?') 
 		
 		var meeting_id = $('#meeting_id').val();
 		var project_id = $('#project_id').val();

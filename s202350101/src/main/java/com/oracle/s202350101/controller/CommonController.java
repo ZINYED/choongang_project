@@ -29,7 +29,7 @@ public class CommonController {
 	private final UserInfoService uis;
 	private final ChatRoomService chs;
 	private final MkhService mkhService;
-	
+
 	@RequestMapping(value = "/main")
 	public String mainPage(HttpServletRequest request,UserInfo userInfoDTO, Model model) {
 		return "main";
@@ -95,5 +95,10 @@ public class CommonController {
 	@RequestMapping(value = "/main_footer")
 	public String mainFooterPage(Model model) {
 		return "main_footer";
+	}
+	
+	@RequestMapping(value = "/user_login2")
+	public String userlogin2(Model model) {
+		return "/user/user_login2";
 	}
 }
