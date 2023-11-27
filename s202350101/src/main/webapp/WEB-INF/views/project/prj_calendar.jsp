@@ -102,7 +102,7 @@
 			color : '#F2CB61'
 		});
 		</c:forEach>
-
+		
 		// Add the project event								prj
 		events.push({
 			title : '${prj.project_name}',

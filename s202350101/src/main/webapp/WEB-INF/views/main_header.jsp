@@ -26,83 +26,81 @@ function onSocket() {
         if (stompClient && stompClient.connected) {
             stompClient.disconnect(function () {
                 console.log("Disconnected WebSocket.");
-                setTimeout(connectWebSocket, 5000); // 5초 후 다시 연결 시도
+                setTimeout(connectWebSocket, 5000); 	// 5초 후 다시 연결 시도
             });
         }
     }
 
     function connectWebSocket() {
         let socket = new SockJS('/websocket');
-        let loginUser = '${userInfo.user_id}';
+        let loginUser = '${userInfo.user_id}';		// 접속한 사용자의 id
+        
         let notCon = $('#cntNotify');
         // console.log("1");
         stompClient = Stomp.over(socket);
         // console.log("2");
 
-        const obj = {
+        const obj = {		// send 시 보낼 정보 객체
             project_id: '${userInfo.project_id}',
             user_id: '${userInfo.user_id}',
             user_auth: '${userInfo.user_auth}'
         };
 
         stompClient.connect({}, function (frame) {
-
-          var cntAlarm = 0;
-           
+        	var cntAlarm = 0;
            
             console.log('Connected: ' + frame);
 
             // console.log("3");
             console.log(obj);
 
-          console.log("cntAlarmSTART");
+			console.log("cntAlarmSTART");
          
             // 프로젝트 생성 승인 알림 (팀장)
             stompClient.subscribe("/noti/prjapprove", function(data) {
-               console.log("프로젝트 생성 승인 알림");
+				console.log("프로젝트 생성 승인 알림");
+				
+				var approvedata = JSON.parse(data.body);
+				console.log(approvedata);
+				
+				let getUI = approvedata.obj;
+				let user_id = getUI.user_id;
+				
+				approvedata = approvedata.firList;
+
+				let prjApproveNotify = $('#prjApproveNotify');
                
-               var approvedata = JSON.parse(data.body);
-               console.log(approvedata);
-               
-               let getUI = approvedata.obj;
-               let user_id = getUI.user_id;
-               
-               approvedata = approvedata.firList;
-               
-               let prjApproveNotify = $('#prjApproveNotify');
-               
-                
-                let str = '';
+				let str = '';
                
                 if (user_id == loginUser) {
-                   prjApproveNotify.empty();
+					prjApproveNotify.empty();
                    
-                   for (var i = 0; i < approvedata.length; i++) {
-                     const prjName = approvedata[i].project_name;                  // 프로젝트명
-                     
-                     str += '<p onclick="location.href=' + "'/prj_mgr_step_list'" + '">' + prjName + ' 프로젝트 생성이 승인되었습니다.</p>';
-                     cntAlarm += 1;
-                     console.log("cntAlarm");
-                     console.log(cntAlarm);
-                  }
+					for (var i = 0; i < approvedata.length; i++) {
+						const prjName = approvedata[i].project_name;                  // 프로젝트명
+						                     
+						str += '<p onclick="location.href=' + "'/prj_mgr_step_list'" + '">' + prjName + ' 프로젝트 생성이 승인되었습니다.</p>';
+						cntAlarm += 1;
+						console.log("cntAlarm");
+						console.log(cntAlarm);
+					}
                 }
                 
-               prjApproveNotify.append(str);
-              //
+				prjApproveNotify.append(str);
+
                 notCon.empty();
                 notCon.append(cntAlarm);
-                //
-            });
-            
+
+			});
+
             // 회의일정 알림
             stompClient.subscribe("/noti/meeting", function (data) {
             var rtndata = JSON.parse(data.body);
             console.log(rtndata);
             
             let getUI = rtndata.obj;
-               let user_id = getUI.user_id;
+				let user_id = getUI.user_id;
                
-               rtndata = rtndata.firList;
+				rtndata = rtndata.firList;
             
                 const date = new Date();
                 const year = date.getFullYear();
@@ -117,222 +115,222 @@ function onSocket() {
                 let meetStr = '';
                 
                 if (user_id == loginUser) {
-                   meetingNotify.empty();
+					meetingNotify.empty();
                    
-                   for (var i = 0; i < rtndata.length; i++) {
-                       const meetingDate = rtndata[i].meeting_date;
-                       // console.log(meetingDate);
+					for (var i = 0; i < rtndata.length; i++) {
+						const meetingDate = rtndata[i].meeting_date;
+						// console.log(meetingDate);
    
-                       if (meetingDate == now) {
-                          meetStr += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
-                        cntAlarm += 1;
-                        console.log("cntAlarm");
-                        console.log(cntAlarm);
-                       }
-                   }
-                }
+						if (meetingDate == now) {
+							meetStr += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
+							cntAlarm += 1;
+							console.log("cntAlarm");
+							console.log(cntAlarm);
+						}
+					}
+				}
                 
                 meetingNotify.append(meetStr);
-              //
+
                 notCon.empty();
                 notCon.append(cntAlarm);
-                //
+
             });
             
             // 게시판 답글
             stompClient.subscribe("/noti/boardRep", function(data) {
-               var repdata = JSON.parse(data.body);
-               console.log(repdata);
-               
-               let getUI = repdata.obj;
-               let user_id = getUI.user_id;
-               
-               repdata = repdata.firList;
-               
-               let repNotify = $('#repNotify');
-               
-               let repStr = '';
-               
-               if (user_id == loginUser) {
-                  repNotify.empty();
+				var repdata = JSON.parse(data.body);
+				console.log(repdata);
+				
+				let getUI = repdata.obj;
+				let user_id = getUI.user_id;
+				
+				repdata = repdata.firList;
+				
+				let repNotify = $('#repNotify');
+				
+				let repStr = '';
+				
+				if (user_id == loginUser) {
+					repNotify.empty();
                   
-                  for (var i = 0; i < repdata.length; i++) {
-                       const doc_no = repdata[i].doc_no;            // 글 번호
-                       const subject = repdata[i].subject;            // 글 제목
-                       const board_name = repdata[i].app_name;         // 게시판 이름
-                       const app_id = repdata[i].app_id;
-                       
-                       for (var j = 0; j < repdata.length; j++) {
-                          const parent_doc_no = repdata[j].parent_doc_no;
-                          const parent_app_id = repdata[j].app_id;
-                          
-                          const rep_subject = repdata[j].subject;      // 답글 제목
-                          const rep_doc_no = repdata[j].doc_no;      // 답글 번호
-                          const doc_group = repdata[j].doc_group;      // doc_group
-                          
-                          // 질문 게시판
-                          if (app_id == 2) {
+					for (var i = 0; i < repdata.length; i++) {
+						const doc_no = repdata[i].doc_no;            // 글 번호
+						const subject = repdata[i].subject;            // 글 제목
+						const board_name = repdata[i].app_name;         // 게시판 이름
+						const app_id = repdata[i].app_id;
+						
+						for (var j = 0; j < repdata.length; j++) {
+							const parent_doc_no = repdata[j].parent_doc_no;
+							const parent_app_id = repdata[j].app_id;
+							
+							const rep_subject = repdata[j].subject;      // 답글 제목
+							const rep_doc_no = repdata[j].doc_no;      // 답글 번호
+							const doc_group = repdata[j].doc_group;      // doc_group
+							
+							// 질문 게시판
+							if (app_id == 2) {
 //                                글번호      답글 부모
-                             if (doc_no == parent_doc_no && parent_app_id == app_id) {
-                                repStr += '<p onclick="location.href=' + "'/board_qna?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
-                              cntAlarm += 1;
-                              console.log("cntAlarm");
-                              console.log(cntAlarm);
-                             }
-                          }
+								if (doc_no == parent_doc_no && parent_app_id == app_id) {
+									repStr += '<p onclick="location.href=' + "'/board_qna?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
+									cntAlarm += 1;
+									console.log("cntAlarm");
+									console.log(cntAlarm);
+								}
+							}
                           
-                          // 프로젝트 공지/자료 게시판
-                          if (app_id == 3) {
+							// 프로젝트 공지/자료 게시판
+							if (app_id == 3) {
 //                                글번호      답글 부모
-                             if (doc_no == parent_doc_no && parent_app_id == app_id) {
-                                repStr += '<p onclick="location.href=' + "'/prj_board_data_list?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
-                              cntAlarm += 1;
-                              console.log("cntAlarm");
-                              console.log(cntAlarm);   
-                             }
-                          }
-                       }
-                   }
-               }
+								if (doc_no == parent_doc_no && parent_app_id == app_id) {
+									repStr += '<p onclick="location.href=' + "'/prj_board_data_list?doc_group=" + doc_group + "&doc_group_list=y'" + '"' + '>[' + board_name + ' 게시판] ' + subject + '에 [답글] ' + rep_subject + '이 등록되었습니다.</p>';
+									cntAlarm += 1;
+									console.log("cntAlarm");
+									console.log(cntAlarm);   
+								}
+							}
+						}
+					}
+				}
                
-               repNotify.append(repStr);
-              //
+				repNotify.append(repStr);
+
                 notCon.empty();
                 notCon.append(cntAlarm);
-                //
+
             });
             
             // 게시판 댓글
             stompClient.subscribe("/noti/boardComt", function(data) {
-               var comtdata = JSON.parse(data.body);
-               console.log(comtdata);
-               
-               let getUI = comtdata.obj;
-               let user_id = getUI.user_id;
-               
-               comtdata = comtdata.firList;
-               
-               let comtNotify = $('#comtNotify');
-               
-               
-               let comtStr = '';
+				var comtdata = JSON.parse(data.body);
+				console.log(comtdata);
+				
+				let getUI = comtdata.obj;
+				let user_id = getUI.user_id;
+				
+				comtdata = comtdata.firList;
+				
+				let comtNotify = $('#comtNotify');
+				
+				
+				let comtStr = '';
 
-            let doc = 0;
-            let app = 0;
+				let doc = 0;
+				let app = 0;
             
-            if (user_id == loginUser) {
-               comtNotify.empty();
+				if (user_id == loginUser) {
+					comtNotify.empty();
                
-               for (var i = 0; i < comtdata.length; i++) {
-                     const app_id          = comtdata[i].app_id;            //   테이블 분류
-                     const board_name       = comtdata[i].app_name;            //    게시판 이름
-                     const bd_category       = comtdata[i].bd_category;         //    카테고리
-                     const doc_no          = comtdata[i].doc_no;            //    글 번호
-                     const subject          = comtdata[i].subject;            //    글 제목
-                     const comment_context    = comtdata[i].comment_context;      //    댓글 내용
-                     const comment_count      = comtdata[i].comment_count;      //    댓글 갯수
-                     const project_id       = comtdata[i].project_id;         //   프로젝트 ID
+					for (var i = 0; i < comtdata.length; i++) {
+						const app_id          = comtdata[i].app_id;            //   테이블 분류
+						const board_name       = comtdata[i].app_name;            //    게시판 이름
+						const bd_category       = comtdata[i].bd_category;         //    카테고리
+						const doc_no          = comtdata[i].doc_no;            //    글 번호
+						const subject          = comtdata[i].subject;            //    글 제목
+						const comment_context    = comtdata[i].comment_context;      //    댓글 내용
+						const comment_count      = comtdata[i].comment_count;      //    댓글 갯수
+						const project_id       = comtdata[i].project_id;         //   프로젝트 ID
                      
-                     // 공용게시판
-                     if (app_id == 1) {
-                        if (bd_category == '자유') {      // 자유 게시판
-                        let loc ='free_content';
-                           if (doc != doc_no || app != app_id){
-                              comtStr += '<p onclick="locatFree('+ doc_no + ", 'board_free_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
-                              console.log('comment_count');
-                              console.log(comment_count);
-                              doc = doc_no;
-                              app = app_id;
-                                cntAlarm += 1;
-                              console.log("cntAlarm");
-                                console.log(cntAlarm);
-                           }
-                        }
-                        if (bd_category == '이벤트') {   // 이벤트 게시판
-                           let loc = 'event_content';
-                           if (doc != doc_no || app != app_id){
-                              comtStr += '<p onclick="locatFree('+ doc_no + ", 'board_event_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
-                              console.log('comment_count');
-                              console.log(comment_count);
-                              doc = doc_no;
-                              app = app_id;
-                                cntAlarm += 1;
-                              console.log("cntAlarm");
-                                console.log(cntAlarm);
-                           }
-                        }
-                     }
+						// 공용게시판
+						if (app_id == 1) {
+							if (bd_category == '자유') {      // 자유 게시판
+								let loc ='free_content';
+								if (doc != doc_no || app != app_id){
+									comtStr += '<p onclick="locatFree('+ doc_no + ", 'board_free_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+									console.log('comment_count');
+									console.log(comment_count);
+									doc = doc_no;
+									app = app_id;
+									cntAlarm += 1;
+									console.log("cntAlarm");
+									console.log(cntAlarm);
+								}
+							}
+							if (bd_category == '이벤트') {   // 이벤트 게시판
+								let loc = 'event_content';
+								if (doc != doc_no || app != app_id){
+									comtStr += '<p onclick="locatFree('+ doc_no + ", 'board_event_read'" + ')">[' + bd_category + ' 게시판] ' + subject + '에 새로운 댓글이 ' + comment_count + '건 등록되었습니다.</p>';
+									console.log('comment_count');
+									console.log(comment_count);
+									doc = doc_no;
+									app = app_id;
+									cntAlarm += 1;
+									console.log("cntAlarm");
+									console.log(cntAlarm);
+								}
+							}
+						}
                      
-                     // 프로젝트 공지/자료
-                     if (app_id == 3) {
-                        if (doc != doc_no || app != app_id){
-                           comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_data_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
-                           console.log('comment_count');
-                           console.log(comment_count);
-                           doc = doc_no;
-                           app = app_id;
-                             cntAlarm += 1;
-                           console.log("cntAlarm");
-                             console.log(cntAlarm);
-                        }
-                     }
+						// 프로젝트 공지/자료
+						if (app_id == 3) {
+							if (doc != doc_no || app != app_id){
+								comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_data_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
+								console.log('comment_count');
+								console.log(comment_count);
+								doc = doc_no;
+								app = app_id;
+								cntAlarm += 1;
+								console.log("cntAlarm");
+								console.log(cntAlarm);
+							}
+						}
                      
-                     // 프로젝트 업무보고
-                     if (app_id == 4) {
-                        if (doc != doc_no || app != app_id){
-                           comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_report_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
-                           console.log('comment_count');
-                           console.log(comment_count);
-                           doc = doc_no;
-                           app = app_id;
-                             cntAlarm += 1;
-                           console.log("cntAlarm");
-                             console.log(cntAlarm);
-                        }
-                     }
-                  };
-            }
+						// 프로젝트 업무보고
+						if (app_id == 4) {
+							if (doc != doc_no || app != app_id){
+								comtStr += '<p onclick="locatPrj('+ doc_no + ',' + project_id + ", 'prj_board_report_read'" + ')">[' + board_name + ' 게시판] ' + subject + "에 새로운 댓글이 " + comment_count + "건 등록되었습니다.</p>";
+								console.log('comment_count');
+								console.log(comment_count);
+								doc = doc_no;
+								app = app_id;
+								cntAlarm += 1;
+								console.log("cntAlarm");
+								console.log(cntAlarm);
+							}
+						}
+					};
+				}
             
-               comtNotify.append(comtStr);
-              //
+				comtNotify.append(comtStr);
+              	//
                 notCon.empty();
                 notCon.append(cntAlarm);
                 //
             });
             
             // 프로젝트 생성 신청 - admin 계정만 해당
-           stompClient.subscribe("/noti/newprj", function(data) {
-              var newprjdata = JSON.parse(data.body);
-              console.log(newprjdata);
-              
-              let getUI = newprjdata.obj;
-               let user_id = getUI.user_id;
-               
-               newprjdata = newprjdata.firList;
-              
-              let adminNotify = $('#adminNotify');
-              
-              let newprjStr = '';
-              const newprj = newprjdata.length;
+			stompClient.subscribe("/noti/newprj", function(data) {
+				var newprjdata = JSON.parse(data.body);
+				console.log(newprjdata);
+				
+				let getUI = newprjdata.obj;
+				let user_id = getUI.user_id;
+				 
+				newprjdata = newprjdata.firList;
+				
+				let adminNotify = $('#adminNotify');
+				
+				let newprjStr = '';
+				const newprj = newprjdata.length;
             
-              if (user_id == loginUser) {
-                 adminNotify.empty();
-                 
-                 if (newprj != 0) {
-                     newprjStr = '<p onclick="location.href=' + "'/admin_approval'" + '">신규 프로젝트 생성 신청이 ' + newprj + '건 있습니다.</p>';
-                     cntAlarm += 1;
-                     console.log("cntAlarm");
-                     console.log(cntAlarm);
-                  }
-              }
+				if (user_id == loginUser) {
+					adminNotify.empty();
+					
+					if (newprj != 0) {
+						newprjStr = '<p onclick="location.href=' + "'/admin_approval'" + '">신규 프로젝트 생성 신청이 ' + newprj + '건 있습니다.</p>';
+						cntAlarm += 1;
+						console.log("cntAlarm");
+						console.log(cntAlarm);
+					}
+				}
               
-              adminNotify.append(newprjStr);
+				adminNotify.append(newprjStr);
               
-              //
+              	//
                 notCon.empty();
                 notCon.append(cntAlarm);
                 //
-           });
+			});
 
             stompClient.send('/queue/approve', {}, JSON.stringify(obj));   // 프로젝트 생성 승인
             stompClient.send('/queue/meet', {}, JSON.stringify(obj));      // 회의일정
@@ -434,10 +432,15 @@ $(function(){
 <nav class="navbar navbar-expand-md navbar-dark fixed-top pms-bg-dark">
 	<div class="container-fluid">		
 		<button class="btn btn-secondary" onclick="goto('/main')">
-			<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+			<!-- <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
 				<path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+			</svg> -->
+			<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-rocket-takeoff" viewBox="0 0 16 16">
+			<path d="M9.752 6.193c.599.6 1.73.437 2.528-.362.798-.799.96-1.932.362-2.531-.599-.6-1.73-.438-2.528.361-.798.8-.96 1.933-.362 2.532"/>
+			<path d="M15.811 3.312c-.363 1.534-1.334 3.626-3.64 6.218l-.24 2.408a2.56 2.56 0 0 1-.732 1.526L8.817 15.85a.51.51 0 0 1-.867-.434l.27-1.899c.04-.28-.013-.593-.131-.956a9.42 9.42 0 0 0-.249-.657l-.082-.202c-.815-.197-1.578-.662-2.191-1.277-.614-.615-1.079-1.379-1.275-2.195l-.203-.083a9.556 9.556 0 0 0-.655-.248c-.363-.119-.675-.172-.955-.132l-1.896.27A.51.51 0 0 1 .15 7.17l2.382-2.386c.41-.41.947-.67 1.524-.734h.006l2.4-.238C9.005 1.55 11.087.582 12.623.208c.89-.217 1.59-.232 2.08-.188.244.023.435.06.57.093.067.017.12.033.16.045.184.06.279.13.351.295l.029.073a3.475 3.475 0 0 1 .157.721c.055.485.051 1.178-.159 2.065Zm-4.828 7.475.04-.04-.107 1.081a1.536 1.536 0 0 1-.44.913l-1.298 1.3.054-.38c.072-.506-.034-.993-.172-1.418a8.548 8.548 0 0 0-.164-.45c.738-.065 1.462-.38 2.087-1.006ZM5.205 5c-.625.626-.94 1.351-1.004 2.09a8.497 8.497 0 0 0-.45-.164c-.424-.138-.91-.244-1.416-.172l-.38.054 1.3-1.3c.245-.246.566-.401.91-.44l1.08-.107-.04.039Zm9.406-3.961c-.38-.034-.967-.027-1.746.163-1.558.38-3.917 1.496-6.937 4.521-.62.62-.799 1.34-.687 2.051.107.676.483 1.362 1.048 1.928.564.565 1.25.941 1.924 1.049.71.112 1.429-.067 2.048-.688 3.079-3.083 4.192-5.444 4.556-6.987.183-.771.18-1.345.138-1.713a2.835 2.835 0 0 0-.045-.283 3.078 3.078 0 0 0-.3-.041Z"/>
+			<path d="M7.009 12.139a7.632 7.632 0 0 1-1.804-1.352A7.568 7.568 0 0 1 3.794 8.86c-1.102.992-1.965 5.054-1.839 5.18.125.126 3.936-.896 5.054-1.902Z"/>
 			</svg>
-			<a class="navbar-brand" href="/main"><b>PMS</b></a>
+			<a class="navbar-brand" style="margin-left:10px" href="/main"><b>PMS</b></a>
 		</button>		
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -535,13 +538,25 @@ $(function(){
 </div>
 
 <div id="chatbox" style="display: none">
-	<span style="text-align:right"><input onclick="chat_close()" id="chat_close" class="btn-close" type="button"></span>
-    <div id="chat_top">
+	<span style="text-align:right"><input onclick="chat_close()" id="chat_close" class="btn-close bg-white" type="button"></span>
+    <div>
     	<input type="hidden" id="user_id" value="${userInfo.user_id}">
     	<input type="hidden" id="user_name" value="${userInfo.user_name}">
-        <input onclick="chat_user_bt()" id="chat_user_bt" class="btn btn-warning" type="button" value="학생 목록">
-        <input onclick="chat_chats_bt()" id="chat_chat_bt" class="btn btn-warning" type="button" value="채팅 목록">
-       
+    	<table width="100%" id="chat_top">
+    		<tr>
+    			<td align="left" width="130">
+			    	<img class="uploadFile" style=" width: 30px; height: 30px; border-radius: 50%;" alt="UpLoad File" 
+			    	src="${pageContext.request.contextPath}/${userInfo.attach_path }/${userInfo.attach_name}">
+			    	<span style="margin-left:10px;color:#ffffff">${userInfo.user_name}</span>
+    			</td>
+    			<td align="left" width="*">
+			        <input onclick="chat_user_bt()" id="chat_user_bt" class="btn btn-warning btn-sm" type="button" value="학생 목록">
+			        <input onclick="chat_chats_bt()" id="chat_chat_bt" class="btn btn-warning btn-sm" type="button" value="채팅 목록">       
+    			</td>
+    			<td width="50">
+    			</td>
+    		</tr>
+    	</table>
     </div>
     <div id="chat_content" class="p-3 rounded-2">
         <div id="chat_users" style="display: none">
@@ -549,7 +564,7 @@ $(function(){
             <c:forEach items="${chatUIList}" var="chat_user">
                 <div id="chat_student_list">
                     <div id="chat_st_left">
-                        <img class="uploadFile" style=" width: 30px; height: 30px; border-radius: 70%;" alt="UpLoad File" src="${pageContext.request.contextPath}/${chat_user.attach_path }/${chat_user.attach_name}"></td>
+                        <img class="uploadFile" style=" width: 30px; height: 30px; border-radius: 50%;" alt="UpLoad File" src="${pageContext.request.contextPath}/${chat_user.attach_path }/${chat_user.attach_name}">
                     </div>
                     <div id="chat_st_center">
                         <p>${chat_user.user_name}</p>
@@ -578,7 +593,7 @@ $(function(){
                     </c:otherwise>
                     </c:choose>
                     <div id="chat_ch_left">
-                        <img class="uploadFile" style=" width: 30px; height: 30px; border-radius: 70%;" src="${pageContext.request.contextPath}/${chatRoom.attach_path }/${chatRoom.attach_name}">
+                        <img class="uploadFile" style=" width: 30px; height: 30px; border-radius: 50%;" src="${pageContext.request.contextPath}/${chatRoom.attach_path }/${chatRoom.attach_name}">
                     </div>
                     <div id="chat_ch_center">
 

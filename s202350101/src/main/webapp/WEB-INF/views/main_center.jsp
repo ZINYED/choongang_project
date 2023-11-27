@@ -3,6 +3,7 @@
 <style>
 .bg-title {
   background-color: #2C3E50; /*#ffc107; #fdb933 9ad0f5*/
+  /* background-color: rgba(44, 62, 80, 0.9); */
 }
 /*프로젝트 소개란*/
 .pms-nav-step {
@@ -13,27 +14,37 @@
 .pms-step {
 	line-height: 25px;
 }
+.pms-center-title{
+	margin-left:10px;
+	margin-right:10px;
+}
 .pms-circle {
+	display:block;
 	width:32px;
 	height:32px;
-	background-color:#5588ff;
+	background-color:#fff;
 	text-align:center;
-	color:#fff;
+	color:#2C3E50;
+	font-weight:bold;
 	line-height:32px;
 	border-radius:50% !important;
 	flex-shrink:0 !important;
 }
 .pms-circle.bg-1 {
 	background-color:#5588ff;
+	color:#fff;
 }
 .pms-circle.bg-2 {
 	background-color:#ff8855;
+	color:#fff;
 }
 .pms-circle.bg-3 {
 	background-color:#88cc55;
+	color:#fff;
 }
 .pms-circle.bg-4 {
 	background-color:#005588;
+	color:#fff;
 }
 .pms-overflow {
 	display:block;
@@ -245,6 +256,46 @@
 					<h1 class="h5 mb-0 text-white lh-1">PMS (Project Management System)</h1>
 					<span>Since 2023</span>
 				</div>
+					
+
+				<div style="margin-left:130px">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-walking" viewBox="0 0 16 16">
+					<path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.75 1.75 0 0 1-.088.395l-.318.906.213.242a.75.75 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z"/>
+					<path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.75.75 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843a1.93 1.93 0 0 0 .006-.067l1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z"/>
+					</svg>
+				</div>
+				<div class="pms-center-title"><span class="pms-circle">요구</span></div>
+				<div>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
+  					<path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557z"/>
+					</svg>
+				</div>
+				<div class="pms-center-title"><span class="pms-circle">설계</span></div>
+				<div>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
+  					<path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557z"/>
+					</svg>
+				</div>
+				<div class="pms-center-title"><span class="pms-circle">구현</span></div>
+				<div>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
+  					<path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557z"/>
+					</svg>
+				</div>
+				<div class="pms-center-title"><span class="pms-circle">검증</span></div>
+				<div>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-forward-fill" viewBox="0 0 16 16">
+  					<path d="m9.77 12.11 4.012-2.953a.647.647 0 0 0 0-1.114L9.771 5.09a.644.644 0 0 0-.971.557V6.65H2v3.9h6.8v1.003c0 .505.545.808.97.557z"/>
+					</svg>
+				</div>
+				<div class="pms-center-title"><span class="pms-circle">배포</span></div>
+				<div>
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-arms-up" viewBox="0 0 16 16">
+					<path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/>
+					<path d="m5.93 6.704-.846 8.451a.768.768 0 0 0 1.523.203l.81-4.865a.59.59 0 0 1 1.165 0l.81 4.865a.768.768 0 0 0 1.523-.203l-.845-8.451A1.492 1.492 0 0 1 10.5 5.5L13 2.284a.796.796 0 0 0-1.239-.998L9.634 3.84a.72.72 0 0 1-.33.235c-.23.074-.665.176-1.304.176-.64 0-1.074-.102-1.305-.176a.72.72 0 0 1-.329-.235L4.239 1.286a.796.796 0 0 0-1.24.998l2.5 3.216c.317.316.475.758.43 1.204Z"/>
+					</svg>
+				</div>
+
 			</div>
 		
 			<!-- PMS소개란 -->
@@ -407,6 +458,7 @@
 			<div id="divMainList3" class="list-group pms-p-3 px-md-3"></div>
 			
 			<div id="divMainList4" class="list-group pms-p-3 px-md-3"></div>
+			
 			
 			<!-- <div id="divMainBdQna" class="list-group p-3 px-md-3">
 			    <label class="list-group-item d-flex gap-2">
