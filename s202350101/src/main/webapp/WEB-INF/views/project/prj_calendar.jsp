@@ -15,7 +15,7 @@
 	}
 
 	div #calendar {
-		width: 80%;
+		width: 85%;
 		margin-top: 50px;
 		padding-left: 15px;
 	}

@@ -48,6 +48,8 @@ public class SampleInterceptor implements HandlerInterceptor {
 			response.sendRedirect("user_login");
 			return false;	// 컨트롤러 진행 x
 		} else
+			session.setMaxInactiveInterval(3600); //세션아웃 (1시간)
+			
 		return true;	// 컨트롤러 진행 o
 	}
 

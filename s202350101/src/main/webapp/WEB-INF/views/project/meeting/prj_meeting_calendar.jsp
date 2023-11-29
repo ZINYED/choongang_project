@@ -9,105 +9,67 @@
 
 <!--CSS START -->
 <style type="text/css">
-	#category_title {
-		position: absolute;
-	}
-
-	div #calendar {
-		width: 80%;
-		margin-top: 50px;
-		padding-left: 15px;
-	}
-	
-	#center {
-		display: flex;
-	}
-	
+  	div .calendar {
+		width: 85%;
+	} 
 	#meetingList {
 		padding: 50px 30px 30px 30px;
 	}
-	
 	#meeting {
 		width: 100%;
 		padding: 20px;
 		text-align: left;
 		padding-top: 20px;
 	}
-	
 	table tr {
 		height: 50px;
 	}
-	
 	#title {
-		width: 80%;
+		width: 100%;
 		text-align: center;
 	}
-	
 	.list_date {
 		padding-top: 15px;
 		font-size: 11pt;
 		border-bottom: solid gray 1px;
 	}
-	
 	.list_title {
 		font-size: 13pt;
 	}
-	
 	.list_title a {
 		text-decoration: none;
 		color: black;
 	}
-	
 	.radio {
 		margin-left: 30px;
 	}
-	
 	select {
 		width: 100%;
 	}
-	
 	textarea {
 		width: 100%;
 	}
-	
 	input.form-control.form-control-sm.uploadFile {
     	width: 80%;
 	}
-	
 	#mtPage {
 		display: flex;
     	justify-content: center;
 	}
-	
-	:root {
-		/* --fc-button-text-color: black;
-		--fc-button-bg-color: white;
-		--fc-button-hover-bg-color: rgba(13, 110, 253, 0.1);
-		--fc-button-active-bg-color: white; */
-	}
-
-	.fc .fc-daygrid-day-frame {
-	    position: relative;
-	    height: 100px;
-	}
-	
 	.fc .fc-col-header-cell-cushion {
 	    text-decoration: none;
 	    color: black;
 	}
-	
 	.fc .fc-daygrid-day-number {
 	    text-decoration: none;
 	    color: black;
 	}
-	.fc-day {
+ 	.fc-day {
 		height: 20px;
 	}
-	
     tr[role="row"] {
 		height: 20px;
     }
-    
     .fc .fc-daygrid-day-top {
     	display: flex;
     	flex-direction: row;
@@ -118,6 +80,18 @@
     .fc-daygrid-block-event .fc-event-time, .fc-daygrid-block-event .fc-event-title {
 	    padding: 1px;
 	    font-size: 9pt;
+	} 
+	.frame_set {
+		display: flex;
+		flex: 1;
+	}
+	.frame_cal {
+		display: block;
+		width: 80%;
+	}
+	.frame_side {
+		display: block;
+		width: 30%;
 	}
 </style>
 
@@ -295,8 +269,23 @@
 				                // jQuery로 스타일 조작
 				                if (meetingList_body.css('display') == 'none') {
 				                	meetingList_body.show();
+				                	
+				            		$('#idFrameSet').addClass("frame_set");
+				            		$('#idFrameCal').addClass("frame_cal");
+				            		$('#right_side').addClass("frame_side");
+				            		$('#calendar').removeClass("calendar");
+				            		
+				            		calendar.updateSize();
+				                	
 				                } else {
 				                	meetingList_body.hide();
+				                	
+				            		$('#idFrameSet').removeClass("frame_set");
+				            		$('#idFrameCal').removeClass("frame_cal");
+				            		$('#right_side').removeClass("frame_side");
+				            		$('#calendar').addClass("calendar");
+				            		
+				            		calendar.updateSize();
 				                }
 
 				                $.each(jsondata.firList, function(index, MTList) {
@@ -689,7 +678,10 @@
 				</div>
 				
 				<!-- fullcalendar 추가 -->
-				<div id='calendar'></div>
+			<div id="idFrameSet">
+				<div id="idFrameCal">
+					<div id='calendar' class="calendar"></div>
+				</div>
 
 				<!-- 회의일정 등록 modal 추가 -->
 				<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -796,7 +788,7 @@
 					</div>
 				</div>
 
-				<div id="right_side" style="width: 30%">
+				<div id="right_side"> <!-- style="width: 30%" -->
 					<div>
 						<div id="meetingList" style="display:none;">
 							<h3 id="title">회의록</h3>
@@ -809,6 +801,7 @@
 						</div>
 					</div>
 				</div>
+			</div>
 				<!------------------------------ //개발자 소스 입력 END ------------------------------->
 			</main>
 
