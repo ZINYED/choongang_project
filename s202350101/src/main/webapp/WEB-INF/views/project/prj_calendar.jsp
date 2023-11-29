@@ -50,6 +50,11 @@
     	display: flex;
     	flex-direction: row;
     }
+    
+	.fc-daygrid-block-event .fc-event-time, .fc-daygrid-block-event .fc-event-title {
+	    padding: 1px;
+	    font-size: 9pt;
+	}
 </style>
 <!-- CSS END -->
 
@@ -99,7 +104,8 @@
 			title : '${meeting.meeting_title}',
 			start : '${meeting.meeting_date}',
 			end : '${meeting.meeting_date}',
-			color : '#F2CB61'
+			color : '#FFE08C',
+			textColor : '#000000'
 		});
 		</c:forEach>
 
@@ -108,7 +114,8 @@
 			title : '${prj.project_name}',
 			start : '${prj.project_startdate}',
 			end : '${prj.project_enddate}',
-			color : '#6799FF'
+			color : '#B2CCFF',
+			textColor : '#000000'
 
 		});
 
@@ -128,13 +135,14 @@
 				
 				console.log("클릭한 곳의 배경색: " + backgroundColor);
 				
-				if (backgroundColor == "rgb(103, 153, 255)") {
+				if (backgroundColor == "rgb(178, 204, 255)") {
 					var openurl = "/prj_home";
 					
 					console.log("openurl: " + openurl);
 					
-					gotoCheckProjectID(openurl, '${userInfo.project_id}');
+					window.open(openurl, "_self");
 				}
+				
 			}
 		});
 
@@ -174,7 +182,7 @@
 					        </a>
 					      </li>
 					      <li class="breadcrumb-item">
-					        <a class="link-body-emphasis fw-semibold text-decoration-none" href="/dashboard">프로젝트</a>
+					        <a class="link-body-emphasis fw-semibold text-decoration-none" href="prj_home">프로젝트</a>
 					      </li>
 					      <li class="breadcrumb-item active" aria-current="page">회의록</li>
 					    </ol>

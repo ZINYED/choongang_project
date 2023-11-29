@@ -186,8 +186,8 @@ public class LjhController {
 		
 		return "project/meeting/prj_meeting_report_read";
 	}
-	
-	// 회의록 조회 (상세 페이지) - 프로젝트 Home 팝업 조회용
+
+	// 회의록 조회 (상세 페이지) - MAIN팝업
 	@RequestMapping(value = "prj_meeting_report_popup")
 	public String meetingReadPopup(Meeting meeting, Model model, HttpServletRequest request) {
 		System.out.println("LjhController meetingRead");
@@ -210,6 +210,7 @@ public class LjhController {
 		
 		return "project/meeting/prj_meeting_report_popup";
 	}
+
 	
 	// 회의록 수정 페이지 이동
 	@RequestMapping(value = "prj_meeting_report_update")

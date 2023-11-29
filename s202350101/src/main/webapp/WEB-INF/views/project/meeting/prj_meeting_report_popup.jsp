@@ -103,6 +103,7 @@
 <body>
 
 			<!------------------------------ //개발자 소스 입력 START ------------------------------->
+		<div class="container-fluid">
 			<div id="category_title">
 				<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
 				  <symbol id="house-door-fill" viewBox="0 0 16 16">
@@ -170,6 +171,7 @@
 					</tr>
 				</table>
 			</div>
+		</div>
 	  		<!------------------------------ //개발자 소스 입력 END ------------------------------->
 
     
