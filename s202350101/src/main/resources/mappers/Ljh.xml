@@ -8,32 +8,28 @@
 	 
 <mapper namespace="com.oracle.s202350101.PrjInfoMapper">
 	
-<!-- 프로젝트 캘린더 & 회의록 -->
-
-	<!-- 전체 프로젝트 기간 조회 -->
 	<select id="ljhPrjInfoSelOne" parameterType="int" resultType="PrjInfo">
 		SELECT	project_name, project_startdate, project_enddate
 	 	FROM	prj_info
 	 	WHERE	project_id = #{project_id}
 	</select>
 	
-	<!-- 전체 회의 리스트 조회 -->
+	<!-- 전체 회의 목록 (일정만, 회의록만, 일정+회의 모두 포함) -->
 	<select id="ljhMeetingList" parameterType="int" resultType="Meeting">
 		SELECT	*
 		FROM	meeting
 		WHERE	project_id = #{project_id}
 	</select>
 	
-	<!-- 선태한 회의록의 정보와 회의 참석자 정보 리스트로 조회 -->
-	<select id="ljhMeetingRead" parameterType="int" resultType="Meeting">
-    	SELECT	m.*, u.user_name,u.user_id as meetuser_id
-	    FROM	meeting m, meeting_member m2, user_info u
-	    WHERE	m.meeting_id = #{meeting_id}
-	    AND		m.meeting_id = m2.meeting_id
-	    AND     m2.meetuser_id = u.user_id
+	<!-- 회의 일정만  -->
+	<select id="ljhMeetingDate" parameterType="int" resultType="Meeting">
+		SELECT	*
+		FROM	meeting
+		WHERE	project_id = #{project_id}
+		AND 	meeting_status = 1
 	</select>
-		
-	<!-- 회의록 등록 상태인 회의 조회 (meeting_status = 2,3) -->
+	
+	<!-- 회의록, 일정+회의 목록 -->
 	<select id="ljhMeetingReportList" parameterType="int" resultType="Meeting">
 		SELECT	*
 		FROM	meeting
@@ -42,7 +38,6 @@
 		ORDER BY meeting_id asc
 	</select>
 	
-	<!-- 회의록 페이징 작업용 -->
 	<select id="ljhMtRpListPage" parameterType="Meeting" resultType="Meeting">
 		<![CDATA[
 			SELECT	*
@@ -61,31 +56,23 @@
 		]]>
 	</select>
 	
-	<!-- 회의록 미등록 상태인 회의 조회 (meeting_status = 1)  -->
-	<select id="ljhMeetingDate" parameterType="int" resultType="Meeting">
-		SELECT	*
-		FROM	meeting
-		WHERE	project_id = #{project_id}
-		AND 	meeting_status = 1
+	<!-- .getMeetingRead(meeting_id) -->
+	<select id="ljhMeetingRead" parameterType="int" resultType="Meeting">
+    	SELECT	m.*, u.user_name,u.user_id as meetuser_id
+	    FROM	meeting m, meeting_member m2, user_info u
+	    WHERE	m.meeting_id = #{meeting_id}
+	    AND		m.meeting_id = m2.meeting_id
+	    AND     m2.meetuser_id = u.user_id
 	</select>
 	
-	<!-- 프로젝트 전체 팀원 목록 조회 -->
 	<select id="ljhPrjMemList" parameterType="int" resultType="PrjMemList">
 		SELECT  u.user_name, p.user_id
 		FROM    user_info u, prj_mem_list p
 		WHERE   u.user_id = p.user_id
 		AND     p.project_id = #{project_id}
 	</select>
-		
-	<!-- 회의일정 등록 (meeting_status = 1) -->
-	<insert id="ljhMeetingInsert" parameterType="Meeting">
-		INSERT INTO meeting
-		VALUES ((SELECT NVL(max(meeting_id)+1, 1) FROM meeting), #{project_id}, #{meeting_date}, #{meeting_title}, 
-				#{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, #{attach_name, jdbcType=VARCHAR}, 
-				#{attach_path, jdbcType=VARCHAR}, SYSDATE)
-	</insert>
 	
-	<!-- 회의록 수정 (MEETING TBL update) -->
+	<!-- meeting 테이블 수정 -->
 	<update id="ljhMeetingReportUpdate" parameterType="Meeting">
 		UPDATE	meeting
 		SET		meeting_title = #{meeting_title}, meeting_date = #{meeting_date},
@@ -94,9 +81,9 @@
 		        meeting_content = #{meeting_content}
 		WHERE	meeting_id = #{meeting_id}
 		AND     project_id = #{project_id}
-	</update>
+	</update>		
 	
-	<!-- 기존 회의 참석자 삭제 (MEETING_MEMBER TBL delete) -->
+	<!-- .deleteMeetingMember / meeting_member 테이블 삭제 -->
 	<delete id="ljhDeleteMeetingMember" parameterType="Meeting">
 		DELETE
 		FROM	meeting_member
@@ -104,23 +91,31 @@
 		AND		project_id = #{project_id}
 	</delete>
 	
-	<!-- 회의 참석자 등록 (회의 수정 시 참석자 추가 - 기존 meeting_id 사용) -->
+	<!-- 회의록 수정 시 meeting_member 테이블 추가 -->
 	<insert id="ljhInsertMeetingMember" parameterType="Meeting">
 		INSERT INTO meeting_member VALUES (#{meeting_id}, #{project_id}, #{meetuser_id})
 	</insert>
 	
-	<!-- 회의록 삭제 -->
+	<!-- .deleteMeetingReport -->
 	<delete id="ljhDeleteMeetingReport" parameterType="int">
 		DELETE FROM meeting WHERE meeting_id = #{meeting_id}
 	</delete>
 	
-	<!-- 회의 참석자 신규 등록 (회의 신규 등록 시 참석자 추가 - meeting_id max값 사용) -->
+	<!-- 회의일정 등록 (meeting_status = 1) -->
+	<insert id="ljhMeetingInsert" parameterType="Meeting">
+		INSERT INTO meeting
+		VALUES ((SELECT NVL(max(meeting_id)+1, 1) FROM meeting), #{project_id}, #{meeting_date}, #{meeting_title}, 
+				#{meeting_place}, #{user_id}, #{meeting_category}, #{meeting_content}, 1, #{attach_name, jdbcType=VARCHAR}, 
+				#{attach_path, jdbcType=VARCHAR}, SYSDATE)
+	</insert>
+	
+	<!-- 회의일정 등록 시 참석자 추가 -->
 	<insert id="ljhInsertMember" parameterType="Meeting">
 		INSERT INTO meeting_member
 		VALUES ((SELECT max(meeting_id) FROM meeting), #{project_id}, #{meetuser_id})
 	</insert>
 	
-	<!-- 회의일정 -> 회의록으로 변경 (meeting_status = 3으로 변경) -->
+	<!-- 회의일정 -> 회의록 등록 (meeting_status = 3 변경) -->
 	<update id="ljhReportUpdate" parameterType="Meeting">
 		UPDATE	meeting
 		SET		meeting_title = #{meeting_title}, meeting_date = #{meeting_date},
@@ -152,10 +147,20 @@
 	
 	
 	
-<!-- 알림 -->
-
 	
-	<!-- 접속한 회원이 참석자로 포함된 회의 조회 -->
+	<!-- 프로젝트 생성 승인 알림 (팀장) -->
+	<select id="ljhPrjApprove" parameterType="hashmap" resultType="PrjInfo">
+		SELECT  p.*
+		FROM    prj_info p, user_env u
+		WHERE   p.project_manager_id = u.user_id
+		AND     u.env_alarm_mine = 'Y'
+		AND     project_approve = 2
+		AND     alarm_flag = 'N'
+		AND     del_status = 0
+		AND     u.user_id = #{user_id}
+	</select>
+	
+	<!-- 알림 - 접속한 회원 별 회의일정 select -->
 	<select id="ljhUserMeeting" parameterType="hashmap" resultType="Meeting">
 		SELECT  m.*, m2.*
 		FROM    meeting m, meeting_member m2, user_env u
@@ -166,7 +171,7 @@
 		AND     u.env_alarm_meeting = 'Y'
 	</select>
 	
-	<!-- 접속한 회원이 작성한 글과 등록된 답글 조회 (alarm_flag = N만) -->
+	<!-- 알림 - 접속한 회원 별 게시판 답글 select -->
 	<select id="ljhBoardRep" parameterType="hashmap" resultType="PrjBdData">
 		SELECT  p.app_id, p.doc_no, p.subject, p.doc_group, p.alarm_flag, p.parent_doc_user_id, p.parent_doc_no, p.project_id,
 		        (SELECT app_name
@@ -197,7 +202,7 @@
 		AND     u.env_alarm_reply = 'Y'
 	</select>
 	
-	<!-- 접속한 회원이 작성한 글과 등록된 댓글 개수 조회 (alarm_flag = N만) -->
+	<!-- 알림 - 접속한 회원 별 게시판 원글 및 댓글 select -->
 	<select id="ljhBoardComt" parameterType="hashmap" resultType="PrjBdData">	
 		SELECT  f.doc_no, f.user_id, f.subject, f.bd_category, fc.comment_context, f.app_id, null project_id,
 		        (SELECT app_name
@@ -249,19 +254,6 @@
 		AND     u.env_alarm_comm = 'Y'
 	</select>
 	
-	<!-- 프로젝트 생성 승인 여부 조회 (팀장 계정 접속 시) -->
-	<select id="ljhPrjApprove" parameterType="hashmap" resultType="PrjInfo">
-		SELECT  p.*
-		FROM    prj_info p, user_env u
-		WHERE   p.project_manager_id = u.user_id
-		AND     u.env_alarm_mine = 'Y'
-		AND     project_approve = 2
-		AND     alarm_flag = 'N'
-		AND     del_status = 0
-		AND     u.user_id = #{user_id}
-	</select>
-	
-	<!-- 미승인 상태인 프로젝트 신청 건수 조회 (관리자 계정 접속 시) -->
 	<select id="ljhNewPrj" parameterType="hashmap" resultType="PrjInfo">
 		SELECT  *
 		FROM    prj_info

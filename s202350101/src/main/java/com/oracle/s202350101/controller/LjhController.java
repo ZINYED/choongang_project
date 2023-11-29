@@ -45,43 +45,43 @@ public class LjhController {
 //-----------------------------------------------------------------------------------------------
 // 프로젝트 캘린더
 //-----------------------------------------------------------------------------------------------
-	@RequestMapping(value = "prj_calendar")
-	public String prjCalendar(Model model,  HttpServletRequest request) {
-		System.out.println("LjhController prjCalendar");
+   @RequestMapping(value = "prj_calendar")
+   public String prjCalendar(Model model,  HttpServletRequest request) {
+      System.out.println("LjhController prjCalendar");
 
-		// user 정보 세션에 저장해오기
-		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
-		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+      // user 정보 세션에 저장해오기
+      System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
+      UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
 
-		// 세션에 저장된 project_id
-		int project_id = userInfoDTO.getProject_id();
-		
-		PrjInfo prjInfo = new PrjInfo();
-		//------------------------------------------------
-		prjInfo = ljhs.getProject(project_id);				// 프로젝트 전체 기간 조회
-		//------------------------------------------------
-		
-		List<Meeting> meetingDateList = new ArrayList<Meeting>();
-		//---------------------------------------------------------------
-		meetingDateList = ljhs.getMeetingList(project_id);	// 전체 회의 리스트 조회
-		//---------------------------------------------------------------
-		// java.sql.Date에서 Calendar로 변환
-		Calendar c = Calendar.getInstance();
-		c.setTime(prjInfo.getProject_enddate());
+      // 세션에 저장된 project_id
+      int project_id = userInfoDTO.getProject_id();
+      
+      PrjInfo prjInfo = new PrjInfo();
+      //------------------------------------------------
+      prjInfo = ljhs.getProject(project_id);            // 프로젝트 전체 기간 조회
+      //------------------------------------------------
+      
+      List<Meeting> meetingDateList = new ArrayList<Meeting>();
+      //---------------------------------------------------------------
+      meetingDateList = ljhs.getMeetingList(project_id);   // 전체 회의 리스트 조회
+      //---------------------------------------------------------------
+      // java.sql.Date에서 Calendar로 변환
+      Calendar c = Calendar.getInstance();
+      c.setTime(prjInfo.getProject_enddate());
 
-		// Calendar에 1일을 더함
-		c.add(Calendar.DATE, 1);
+      // Calendar에 1일을 더함
+      c.add(Calendar.DATE, 1);
 
-		// Calendar에서 java.sql.Date로 다시 변환
-		java.sql.Date newEndDate = new java.sql.Date(c.getTimeInMillis());
+      // Calendar에서 java.sql.Date로 다시 변환
+      java.sql.Date newEndDate = new java.sql.Date(c.getTimeInMillis());
 
-		prjInfo.setProject_enddate(newEndDate);
-		
-		model.addAttribute("prj", prjInfo);
-		model.addAttribute("meetingDateList", meetingDateList);
-		
-		return "project/prj_calendar";
-	}
+      prjInfo.setProject_enddate(newEndDate);
+      
+      model.addAttribute("prj", prjInfo);
+      model.addAttribute("meetingDateList", meetingDateList);
+      
+      return "project/prj_calendar";
+   }
 
 //-----------------------------------------------------------------------------------------------
 // 회의록 캘린더
@@ -187,6 +187,30 @@ public class LjhController {
 		return "project/meeting/prj_meeting_report_read";
 	}
 	
+	// 회의록 조회 (상세 페이지) - 프로젝트 Home 팝업 조회용
+	@RequestMapping(value = "prj_meeting_report_popup")
+	public String meetingReadPopup(Meeting meeting, Model model, HttpServletRequest request) {
+		System.out.println("LjhController meetingRead");
+		
+		// user 정보 세션에 저장해오기
+		System.out.println("session.userInfo->"+request.getSession().getAttribute("userInfo"));
+		UserInfo userInfoDTO = (UserInfo) request.getSession().getAttribute("userInfo");
+		
+		String loginUserId = userInfoDTO.getUser_id();
+		meeting.setUser_id(loginUserId);
+		
+		List<Meeting> meetingRead = new ArrayList<Meeting>();
+		//---------------------------------------------------------------------
+		meetingRead = ljhs.getMeetingRead(meeting.getMeeting_id());		// 선택한 회의록의 정보와 회의 참석자 정보까지 함께 조회
+		//---------------------------------------------------------------------
+		
+		model.addAttribute("meeting", meetingRead);
+		model.addAttribute("project_id", meeting.getProject_id());
+		model.addAttribute("meeting_id", meeting.getMeeting_id());
+		
+		return "project/meeting/prj_meeting_report_popup";
+	}
+	
 	// 회의록 수정 페이지 이동
 	@RequestMapping(value = "prj_meeting_report_update")
 	public String meetingUpdate(int meeting_id, int project_id, Model model) {
@@ -255,8 +279,8 @@ public class LjhController {
 			
 			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 			log.info("Return savedName : " + savedName);
-			meeting.setAttach_name(savedName);
-			meeting.setAttach_path(attach_path);
+			meeting.setAttach_name(file1.getOriginalFilename());
+			meeting.setAttach_path(savedName);
 		}
 		
 		model.addAttribute("meeting", meeting);
@@ -317,8 +341,8 @@ public class LjhController {
 			
 			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 			log.info("Return savedName : " + savedName);
-			meeting.setAttach_name(savedName);
-			meeting.setAttach_path(attach_path);
+			meeting.setAttach_name(file1.getOriginalFilename());
+			meeting.setAttach_path(savedName);
 		}
 		
 		System.out.println("meeting -> " + meeting);
@@ -370,8 +394,8 @@ public class LjhController {
 			
 			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 			log.info("Return savedName : " + savedName);
-			meeting.setAttach_name(savedName);
-			meeting.setAttach_path(attach_path);
+			meeting.setAttach_name(file1.getOriginalFilename());
+			meeting.setAttach_path(savedName);
 		}
 		
 		int updateResult = 0;
@@ -433,8 +457,8 @@ public class LjhController {
 			
 			String savedName = uploadFile(file1.getOriginalFilename(), file1.getBytes(), uploadPath);	// 저장되는 파일명
 			log.info("Return savedName : " + savedName);
-			meeting.setAttach_name(savedName);
-			meeting.setAttach_path(attach_path);
+			meeting.setAttach_name(file1.getOriginalFilename());
+			meeting.setAttach_path(savedName);
 		}
 		
 		System.out.println("meeting -> " + meeting);

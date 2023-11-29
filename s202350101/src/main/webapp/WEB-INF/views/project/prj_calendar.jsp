@@ -102,7 +102,7 @@
 			color : '#F2CB61'
 		});
 		</c:forEach>
-		
+
 		// Add the project event								prj
 		events.push({
 			title : '${prj.project_name}',
@@ -133,9 +133,8 @@
 					
 					console.log("openurl: " + openurl);
 					
-					window.open(openurl, "_self");
+					gotoCheckProjectID(openurl, '${userInfo.project_id}');
 				}
-				
 			}
 		});
 
