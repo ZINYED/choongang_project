@@ -104,10 +104,8 @@ public class MkhController {
 			return "forward:/user_login";
 		} else {
 			System.out.println("user_login_check userInfo exists");
-			session.setAttribute("userInfo", userInfoDTO); // 세션 생성 + 저장
 			session.setMaxInactiveInterval(3600); //세션아웃 (1시간)
-			log.info("session.getMaxInactiveInterval()");
-			log.info(""+session.getMaxInactiveInterval());
+			session.setAttribute("userInfo", userInfoDTO); // 세션 생성 + 저장
 			System.out.println("session.getAttribute(userInfo)->"+session.getAttribute("userInfo"));
 			return "redirect:/main";
 		}

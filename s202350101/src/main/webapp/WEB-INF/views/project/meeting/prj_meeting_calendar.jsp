@@ -74,12 +74,12 @@
     	display: flex;
     	flex-direction: row;
     }
-/*     .fc-event-title {
+    .fc-event-title {
     	cursor:pointer;
-    } */
-    .fc-h-event .fc-event-title-container {
-		cursor:pointer;
-	}
+    }
+    .fc-event-title-container{
+    	cursor:pointer;
+    }
     .fc-daygrid-block-event .fc-event-time, .fc-daygrid-block-event .fc-event-title {
 	    padding: 1px;
 	    font-size: 9pt;
@@ -714,7 +714,7 @@
 										</c:forEach>
 										
 										<label for="taskId" class="col-form-label">회의 유형</label><br>
-										<select id="meeting_category" name="meeting_category">
+										<select id="meeting_category" name="meeting_category" class="form-select">
 											<option value="킥오프미팅">킥오프미팅</option>
 											<option value="주간 업무보고">주간 업무보고</option>
 											<option value="월간 회의">월간 회의</option>
@@ -726,7 +726,7 @@
 										<input type="file" class="form-control" name="file1">
 
 										<label for="taskId" class="col-form-label">회의 내용</label> 
-										<textarea rows="5" cols="60" id="meeting_content" name="meeting_content"></textarea>
+										<textarea rows="5" cols="60" id="meeting_content" name="meeting_content" class="form-control"></textarea>
 									</div>
 								</div>
 								<div class="modal-footer">
@@ -765,7 +765,7 @@
 										</div>
 										
 										<label for="taskId" class="col-form-label">회의 유형</label><br>
-										<select id="md_category" name="meeting_category">
+										<select id="md_category" name="meeting_category" class="form-select">
 
 										</select><br>
 										
@@ -777,7 +777,7 @@
 										</div>
 										
 										<label for="taskId" class="col-form-label">회의 내용</label> 
-										<textarea rows="5" cols="60" id="md_content" name="meeting_content"></textarea>
+										<textarea rows="5" cols="60" id="md_content" name="meeting_content" class="form-control"></textarea>
 									</div>
 								</div>
 								<div class="modal-footer">

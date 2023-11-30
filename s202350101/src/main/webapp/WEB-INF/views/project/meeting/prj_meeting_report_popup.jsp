@@ -36,9 +36,6 @@
 		height: 100px;
 		padding-right: 20px;
 	}
-	pre {
-		margin-top: 16px;
-	}
 </style>
 <!-- CSS END -->
 

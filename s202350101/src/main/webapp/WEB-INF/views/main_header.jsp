@@ -124,7 +124,7 @@ function onSocket() {
                        // console.log(meetingDate);
    
                        if (meetingDate == now) {
-                          meetStr += '<p onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
+                          meetStr += '<p class="notiA" onclick="location.href=' + "'/prj_meeting_calendar?project_id=" + rtndata[i].project_id + "'" + '"' + '>오늘(' + rtndata[i].meeting_date + ') 예정된 ' + rtndata[i].meeting_title + ' 회의가 있습니다.</p>';
                         cntAlarm += 1;
                         console.log("cntAlarm");
                         console.log(cntAlarm);
