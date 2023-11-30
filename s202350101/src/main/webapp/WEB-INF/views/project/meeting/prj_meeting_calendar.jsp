@@ -74,9 +74,12 @@
     	display: flex;
     	flex-direction: row;
     }
-    .fc-event-title {
+/*     .fc-event-title {
     	cursor:pointer;
-    }
+    } */
+    .fc-h-event .fc-event-title-container {
+		cursor:pointer;
+	}
     .fc-daygrid-block-event .fc-event-time, .fc-daygrid-block-event .fc-event-title {
 	    padding: 1px;
 	    font-size: 9pt;

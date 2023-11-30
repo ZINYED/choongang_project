@@ -177,15 +177,15 @@
 				<!-- 페이징 작업 -->
 				<div class="pagebox">
 					<c:if test="${page.startPage > page.pageBlock }">
-						<a href="board_notify?currentPage=${page.startPage - page.pageBlock }">[이전]</a>
+						<a href="board_free?currentPage=${page.startPage - page.pageBlock }">[이전]</a>
 					</c:if>
 					
 					<c:forEach var="a" begin="${page.startPage }" end="${page.endPage }">
-						<a href="board_notify?currentPage=${a }">[${a }]</a>
+						<a href="board_free?currentPage=${a }">[${a }]</a>
 					</c:forEach>
 					
 					<c:if test="${page.endPage < page.totalPage }">
-						<a href="board_notify?currentPage=${page.startPage + page.pageBlock }">[다음]</a>
+						<a href="board_free?currentPage=${page.startPage + page.pageBlock }">[다음]</a>
 					</c:if>
 				</div>
 			</div>
