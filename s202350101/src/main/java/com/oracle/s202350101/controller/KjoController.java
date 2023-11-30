@@ -72,7 +72,6 @@ public class KjoController {
         if (cr.getClass_start_date() != null && cr.getClass_end_date() != null) {
             crtimeresult = cr.getClass_start_date().compareTo(cr.getClass_end_date());
         }
-        
         if (crtimeresult > 0) {
             bindingResult.rejectValue("startDate", "Classroom.dateError.Object");
         }

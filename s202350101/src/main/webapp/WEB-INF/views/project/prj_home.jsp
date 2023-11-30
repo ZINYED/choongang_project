@@ -361,7 +361,7 @@
 				}
 				list 	= '';
 				list 	+= '<label class="list-group-item d-flex gap-2" style="cursor:pointer" onclick="popup(\'';
-				list	+= 'task_read?doc_no=' + board.doc_no + '&project_id='+show_project_id+'\')">';
+				list	+= 'task_read?task_id=' + board.task_id + '&project_id='+show_project_id+'\')">';
 				//list 	+= '<input class="form-check-input flex-shrink-0" type="checkbox" value="" checked="">';
 				
 				//list 	+= '<img style=" width: 32px; height: 32px; border-radius: 50%; margin-left:10px; margin-right:5px;" alt="${prjMember.user_name}"'; 

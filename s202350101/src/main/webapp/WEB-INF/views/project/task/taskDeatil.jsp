@@ -18,33 +18,32 @@
 
 </style>
 <script type="text/javascript">
-	function delete_task(user_id,task_id,project_id){
-	    //var userInput =  prompt("삭제라혀면 ID 를입력하세요 ");
-	    //if(userInput === user_id){
-	    if(confirm("삭제하시겠습니까?")){
-	        $.ajax({
-	            url         :'/task_garbage',
-	            type        :'post',
-	            data        :{"task_id":task_id,
-	                        'project_id':project_id},
-	            dataType    :"text",
-	            success     :function (data){
-	                if(data === '1'){
-	                    alert("삭제성공");
-	                    window.location.href ="/dashboard";
-	                } else{// UPDATE를 수행햇지만 결과가 0이나올떄
-	                    alert("삭제 에러 ");
-	                }
-	                return;
-	            }
-	        });
-	    }
-	    /*} else {
-	        alert("작성자만 삭제 할 수 있습니다. 아이디를 확인하세요");
-	        return;
-	    }*/
-	}
-
+    function delete_task(user_id,task_id,project_id){
+        //var userInput =  prompt("삭제라혀면 ID 를입력하세요 ");
+        //if(userInput === user_id){
+        if(confirm("삭제하시겠습니까?")){
+            $.ajax({
+                url         :'/task_garbage',
+                type        :'post',
+                data        :{"task_id":task_id,
+                            'project_id':project_id},
+                dataType    :"text",
+                success     :function (data){
+                    if(data === '1'){
+                        alert("삭제성공");
+                        window.location.href ="/dashboard";
+                    } else{// UPDATE를 수행햇지만 결과가 0이나올떄
+                        alert("삭제 에러 ");
+                    }
+                    return;
+                }
+            });
+        }
+        /*} else {
+            alert("작성자만 삭제 할 수 있습니다. 아이디를 확인하세요");
+            return;
+        }*/
+    }
     function update_task(user_id,task_id,project_id){
         //var userInput =  prompt("수정하려면 ID 를 입력하세요 ");
         //if(userInput === user_id) {
