@@ -1,5 +1,7 @@
 ![pms_main](https://github.com/ZINYED/choongang_project/assets/118190422/d4064752-2527-45da-b86d-5bc57402bcf8)
 
+### [✔ 전체 PPT](https://github.com/ZINYED/choongang_project/files/14535103/PMS.pdf)
+
 # 📖 프로젝트 소개 및 개요
 ![pms](https://github.com/ZINYED/choongang_project/assets/118190422/7bc6faa1-b409-4940-a66a-9418ec5c941d)
 교육 기관의 학생층을 타겟으로 한 프로젝트 관리 시스템입니다.
